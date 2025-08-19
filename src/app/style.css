@@ -1675,15 +1675,17 @@ body {
     gap: 4px;                   /* 各スペック項目の間隔 */
     margin: 8px 0;
     max-width: none;
+    order: 1;                   /* 商品名とメーカー名の後に表示 */
   }
 
   .product-card .spec-info .spec-item {
-    width: 120px;               /* 左列の幅に合わせる */
-    max-width: 120px;           /* 最大幅制限 */
+    width: 100%;                /* 全幅使用 */
+    max-width: none;            /* 最大幅制限を解除 */
     display: flex;
-    flex-direction: column;     /* 縦並びに変更 */
+    flex-direction: row;        /* 横並びに戻す */
+    justify-content: space-between;
     align-items: center;
-    padding: 3px 2px;
+    padding: 4px 8px;
     min-height: auto;
     font-size: 0.9em;
     border: 1px solid #e0e0e0;
@@ -1692,21 +1694,20 @@ body {
   }
 
   .product-card .spec-info .spec-item .spec-label {
-    font-size: 0.7em;
-    width: 100%;
+    font-size: 0.8em;
+    width: auto;
+    flex: 0 0 auto;
     color: #888;
-    text-align: center;
-    margin-bottom: 1px;
-    line-height: 1.0;
+    text-align: left;
   }
 
   .product-card .spec-info .spec-item .spec-value {
-    font-size: 0.8em;
-    text-align: center;
-    width: 100%;
+    font-size: 0.9em;
+    text-align: right;
+    flex: 1;
+    padding-left: 8px;
     font-weight: bold;
     color: #222;
-    line-height: 1.2;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -1944,73 +1945,53 @@ body {
 
 @media (max-width: 768px) {
   .product-list .card-content {
-    display: grid;                          /* グリッドレイアウトに変更 */
-    grid-template-columns: 120px 1fr;       /* 左側120px、右側残り */
-    grid-template-rows: auto auto auto;     /* 3行のグリッド */
-    gap: 8px 12px;                         /* 行間8px、列間12px */
-    align-items: start;
+    display: flex;                          /* シンプルなflexレイアウト */
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 12px;                             /* 左右の間隔 */
   }
   
   .product-list .card-image {
-    grid-column: 1;             /* 左列 */
-    grid-row: 1;                /* 1行目 */
     width: 120px;
     min-width: 120px;
     max-width: 120px;
+    flex: 0 0 120px;           /* 固定幅 */
     margin: 0;
   }
   
   .product-list .card-info {
-    grid-column: 2;             /* 右列のみ */
-    grid-row: 1 / 4;            /* 1-3行目全て */
+    flex: 1;                   /* 残りスペースを使用 */
     display: flex;
-    flex-direction: column;     /* 縦並び */
+    flex-direction: column;    /* 縦並び */
     gap: 4px;
-    width: 100%;
+    width: auto;
     padding: 0;
     min-width: 0;
   }
 
-  /* 商品名を右上に配置 */
+  /* 商品名 */
   .card-info strong {
-    grid-column: 2;             /* 右列 */
-    grid-row: 1;                /* 1行目 */
     font-size: 1.0em;
     line-height: 1.3;
-    margin: 0;
+    margin: 0 0 4px 0;
     display: block;
     width: 100%;
     word-wrap: break-word;
     overflow-wrap: break-word;
   }
   
-  /* メーカー名を右の2行目に配置 */
+  /* メーカー名 */
   .maker-name {
-    grid-column: 2;             /* 右列 */
-    grid-row: 2;                /* 2行目 */
     font-size: 0.85em;
     display: block;
-    margin: 0;
+    margin: 0 0 8px 0;
     color: #666;
     line-height: 1.2;
   }
 
-  /* スペック情報を左の2行目に配置 */
-  .product-card .spec-info {
-    grid-column: 1;             /* 左列 */
-    grid-row: 2;                /* 2行目 */
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    margin: 0;
-    max-width: 120px;
-  }
-
-  /* 価格ブロックを右の3行目に配置 */
+  /* 価格ブロック */
   .price-block {
-    grid-column: 2;             /* 右列 */
-    grid-row: 3;                /* 3行目 */
-    margin: 0;
+    margin-top: auto;          /* 残りスペースを上に配置 */
     width: 100%;
     min-width: auto;
   }
