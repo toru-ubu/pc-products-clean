@@ -1,0 +1,177 @@
+{
+  "makers": [
+    "ドスパラ",
+    "パソコン工房", 
+    "ツクモ",
+    "Lenovo",
+    "フロンティア",
+    "マウスコンピューター"
+  ],
+  "cpuOptionsHierarchy": {
+    "Core Ultra 9": [
+      "Core Ultra 9 285K",
+      "Core Ultra 9 285",
+      "Core Ultra 9 275HX"
+    ],
+    "Core Ultra 7": [
+      "Core Ultra 7 265KF",
+      "Core Ultra 7 265K",
+      "Core Ultra 7 265F",
+      "Core Ultra 7 265",
+      "Core Ultra 7 256V",
+      "Core Ultra 7 255HX",
+      "Core Ultra 7 155H Processor",
+      "Core Ultra 7 155H"
+    ],
+    "Core Ultra 5": [
+      "Core Ultra 5 226V",
+      "Core Ultra 5 225F",
+      "Core Ultra 5 225"
+    ],
+    "Core i9": [
+      "Core i9-14900KF",
+      "Core i9-14900HX",
+      "Core i9-14900"
+    ],
+    "Core i7": [
+      "Core i7-14700KF",
+      "Core i7-14700HX",
+      "Core i7-14700F",
+      "Core i7-14700",
+      "Core i7-14650HX",
+      "Core i7-13700HX",
+      "Core i7-13650HX",
+      "Core i7-13620H",
+      "Core i7-1355U",
+      "Core i7-12650HX",
+      "Core i7-12650H",
+      "Core i7-11800H"
+    ],
+    "Core i5": [
+      "Core i5-14400F",
+      "Core i5-13450HX",
+      "Core i5-1334U",
+      "Core i5-12450HX",
+      "Core i5-12450H"
+    ],
+    "Ryzen 9": [
+      "Ryzen 9 9955HX3D",
+      "Ryzen 9 9955HX",
+      "Ryzen 9 9950X3D",
+      "Ryzen 9 9950X",
+      "Ryzen 9 9900X3D",
+      "Ryzen 9 9900X",
+      "Ryzen 9 8945HX",
+      "Ryzen 9 7950X3D",
+      "Ryzen 9 7900X3D",
+      "Ryzen 9 7900"
+    ],
+    "Ryzen 7": [
+      "Ryzen 7 9800X3D",
+      "Ryzen 7 9700X",
+      "Ryzen 7 8845HS",
+      "Ryzen 7 8700G",
+      "Ryzen 7 7800X3D",
+      "Ryzen 7 7700X",
+      "Ryzen 7 7700",
+      "Ryzen 7 7435HS",
+      "Ryzen 7 5700X",
+      "Ryzen 7 250"
+    ],
+    "Ryzen 5": [
+      "Ryzen 5 9600X",
+      "Ryzen 5 8600G",
+      "Ryzen 5 7600",
+      "Ryzen 5 7500F",
+      "Ryzen 5 5600X",
+      "Ryzen 5 4500"
+    ],
+    "Ryzen AI": [
+      "Ryzen AI MAX+ 395",
+      "Ryzen AI 9 HX370",
+      "Ryzen AI 7 350"
+    ],
+    "その他": [
+      "Core 7 240H"
+    ]
+  },
+  "gpuOptionsHierarchy": {
+    "RTX 50シリーズ": [
+      "RTX 5090 (32GB)",
+      "RTX 5080 (16GB)",
+      "RTX 5070 Ti (16GB)",
+      "RTX 5070 (12GB)",
+      "RTX 5060 Ti (16GB)",
+      "RTX 5060 Ti (8GB)",
+      "RTX 5060 (8GB)",
+      "RTX 5050 (8GB)",
+      "RTX 5090 Laptop (24GB)",
+      "RTX 5080 Laptop (16GB)",
+      "RTX 5070 Ti Laptop (12GB)",
+      "RTX 5070 Laptop (8GB)",
+      "RTX 5060 Laptop (8GB)",
+      "RTX 5050 Laptop (8GB)"
+    ],
+    "RTX 40シリーズ": [
+      "RTX 4080 SUPER (16GB)",
+      "RTX 4070 Ti SUPER (16GB)",
+      "RTX 4070 SUPER (12GB)",
+      "RTX 4070 (12GB)",
+      "RTX 4060 Ti (8GB)",
+      "RTX 4060 (8GB)",
+      "RTX 4050 (6GB)",
+      "RTX 4070 Laptop (8GB)",
+      "RTX 4060 Laptop (8GB)",
+      "RTX 4050 Laptop (6GB)"
+    ],
+    "RTX 30シリーズ": [
+      "RTX 3050 (6GB)",
+      "RTX 3060 Laptop (6GB) 又は UHD",
+      "RTX 3050 Laptop (6GB)",
+      "RTX 3050 Laptop (4GB)"
+    ],
+    "RX 9000シリーズ": [
+      "RX 9070 XT (16GB)",
+      "RX 9070 (16GB)",
+      "RX 9060 XT (16GB)",
+      "RX 9060 XT (8GB)"
+    ],
+    "RX 7000シリーズ": [
+      "RX 7900 XTX (24GB)",
+      "RX 7900 XT (20GB)",
+      "RX 7800 XT (16GB)",
+      "RX 7700 XT (12GB)",
+      "RX 7600 XT (16GB)",
+      "RX 7600 (8GB)"
+    ],
+    "RX 6000シリーズ": [
+      "RX 6600 (8GB)"
+    ],
+    "Intel Arc": [
+      "Intel Arc B580",
+      "Intel Arc B570",
+      "Intel Arc 140V",
+      "Intel Arc 130V"
+    ],
+    "内蔵GPU": [
+      "UHD",
+      "Iris Xe",
+      "780M",
+      "760M"
+    ]
+  },
+  "memoryOptions": [
+    "8GB",
+    "16GB",
+    "32GB",
+    "64GB",
+    "128GB"
+  ],
+  "storageOptions": [
+    "128GB",
+    "256GB",
+    "512GB",
+    "1TB",
+    "2TB"
+  ]
+}
