@@ -521,11 +521,32 @@ function ProductsPageContent() {
                   {product.discountrate}%OFF
                 </span>
               )}
-              {product.campaigns.map((campaign, index) => (
-                <span key={index} className="badge">
-                  {campaign.type}
-                </span>
-              ))}
+              {(() => {
+                // キャンペーンタイプをグループ化（対応済みタイプのみ）
+                const campaignTypes = [...new Set(product.campaigns.map(c => c.type))];
+                const hasPointCampaign = campaignTypes.includes('ポイント');
+                
+                // ポイント以外で対応するタイプのみフィルタ
+                const allowedTypes = ['クーポン', 'セール'];
+                const otherCampaigns = campaignTypes.filter(type => 
+                  type !== 'ポイント' && allowedTypes.includes(type)
+                );
+                
+                return (
+                  <>
+                    {hasPointCampaign && (
+                      <span className="badge point-badge">
+                        ポイントUP
+                      </span>
+                    )}
+                    {otherCampaigns.map((type, index) => (
+                      <span key={index} className="badge">
+                        {type}
+                      </span>
+                    ))}
+                  </>
+                );
+              })()}
             </div>
             
             {/* 送料とポイント還元情報 */}

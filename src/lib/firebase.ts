@@ -119,7 +119,7 @@ export async function getCampaignInfo(campaignIds: string[]): Promise<{[key: str
           const campaignData = campaignDoc.data();
           const campaignType = campaignData?.campaignType || '';
           
-          // キャンペーンタイプをUI表示用に変換
+          // キャンペーンタイプをUI表示用に変換（対応済みタイプのみ）
           switch (campaignType) {
             case 'coupon':
               campaignTypes[campaignId] = 'クーポン';
@@ -131,10 +131,12 @@ export async function getCampaignInfo(campaignIds: string[]): Promise<{[key: str
               campaignTypes[campaignId] = 'セール';
               break;
             case 'point':
+            case 'point_cashback':
               campaignTypes[campaignId] = 'ポイント';
               break;
             default:
-              campaignTypes[campaignId] = campaignType || 'キャンペーン';
+              // 未知のキャンペーンタイプは無視（スキップ）
+              continue;
           }
         }
       } catch (error) {
