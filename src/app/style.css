@@ -2034,10 +2034,10 @@ body {
     text-align: right;
     flex: 1;                  /* 残りスペースを使用 */
     margin-left: 8px;
-    overflow: visible !important;        /* overflowを表示に変更 */
-    word-wrap: break-word;    /* 長い単語を折り返し */
-    white-space: normal !important;      /* 通常の改行を許可 */
-    display: block !important;           /* blockで確実に表示 */
+    overflow: hidden !important;        /* はみ出しを隠す */
+    text-overflow: ellipsis !important; /* 省略記号を表示 */
+    white-space: nowrap !important;     /* 改行を禁止 */
+    display: block !important;          /* blockで確実に表示 */
   }
   
 
@@ -2690,23 +2690,27 @@ body {
   
   /* SP表示：基本設定の幅制限を強制的に上書き */
   .product-list .card-info {
-    max-width: none !important;
+    max-width: 100% !important;
     width: 100% !important;
+    overflow: hidden !important;
   }
   
   .product-list .card-info > div {
-    max-width: none !important;
+    max-width: 100% !important;
     width: 100% !important;
+    overflow: hidden !important;
   }
   
   .product-list .card-info .spec-info {
-    max-width: none !important;
+    max-width: 100% !important;
     width: 100% !important;
+    overflow: hidden !important;
   }
   
   .product-list .card-info .spec-info .spec-item {
-    max-width: none !important;
+    max-width: 100% !important;
     width: 100% !important;
+    overflow: hidden !important;
   }
   
   /* SP表示：価格ブロックの上部マージンを強制的に削除 */
