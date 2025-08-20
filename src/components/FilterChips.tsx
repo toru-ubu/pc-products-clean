@@ -9,19 +9,24 @@ interface FilterChipsProps {
   
   // 選択中のフィルター
   selectedMakers: string[];
+  selectedShapes: string[];
   selectedCpus: string[];
   selectedGpus: string[];
   selectedMemory: string[];
   selectedStorage: string[];
+  showDesktop: boolean;
+  showNotebook: boolean;
   priceMin: number;
   priceMax: number;
   
   // 削除ハンドラー
   onRemoveMaker: (maker: string) => void;
+  onRemoveShape: (shape: string) => void;
   onRemoveCpu: (cpu: string) => void;
   onRemoveGpu: (gpu: string) => void;
   onRemoveMemory: (memory: string) => void;
   onRemoveStorage: (storage: string) => void;
+  onClearPCType: () => void;
   onClearPrice: () => void;
 }
 
@@ -29,26 +34,33 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
   searchKeyword,
   onClearSearch,
   selectedMakers,
+  selectedShapes,
   selectedCpus,
   selectedGpus,
   selectedMemory,
   selectedStorage,
+  showDesktop,
+  showNotebook,
   priceMin,
   priceMax,
   onRemoveMaker,
+  onRemoveShape,
   onRemoveCpu,
   onRemoveGpu,
   onRemoveMemory,
   onRemoveStorage,
+  onClearPCType,
   onClearPrice
 }) => {
   // チップが存在するかチェック
   const hasAnyChips = searchKeyword.trim() || 
     selectedMakers.length > 0 ||
+    selectedShapes.length > 0 ||
     selectedCpus.length > 0 ||
     selectedGpus.length > 0 ||
     selectedMemory.length > 0 ||
     selectedStorage.length > 0 ||
+    (!showDesktop || !showNotebook) ||
     (priceMin > 0 || priceMax < 1000000);
 
   // 価格範囲の表示テキスト
@@ -59,6 +71,16 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
       return `💰 ${(priceMin / 10000).toLocaleString()}万円以上`;
     } else if (priceMax < 1000000) {
       return `💰 ${(priceMax / 10000).toLocaleString()}万円以下`;
+    }
+    return '';
+  };
+
+  // PC種類の表示テキスト
+  const getPCTypeText = () => {
+    if (showDesktop && !showNotebook) {
+      return '🖥️ デスクトップのみ';
+    } else if (!showDesktop && showNotebook) {
+      return '💻 ノートブックのみ';
     }
     return '';
   };
@@ -91,6 +113,20 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
               className="chip-remove"
               onClick={() => onRemoveMaker(maker)}
               aria-label={`${maker}を削除`}
+            >
+              ×
+            </button>
+          </div>
+        ))}
+
+        {/* 形状チップ */}
+        {selectedShapes.map(shape => (
+          <div key={shape} className="filter-chip shape-chip">
+            <span className="chip-text">{shape === 'デスクトップ' ? '🖥️ ' : '💻 '}{shape}</span>
+            <button 
+              className="chip-remove"
+              onClick={() => onRemoveShape(shape)}
+              aria-label={`${shape}を削除`}
             >
               ×
             </button>
@@ -152,6 +188,20 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
             </button>
           </div>
         ))}
+
+        {/* PC種類チップ */}
+        {(!showDesktop || !showNotebook) && (
+          <div className="filter-chip pc-type-chip">
+            <span className="chip-text">{getPCTypeText()}</span>
+            <button 
+              className="chip-remove"
+              onClick={onClearPCType}
+              aria-label="PC種類フィルターを削除"
+            >
+              ×
+            </button>
+          </div>
+        )}
 
         {/* 価格範囲チップ */}
         {(priceMin > 0 || priceMax < 1000000) && (

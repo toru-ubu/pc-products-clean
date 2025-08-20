@@ -4,8 +4,8 @@ export default function Home() {
   return (
     <div className="min-h-screen flex items-center justify-center" style={{ background: '#f5f5f5' }}>
       <div className="max-w-2xl mx-auto px-4 text-center">
-        <h1 className="text-4xl font-bold text-gray-900 mb-6">
-          PC商品一覧システム
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">
+          イヤバズDB
         </h1>
         
         <p className="text-xl text-gray-600 mb-8">

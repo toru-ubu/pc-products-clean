@@ -20,6 +20,7 @@ export interface Product {
   id: string;
   name: string;
   maker: string;
+  type: string; // PC形状（デスクトップ・ノートブック）
   price: number;
   effectiveprice: number;
   cpu: string;
@@ -67,6 +68,11 @@ export async function getProducts(): Promise<Product[]> {
         id: doc.id,
         name: data.name || '',
         maker: data.maker || '',
+        type: (() => {
+          const typeValue = data.type || data.category || 'デスクトップ';
+          console.log('Product type debug:', data.name, 'type:', data.type, 'category:', data.category, 'final:', typeValue);
+          return typeValue;
+        })(),
         price: data.price || 0,
         effectiveprice: data.effectivePrice || data.price || 0,
         cpu: data.cpu || '',
