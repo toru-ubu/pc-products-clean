@@ -654,11 +654,11 @@ function ProductsPageContent() {
                               {(() => {
                                 const rate = product.discountrate;
                                 if (rate >= 30) {
-                                  return `🚨${rate}%OFF 激安！`;
+                                  return `🚨${rate}%OFF`;
                                 } else if (rate >= 10) {
-                                  return `🔥${rate}%OFF 買い時！`;
+                                  return `🔥${rate}%OFF`;
                                 } else if (rate >= 5) {
-                                  return `💰${rate}%OFF お得`;
+                                  return `💰${rate}%OFF`;
                                 } else {
                                   return `🎉${rate}%OFF`;
                                 }
@@ -673,7 +673,7 @@ function ProductsPageContent() {
                             </span>
                             
                             <span className="actual-price-inline">
-                              ¥{product.effectiveprice.toLocaleString()}<span className="tax-included-small">(税込)</span>
+                              <span className="tax-included-small">税込</span>¥{product.effectiveprice.toLocaleString()}
                             </span>
                           </div>
                         </>
@@ -686,11 +686,11 @@ function ProductsPageContent() {
                             {(() => {
                               const rate = product.discountrate;
                               if (rate >= 30) {
-                                return `🚨${rate}%OFF 激安！`;
+                                return `🚨${rate}%OFF`;
                               } else if (rate >= 10) {
-                                return `🔥${rate}%OFF 買い時！`;
+                                return `🔥${rate}%OFF`;
                               } else if (rate >= 5) {
-                                return `💰${rate}%OFF お得`;
+                                return `💰${rate}%OFF`;
                               } else {
                                 return `🎉${rate}%OFF`;
                               }
@@ -698,7 +698,7 @@ function ProductsPageContent() {
                           </span>
                           
                           <span className="actual-price-inline">
-                            ¥{product.effectiveprice.toLocaleString()}<span className="tax-included-small">(税込)</span>
+                            <span className="tax-included-small">税込</span>¥{product.effectiveprice.toLocaleString()}
                           </span>
                         </div>
                       )}
@@ -711,7 +711,7 @@ function ProductsPageContent() {
                           {/* PC表示用: 1行目 - 定価のみ */}
                           <div className="original-price-row">
                             <span className="original-price-inline">
-                              <span className="list-price-strikethrough">¥{product.price.toLocaleString()}</span><span className="tax-included-small">(税込)</span>
+                              <span className="tax-included-small">税込</span><span className="list-price-strikethrough">¥{product.price.toLocaleString()}</span>
                             </span>
                           </div>
                           
@@ -721,11 +721,11 @@ function ProductsPageContent() {
                               {(() => {
                                 const rate = product.discountrate;
                                 if (rate >= 30) {
-                                  return `🚨${rate}%OFF 激安！`;
+                                  return `🚨${rate}%OFF`;
                                 } else if (rate >= 10) {
-                                  return `🔥${rate}%OFF 買い時！`;
+                                  return `🔥${rate}%OFF`;
                                 } else if (rate >= 5) {
-                                  return `💰${rate}%OFF お得`;
+                                  return `💰${rate}%OFF`;
                                 } else {
                                   return `🎉${rate}%OFF`;
                                 }
@@ -733,7 +733,7 @@ function ProductsPageContent() {
                             </span>
                             
                             <span className="actual-price-inline">
-                              ¥{product.effectiveprice.toLocaleString()}<span className="tax-included-small">(税込)</span>
+                              <span className="tax-included-small">税込</span>¥{product.effectiveprice.toLocaleString()}
                             </span>
                           </div>
                         </>
@@ -746,11 +746,11 @@ function ProductsPageContent() {
                             {(() => {
                               const rate = product.discountrate;
                               if (rate >= 30) {
-                                return `🚨${rate}%OFF 激安！`;
+                                return `🚨${rate}%OFF`;
                               } else if (rate >= 10) {
-                                return `🔥${rate}%OFF 買い時！`;
+                                return `🔥${rate}%OFF`;
                               } else if (rate >= 5) {
-                                return `💰${rate}%OFF お得`;
+                                return `💰${rate}%OFF`;
                               } else {
                                 return `🎉${rate}%OFF`;
                               }
@@ -758,7 +758,7 @@ function ProductsPageContent() {
                           </span>
                           
                           <span className="actual-price-inline">
-                            ¥{product.effectiveprice.toLocaleString()}<span className="tax-included-small">(税込)</span>
+                            <span className="tax-included-small">税込</span>¥{product.effectiveprice.toLocaleString()}
                           </span>
                         </div>
                       )}
@@ -769,7 +769,7 @@ function ProductsPageContent() {
                 /* 通常価格の場合：現在価格のみ */
                 <div className="normal-price-row">
                   <span className="actual-price">
-                    ¥{product.effectiveprice.toLocaleString()}<span className="tax-included-small">(税込)</span>
+                    <span className="tax-included-small">税込</span>¥{product.effectiveprice.toLocaleString()}
                   </span>
                 </div>
               )}
@@ -819,7 +819,7 @@ function ProductsPageContent() {
                 <div className={`shipping-fee-text ${product.shippingFee === 0 ? 'free' : ''}`}>
                   {product.shippingFee === 0 
                     ? '送料 無料' 
-                    : `送料 ${product.shippingFee.toLocaleString()}円`
+                    : `送料 ¥${product.shippingFee.toLocaleString()}`
                   }
                 </div>
                 <div className="point-reward-text">
