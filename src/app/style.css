@@ -41,8 +41,8 @@ body {
   
   /* スマホ用フィルターUI調整 */
   .filter-controls {
-    margin: 0 0 20px 0 !important;
-    padding: 16px !important;
+    margin: 0 0 12px 0 !important;
+    padding: 8px !important;
   }
 
   /* スマホ用折りたたみヘッダー */
@@ -50,38 +50,48 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 2px;
+    padding: 4px 8px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
   }
 
   .filter-header-mobile h3 {
     margin: 0;
-    font-size: 1.2em;
+    font-size: 0.9em;
     color: #333;
-    font-weight: bold;
+    font-weight: 600;
   }
 
   .filter-toggle-btn {
-    background: #007bff;
-    color: white;
+    background: transparent;
+    color: #666;
     border: none;
-    border-radius: 4px;
-    padding: 8px 12px;
+    border-radius: 0;
+    padding: 0;
     cursor: pointer;
-    font-size: 1.2em;
+    font-size: 0.8em !important;
     transition: all 0.2s ease;
-    min-width: 40px;
+    min-width: auto;
+    max-width: auto;
+    height: auto;
     text-align: center;
-    font-weight: bold;
+    font-weight: normal;
+    line-height: 1;
+    display: inline;
   }
 
   .filter-toggle-btn:hover {
-    background: #0056b3;
-    transform: translateY(-1px);
+    background: transparent;
+    color: #333;
+    transform: none;
   }
 
   /* 折りたたみ時の拡張ボタンスタイル */
   .filter-controls .filter-header-mobile .filter-toggle-btn {
-    font-weight: bold;
+    font-weight: normal;
     white-space: nowrap;
   }
 
@@ -311,8 +321,8 @@ body {
   border: 1px solid #d0d7de;
   border-radius: 8px;
   transition: all 0.2s ease;
-  min-width: 300px;
-  gap: 12px;
+  min-width: 220px;
+  gap: 8px;
 }
 
 .search-box-styled:hover {
@@ -353,8 +363,8 @@ body {
   border: 1px solid #d0d7de;
   border-radius: 8px;
   transition: all 0.2s ease;
-  gap: 12px;
-  min-width: 400px;
+  gap: 8px;
+  min-width: 280px;
 }
 
 .price-box-styled:hover {
@@ -427,7 +437,7 @@ body {
   border-radius: 20px;
   font-size: 0.875rem;
   font-weight: 500;
-  border: 1px solid;
+  border: 2px solid;
   transition: all 0.2s ease;
   max-width: 200px;
 }
@@ -477,6 +487,7 @@ body {
   background-color: #e3f2fd;
   border-color: #2196f3;
   color: #1565c0;
+  font-weight: 600;
 }
 
 .search-chip .chip-remove:hover {
@@ -487,6 +498,7 @@ body {
   background-color: #e8f5e8;
   border-color: #4caf50;
   color: #2e7d32;
+  font-weight: 600;
 }
 
 .maker-chip .chip-remove:hover {
@@ -497,6 +509,7 @@ body {
   background-color: #fff3e0;
   border-color: #ff9800;
   color: #e65100;
+  font-weight: 600;
 }
 
 .cpu-chip .chip-remove:hover {
@@ -507,6 +520,7 @@ body {
   background-color: #fff3e0;
   border-color: #ff9800;
   color: #e65100;
+  font-weight: 600;
 }
 
 .gpu-chip .chip-remove:hover {
@@ -517,6 +531,7 @@ body {
   background-color: #f3e5f5;
   border-color: #9c27b0;
   color: #7b1fa2;
+  font-weight: 600;
 }
 
 .memory-chip .chip-remove:hover {
@@ -527,6 +542,7 @@ body {
   background-color: #f3e5f5;
   border-color: #9c27b0;
   color: #7b1fa2;
+  font-weight: 600;
 }
 
 .storage-chip .chip-remove:hover {
@@ -537,10 +553,33 @@ body {
   background-color: #ffebee;
   border-color: #f44336;
   color: #c62828;
+  font-weight: 600;
 }
 
 .price-chip .chip-remove:hover {
   background-color: rgba(198, 40, 40, 0.1);
+}
+
+.pc-type-chip {
+  background-color: #e1f5fe;
+  border-color: #0288d1;
+  color: #01579b;
+  font-weight: 600;
+}
+
+.pc-type-chip .chip-remove:hover {
+  background-color: rgba(1, 87, 155, 0.1);
+}
+
+.shape-chip {
+  background-color: #f0f8ff;
+  border-color: #007bff;
+  color: #007bff;
+  font-weight: 500;
+}
+
+.shape-chip .chip-remove:hover {
+  background-color: rgba(0, 123, 255, 0.1);
 }
 
 /* クリアボタン */
@@ -660,6 +699,15 @@ body {
   align-items: center;
 }
 
+/* 価格・検索・PC種類・ボタンの新しいレイアウト */
+.price-search-pc-type-buttons-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1.2fr 160px 80px 80px;
+  gap: 8px;
+  width: 100%;
+  align-items: center;
+}
+
 .price-range-compact {
   grid-column: 1;
 }
@@ -749,8 +797,66 @@ body {
   font-size: 1em;
 }
 
+/* PC種類チェックボックス */
+.pc-type-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  justify-content: center;
+  padding: 8px 12px;
+  min-width: 160px;
+  background: #f8f9fa;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+}
+
+/* PC表示で形状フィルターボタンを非表示 */
+@media (min-width: 769px) {
+  .filter-buttons-row .filter-button:nth-child(2) {
+    display: none !important; /* PC表示では形状ボタンを非表示 */
+  }
+  
+  /* PC表示では1行レイアウトに戻す */
+  .filter-buttons-row {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 16px !important;
+    grid-template-areas: none !important;
+  }
+  
+  /* グリッドエリアの指定をリセット */
+  .filter-buttons-row .filter-button:nth-child(1),
+  .filter-buttons-row .filter-button:nth-child(3),
+  .filter-buttons-row .filter-button:nth-child(4),
+  .filter-buttons-row .filter-button:nth-child(5),
+  .filter-buttons-row .filter-button:nth-child(6) {
+    grid-area: auto !important;
+    flex: 1 !important;
+  }
+}
+
+.pc-type-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9em;
+  color: #333;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.pc-type-checkbox-label input[type="checkbox"] {
+  margin: 0;
+  cursor: pointer;
+}
+
+.pc-type-checkbox-label:hover {
+  color: #007bff;
+}
+
 .filter-buttons-inline {
-  grid-column: 4 / span 2;
+  grid-column: 4 / 6;
   display: flex;
   gap: 8px;
   justify-content: flex-end;
@@ -977,6 +1083,9 @@ body {
     margin-bottom: 0;
     margin-left: 0;
     margin-right: 0;
+    margin-top: 0;
+    padding: 6px 12px;         /* 上下6px、左右12pxに調整 */
+    min-height: auto;          /* 最小高さを自動に */
   }
   .product-card:last-child {
     border-bottom: none;
@@ -1012,10 +1121,10 @@ body {
 
 /* 商品画像 */
 .card-image {
-  width: 140px;
-  min-width: 140px;
-  max-width: 140px;
-  flex: 0 0 140px;
+  width: 120px;
+  min-width: 120px;
+  max-width: 120px;
+  flex: 0 0 120px;
   margin-right: 20px;
   display: flex;
   align-items: flex-start;
@@ -1067,6 +1176,11 @@ body {
   margin-bottom: 8px;
 }
 
+/* 価格ブロック内のspanは個別に制御 */
+.price-block span {
+  display: inline !important;
+}
+
 .card-info div {
   font-size: 0.85em;
   margin-bottom: 4px;
@@ -1100,58 +1214,17 @@ body {
   gap: 6px;
   margin: 8px 0;
   flex-wrap: wrap;
-  max-width: calc(100% - 140px);
-}
-
-/* デスクトップ用のより具体的なセレクター */
-.product-card .spec-info .spec-item {
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  background: #f8f9fa;
-  font-size: 1.3em;
-  color: #333;
-  box-sizing: border-box;
-  width: calc(25% - 4.5px);
-  min-width: 0;
-  max-width: calc(25% - 4.5px);
-  padding: 6px 4px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  white-space: normal;
-  overflow: hidden;
-  word-wrap: break-word;
-  word-break: break-word;
-  line-height: 1.0;
-  min-height: 40px;
-}
-
-/* デスクトップ用のより具体的なセレクター */
-.product-card .spec-info .spec-item .spec-label {
-  font-size: 1.0em;
-  color: #888;
-  margin-bottom: 0px;
-  text-align: center;
   width: 100%;
-  line-height: 1.0;
+  max-width: calc(100% - 140px);  /* 商品名と同じ制約を適用 */
 }
 
-/* デスクトップ用のより具体的なセレクター */
-.product-card .spec-info .spec-item .spec-value {
-  font-size: 1.2em;
-  font-weight: bold;
-  color: #222;
-  overflow: hidden;
-  text-align: center;
-  width: 100%;
-  line-height: 1.4;
-  word-wrap: break-word;
-  word-break: break-word;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-}
+/* このセクションは上記のPC専用設定に統合されました */
+
+/* このセクションは上記のPC専用設定に統合されました */
+
+/* このセクションは上記のPC専用設定に統合されました */
+
+/* このセクションは上記のPC専用設定に統合されました */
 
 /* 価格ブロック */
 .price-block {
@@ -1159,7 +1232,7 @@ body {
   margin: 12px 0 0 auto;
   padding: 0;
   text-align: right;
-  min-width: 160px;
+  flex: 0 0 auto;
   max-width: none;
   overflow: visible;
 }
@@ -1176,9 +1249,18 @@ body {
   flex-wrap: nowrap;
 }
 
+/* SP表示用のdiscount-rate-row定義 */
+.discount-rate-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
 .price-row span:not(.tax-included) {
   font-size: 1.8em;
-  font-weight: bold;
   text-align: right;
   min-width: unset;
   flex-shrink: 0;
@@ -1190,9 +1272,10 @@ body {
 /* 定価（取り消し線価格）の文字サイズを小さく */
 .list-price-strikethrough {
   font-size: 1.2em !important;
-  color: #888;
+  color: #999;
   text-decoration: line-through;
   font-weight: normal;
+  white-space: nowrap;
 }
 
 /* より具体的なセレクターで確実に小さくする */
@@ -1205,7 +1288,7 @@ body {
   display: inline-flex !important;
   align-items: baseline !important;
   white-space: nowrap !important;
-  font-size: 1.8em;
+  font-size: 1.6em;
   font-weight: bold;
   flex-shrink: 0;
   flex-wrap: nowrap !important;
@@ -1213,23 +1296,78 @@ body {
   width: auto !important;
 }
 
-/* より具体的なセレクターで税込スタイルを指定 */
-.product-card .actual-price .tax-included,
-.tax-included {
-  font-size: 0.6em !important;
-  color: #999 !important;
-  margin-right: 4px;
-  vertical-align: baseline;
-  display: inline !important;
+/* セール価格のインライン要素の基本スタイル */
+.original-price-inline {
+  font-size: 1.4em;
+  white-space: nowrap;
+}
+
+.discount-rate-inline {
+  font-size: 1.2em;
+  white-space: nowrap;
+  font-weight: bold;
+}
+
+.actual-price-inline {
+  font-size: 1.6em;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+/* SP表示では価格サイズを1.2emに、色を黒色に */
+@media (max-width: 768px) {
+  .actual-price {
+    font-size: 1.2em !important;
+    color: #333 !important;
+    align-items: center !important;
+  }
+  
+  /* SP表示：セール価格のインライン要素を小さく */
+  .original-price-inline {
+    font-size: 0.75em !important;
+    color: #999 !important;
+  }
+  
+  .discount-rate-inline {
+    font-size: 0.75em !important;
+    color: #dc3545 !important;
+  }
+  
+  .actual-price-inline {
+    font-size: 1.1em !important;
+    color: #000 !important;
+  }
+  
+  /* SP表示：price-rowとdiscount-rate-rowの調整 */
+  .price-row {
+    gap: 16px !important;
+    line-height: 1.2 !important;
+    margin-bottom: 8px !important;
+  }
+  
+  .discount-rate-row {
+    line-height: 1.2 !important;
+    margin-bottom: 8px !important;
+  }
+}
+
+/* 小さな税込表示 */
+.tax-included-small {
+  font-size: 0.5em !important;
+  color: #666 !important;
+  font-weight: normal !important;
+  margin-left: 4px;
   white-space: nowrap !important;
+  display: inline !important;
+  text-decoration: none !important;
 }
 
 /* バッジ行 */
 .badge-row {
   display: flex;
   gap: 4px;
-  margin-top: 8px;
-  margin-bottom: 0;
+  margin-top: 4px;
+  margin-bottom: 6px;
   height: auto;
   justify-content: flex-end;
   flex-wrap: wrap;
@@ -1251,25 +1389,30 @@ body {
 
 /* 送料とポイント還元情報 */
 .shipping-points-container {
-  margin-top: 6px;
+  margin-top: 1px;
   text-align: right;
-  font-size: 0.8em;
+  font-size: 0.7em;
   line-height: 1.4;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  flex-direction: row;
 }
 
 .shipping-fee-text {
   color: #000;
-  margin-bottom: 2px;
+  margin-bottom: 0;
   font-weight: bold;
-}
-
-.shipping-fee-text.free {
-  color: #dc3545;
+  display: inline-block;
+  white-space: nowrap;
 }
 
 .point-reward-text {
   color: #ff8c00 !important;
   font-weight: bold;
+  display: inline-block;
+  white-space: nowrap;
 }
 
 /* SALEボタン（ソート行用） */
@@ -1305,10 +1448,31 @@ body {
   border-color: #bd2130;
 }
 
-/* 送料無料バッジ */
-.badge:not(.discount-rate-badge) {
-  background: #28a745;
+/* バッジの色分け */
+.badge {
+  background: #6c757d;  /* デフォルト（グレー） */
   color: #fff;
+}
+
+.sale-badge {
+  background: #dc3545 !important;  /* 赤色 - セール */
+  color: #fff !important;
+}
+
+.point-badge {
+  background: #ff8c00 !important;  /* オレンジ色 - ポイントUP */
+  color: #fff !important;
+}
+
+.coupon-badge {
+  background: #007bff !important;  /* 青色 - クーポン */
+  color: #fff !important;
+}
+
+/* 送料無料は緑色のまま */
+.shipping-free-badge {
+  background: #28a745 !important;
+  color: #fff !important;
 }
 
 /* ===== モーダル関連のスタイル（追加） ===== */
@@ -1636,94 +1800,412 @@ body {
   }
 }
 
-/* ===== デスクトップ専用設定 ===== */
+/* ===== PC専用設定（769px以上） ===== */
 @media (min-width: 769px) {
+  /* === 商品カード基本レイアウト === */
+  .product-card {
+    font-size: 1.15em;
+  }
+
+  /* PC表示：元の横並びレイアウトに戻す */
+  .product-list .card-content {
+    flex-direction: row !important;
+    gap: 12px !important;
+  }
+
+  /* PC表示：ヘッダーを非表示 */
+  .product-list .card-header {
+    display: none;
+  }
+
+  /* PC表示：card-bodyを通常のcard-infoとして表示 */
+  .product-list .card-body {
+    display: contents; /* 子要素を親に直接展開 */
+  }
+
+  /* PC表示：PC用ヘッダーを表示 */
+  .product-list .pc-only-header {
+    display: block !important;
+  }
+  
+  .card-content {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    width: 100%;
+  }
+  
+  .card-info {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0 !important;
+  }
+  
+  /* === スペック表示 === */
+  .spec-info {
+    display: flex;
+    gap: 6px;
+    margin: 8px 0 2px 0 !important;
+    flex-wrap: nowrap !important;
+    width: 640px !important;
+    max-width: 640px !important;
+    min-width: 640px !important;
+    flex-shrink: 0 !important;
+  }
+  
+  /* PC表示：スペック情報の幅制限を明示的に設定 */
+  .product-list .card-info .spec-info {
+    width: 640px !important;
+    max-width: 640px !important;
+    min-width: 640px !important;
+    flex-shrink: 0 !important;
+    flex-wrap: nowrap !important;
+    margin-bottom: 0 !important;
+  }
+  
+  /* PC表示：card-info内の最初のdiv（スペック情報を含む部分）の下部マージンを削除 */
+  .product-list .card-info > div:first-child {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  
+  /* PC表示：price-blockの上部マージンを強制的に削除 */
+  .product-list .card-info .price-block {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+  
   .product-card .spec-info .spec-item {
+    width: 160px !important;
+    min-width: 160px !important;
+    max-width: 160px !important;
+    flex-shrink: 0 !important;
     font-size: 1.15em !important;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background: #f8f9fa;
+    color: #333;
+    box-sizing: border-box;
+    padding: 6px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap !important;
+    overflow: hidden;
+    word-wrap: normal !important;
+    word-break: keep-all !important;
+    line-height: 1.0;
+    min-height: 40px;
   }
   
   .product-card .spec-info .spec-item .spec-label {
     font-size: 0.9em !important;
+    color: #888;
+    margin-bottom: 0px;
+    text-align: center;
+    width: 100%;
+    line-height: 1.0;
   }
   
   .product-card .spec-info .spec-item .spec-value {
     font-size: 1.0em !important;
+    font-weight: bold;
+    color: #222;
+    text-align: center;
+    width: 100%;
+    line-height: 1.3;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    word-wrap: normal !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
   }
   
-  /* デスクトップ用税込文字サイズ */
-  .product-card .actual-price .tax-included {
-    font-size: 0.6em !important;
-    color: #999 !important;
-    margin-right: 4px;
-    vertical-align: baseline;
+  /* === 価格表示 === */
+  .price-block {
+    flex: 0 0 auto;
+    text-align: right !important;
+    width: auto;
+    margin-left: auto;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+  
+  .product-card .actual-price {
+    font-size: 1.6em !important;
+    color: #333 !important;
+  }
+  
+  .product-card .discount-rate-text {
+    font-size: 1.0em !important;
+    color: #dc3545 !important;
+  }
+  
+  .product-card .discount-rate-badge {
+    font-size: 1.0em !important;
+  }
+  
+  /* PC表示：価格を黒色に統一 */
+  .product-card .actual-price {
+    color: #333 !important;
+  }
+  
+  .product-card .normal-price-row .actual-price {
+    color: #333 !important;
+  }
+  
+  .product-card .list-price-strikethrough {
+    font-size: 1.15em !important;
+  }
+  
+  .product-card .discount-price-row {
+    justify-content: flex-end !important;
+  }
+  
+  /* PC表示：セール価格のインライン要素のサイズ調整 */
+  .product-card .original-price-inline {
+    font-size: 0.8em !important;
+    color: #333 !important;
+  }
+  
+  .product-card .discount-rate-inline {
+    font-size: 0.8em !important;
+    color: #dc3545 !important;
+    margin-right: 8px !important;  /* 右側にスペースを追加 */
+  }
+  
+  .product-card .actual-price-inline {
+    font-size: 1.2em !important;
+    color: #333 !important;
   }
 }
 
-/* ===== レスポンシブ対応 ===== */
+/* ===== スマホ専用設定（768px以下） ===== */
 @media (max-width: 768px) {
+  /* === 商品カード基本レイアウト === */
   .product-card {
     margin-bottom: 0;
     margin-left: 0;
     margin-right: 0;
+    margin-top: 0;
     font-size: 1.0em;
   }
   
-  /* モバイル用スペック文字サイズとレイアウト */
-  .product-card .spec-info {
-    display: flex;
-    flex-direction: column;     /* SP時は縦並び */
-    gap: 4px;                   /* 各スペック項目の間隔 */
-    margin: 8px 0;
-    max-width: none;
-    order: 1;                   /* 商品名とメーカー名の後に表示 */
+  /* モバイル用スペック情報（縦4行レイアウト） */
+  .product-list .card-info .spec-info .spec-item {
+    display: flex !important;
+    flex-direction: row !important;       /* 横並び（ラベル左、値右） */
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 4px 8px !important;          /* パディングをさらに縮める（6px 10px → 4px 8px） */
+    min-height: 28px !important;          /* 高さをさらに縮める（32px → 28px） */
+    width: 100% !important;    /* 横幅いっぱい（重要） */
+    max-width: 100% !important; /* 最大幅も100%に設定 */
+    min-width: 0 !important;              /* 最小幅をリセット */
+    border: 1px solid #e0e0e0 !important;
+    border-radius: 6px !important;
+    background: #f8f9fa !important;
+    box-sizing: border-box !important;    /* パディングを含む */
+    margin: 0 !important;      /* マージンをリセット */
   }
 
-  .product-card .spec-info .spec-item {
-    width: 100%;                /* 全幅使用 */
-    max-width: none;            /* 最大幅制限を解除 */
-    display: flex;
-    flex-direction: row;        /* 横並びに戻す */
-    justify-content: space-between;
-    align-items: center;
-    padding: 4px 8px;
-    min-height: auto;
-    font-size: 0.9em;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    background: #f8f9fa;
-  }
-
-  .product-card .spec-info .spec-item .spec-label {
-    font-size: 0.8em;
-    width: auto;
-    flex: 0 0 auto;
-    color: #888;
+  .product-list .card-info .spec-info .spec-item .spec-label {
+    font-size: 0.8em !important;
+    color: #666 !important;
+    margin: 0;                 /* マージンをリセット */
+    font-weight: 500;
+    line-height: 1.2;
     text-align: left;
+    flex: 0 0 auto;           /* 固定幅 */
+    min-width: 60px;          /* 最小幅を確保 */
   }
 
-  .product-card .spec-info .spec-item .spec-value {
-    font-size: 0.9em;
+  .product-list .card-info .spec-info .spec-item .spec-value {
+    font-size: 0.85em !important;
+    font-weight: bold !important;
+    color: #222 !important;
+    line-height: 1.2;
     text-align: right;
-    flex: 1;
-    padding-left: 8px;
-    font-weight: bold;
-    color: #222;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    flex: 1;                  /* 残りスペースを使用 */
+    margin-left: 8px;
+    overflow: visible !important;        /* overflowを表示に変更 */
+    word-wrap: break-word;    /* 長い単語を折り返し */
+    white-space: normal !important;      /* 通常の改行を許可 */
+    display: block !important;           /* blockで確実に表示 */
+  }
+  
+
+  
+  /* モバイル用価格ブロックの調整（左揃え） */
+  .product-list .card-info .price-block .price-row {
+    justify-content: flex-start; /* 価格を左揃え */
+    margin-bottom: 8px;
+  }
+
+  .product-list .card-info .price-block .price-row span:not(.tax-included) {
+    font-size: 1.2em;          /* 価格サイズ - 1.2emに調整 */
+  }
+
+  /* SP表示：セール時の価格を1行にまとめる - セール商品の価格ブロック全体をflexで横並び */
+  .product-list .card-info .price-block {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* セール時の価格行（定価を上に、割引+現在価格を下に） */
+  .product-list .card-info .price-block .sale-price-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0 !important;
+    margin-bottom: 0 !important;
+    justify-content: flex-start;
+  }
+  
+  /* SP表示：定価行の調整 */
+  .product-list .card-info .price-block .original-price-row {
+    margin-bottom: 2px !important;
+  }
+  
+  /* SP表示：割引率とセール価格行の調整 */
+  .product-list .card-info .price-block .discount-actual-row {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    line-height: 1.0 !important;
+    margin-bottom: 1px !important;
+  }
+  
+  /* SP表示：定価行の調整 */
+  .product-list .card-info .price-block .original-price-row {
+    line-height: 1.0 !important;
+    margin-bottom: 0 !important;
+  }
+  
+  /* SP表示：価格ブロック全体の縦幅を縮小 */
+  .product-list .card-info .price-block {
+    line-height: 0.8 !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+  
+  .product-list .card-info .price-block .sale-price-container {
+    line-height: 0.8 !important;
+    gap: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  /* SP表示：新しいレイアウト用のスタイル */
+  .product-list .card-info .price-block .discount-rate-row {
+    line-height: 0.8 !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+    text-align: right !important;
+  }
+  
+
+  
+  .product-list .card-info .price-block .price-row {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 16px !important;
+    line-height: 0.8 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  /* SP表示：価格ブロック内のすべての要素の余白を削除 */
+  .product-list .card-info .price-block * {
+    line-height: 1.2 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  /* SP表示：送料・ポイント還元の余白も削除 */
+  .product-list .card-info .price-block .shipping-points-container {
+    line-height: 1.2 !important;
+    margin-top: 8px !important;
+    padding-top: 0 !important;
+  }
+  
+  /* SP表示：より強力なセレクターで価格ブロックの縦幅を縮小 */
+  .product-list .card-info .price-block,
+  .product-list .card-info .price-block *,
+  .product-list .card-info .price-block .sale-price-container,
+  .product-list .card-info .price-block .sale-price-container *,
+  .product-list .card-info .price-block .discount-rate-row,
+  .product-list .card-info .price-block .discount-rate-row *,
+  .product-list .card-info .price-block .price-row,
+  .product-list .card-info .price-block .price-row * {
+    line-height: 1.2 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .product-list .card-info .price-block .original-price-row {
+    display: inline-block;
+    margin: 0;
     white-space: nowrap;
-  }
-  
-
-  
-  .price-row span:not(.tax-included) {
-    font-size: 1.4em;
+    flex-shrink: 0;
   }
 
-  /* 価格ブロックの調整 */
-  .price-block {
-    margin-top: 8px;            /* 上マージンを追加 */
-    width: 100%;                /* 全幅使用 */
-    min-width: auto;
+  .product-list .card-info .price-block .discount-price-row {
+    display: inline-block;
+    margin: 0;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .product-list .card-info .price-block .badge-row {
+    justify-content: flex-start; /* バッジを左揃えに戻す */
+    margin-bottom: 4px;
+    display: block;
+    width: 100%;
+    margin-top: 2px;
+  }
+
+  /* SP表示：価格要素のサイズ調整 */
+  .product-list .card-info .price-block .list-price-strikethrough {
+    font-size: 0.75em !important;
+  }
+
+  .product-list .card-info .price-block .discount-rate-inline {
+    font-size: 0.85em !important;
+    margin-right: 8px !important;
+    white-space: nowrap !important;
+    color: #dc3545 !important;
+  }
+
+  .product-list .card-info .price-block .actual-price-inline {
+    font-size: 1.1em !important;
+    font-weight: 600 !important;
+    color: #000 !important;
+  }
+  
+  .product-list .card-info .price-block .original-price-inline {
+    font-size: 0.75em !important;
+  }
+
+  /* SP表示：税込み表示のサイズ調整 */
+  .product-list .card-info .price-block .tax-included-small {
+    font-size: 0.4em !important;
+    margin-left: 1px;
+  }
+
+  /* SP表示：送料とポイント還元の順序を調整（送料 → ポイント還元） */
+  .product-list .card-info .price-block .shipping-points-container .shipping-fee-text {
+    order: 1;                   /* 送料を先に表示 */
+  }
+  
+  .product-list .card-info .price-block .shipping-points-container .point-reward-text {
+    order: 2;                   /* ポイント還元を後に表示 */
   }
   
   .filter-controls {
@@ -1770,7 +2252,7 @@ body {
   /* 新しいレイアウトのレスポンシブ対応 */
   .filter-buttons-row {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 4px;
   }
   
   /* スマホ用フィルターボタンの特別レイアウト */
@@ -1796,27 +2278,90 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-areas:
-      "maker maker"
+      "maker shape"
       "cpu gpu"
       "memory storage";
     gap: 8px;
   }
   
   .filter-buttons-row .filter-button:nth-child(1) { grid-area: maker; }
-  .filter-buttons-row .filter-button:nth-child(2) { grid-area: cpu; }
-  .filter-buttons-row .filter-button:nth-child(3) { grid-area: gpu; }
-  .filter-buttons-row .filter-button:nth-child(4) { grid-area: memory; }
-  .filter-buttons-row .filter-button:nth-child(5) { grid-area: storage; }
+  .filter-buttons-row .filter-button:nth-child(2) { grid-area: shape; }
+  .filter-buttons-row .filter-button:nth-child(3) { grid-area: cpu; }
+  .filter-buttons-row .filter-button:nth-child(4) { grid-area: gpu; }
+  .filter-buttons-row .filter-button:nth-child(5) { grid-area: memory; }
+  .filter-buttons-row .filter-button:nth-child(6) { grid-area: storage; }
+  
+  /* SP用: 全てのボックスの高さを検索ボックスに合わせる（40px） */
+  .filter-button {
+    height: 40px !important;
+    min-height: 40px !important;
+    padding: 8px 12px !important;
+    font-size: 0.9em !important;
+  }
   
   .price-search-buttons-row {
     grid-template-columns: 1fr;
     gap: 12px;
+  }
+
+  .price-search-pc-type-buttons-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
   }
   
   .price-range-compact,
   .search-compact,
   .filter-buttons-inline {
     grid-column: 1;
+  }
+
+  .pc-type-checkboxes {
+    display: none !important; /* SP表示では非表示 */
+    grid-column: none !important; /* グリッドレイアウトからも除外 */
+    grid-row: none !important;
+    position: absolute !important; /* レイアウトフローから完全に除外 */
+    visibility: hidden !important;
+  }
+
+  /* SP表示でのチップサイズ縮小 */
+  .filter-chip {
+    padding: 3px 8px !important; /* 元: 6px 12px */
+    font-size: 0.75rem !important; /* 元: 0.875rem */
+    border-radius: 12px !important; /* 元: 20px */
+    gap: 4px !important; /* 元: 6px */
+    max-width: 120px !important; /* 元: 200px */
+  }
+
+  .chip-icon {
+    font-size: 0.75rem !important; /* 元: 0.875rem */
+  }
+
+  .chip-remove {
+    font-size: 0.8rem !important; /* 元: 1rem */
+    width: 14px !important; /* 元: 18px */
+    height: 14px !important; /* 元: 18px */
+    margin-left: 2px !important; /* 元: 4px */
+  }
+
+  /* チップコンテナの間隔も調整 */
+  .filter-chips-wrapper {
+    gap: 6px !important; /* 元: 8px */
+  }
+
+  .filter-chips-container {
+    margin-top: 6px !important; /* 元: 8px */
+    padding: 6px 0 !important; /* 元: 8px 0 */
+  }
+
+  /* フィルターセクション間の余白を詰める */
+  .filter-section {
+    padding-bottom: 2px !important; /* 元: 8px */
+    margin-bottom: 2px !important;
+  }
+
+  /* フィルターフォーム全体のgapも詰める */
+  .filter-form {
+    gap: 6px !important; /* 元: 12px */
   }
   
   .filter-label {
@@ -1857,6 +2402,7 @@ body {
     gap: 8px !important;
     padding: 8px 12px !important;
     min-height: 40px !important;
+    max-height: 40px !important; /* 高さを他のボックスと統一 */
   }
   
   .price-selects-styled {
@@ -1864,6 +2410,7 @@ body {
     gap: 4px !important;
     margin-left: 0 !important;
     flex: 1 !important;
+    align-items: center !important; /* 中央揃え */
   }
   
   .price-select-styled {
@@ -1872,6 +2419,7 @@ body {
     padding: 4px 6px !important;
     min-width: 70px !important;
     max-width: 90px !important;
+    height: 28px !important; /* セレクトボックスの高さを統一 */
   }
   
   .price-separator-styled {
@@ -1883,7 +2431,7 @@ body {
   .price-search-buttons-row {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 8px;
     align-items: stretch;
   }
   
@@ -1902,11 +2450,12 @@ body {
     width: 100%;
   }
   
-  .filter-buttons-inline {
+    .filter-buttons-inline {
     justify-content: center;
     width: 100%;
+    margin-top: 8px !important; /* 検索窓との間にマージンを追加 */
   }
-  
+
   .filter-buttons-inline button {
     flex: 1;
     max-width: 120px;
@@ -1914,8 +2463,9 @@ body {
   
   /* 結果表示とソートのレスポンシブ対応 */
   .results-and-sort-header {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
     gap: 12px;
     padding: 0;
   }
@@ -1927,13 +2477,41 @@ body {
   }
   
   .sort-selector-inline {
-    justify-content: space-between;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  
+  /* SP表示：SALEボタンをソートボックスの左横に配置 */
+  .sale-toggle-inline {
+    margin-right: 0 !important;
+  }
+  
+  .results-sort-right {
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 8px !important;
+    justify-content: flex-end !important;
   }
   
   .sort-selector-inline select {
     min-width: auto;
-    flex: 1;
-    max-width: 200px;
+    flex: 0 0 auto;
+    max-width: 120px;
+    font-size: 0.75rem !important;
+  }
+  
+  /* SP表示：検索結果件数、SALEボタン、ソートラベルのテキストサイズを小さく */
+  .results-count {
+    font-size: 0.75rem !important;
+  }
+  
+  .sale-button {
+    font-size: 0.75rem !important;
+    padding: 4px 12px !important;
+  }
+  
+  .sort-label {
+    font-size: 0.75rem !important;
   }
   
   /* コンテナのレスポンシブ対応 */
@@ -1944,62 +2522,234 @@ body {
 }
 
 @media (max-width: 768px) {
+  /* SP表示では商品名の最大幅制限を完全に解除 */
+  .card-info strong {
+    max-width: none !important;
+    width: 100% !important;
+  }
+
+  /* SP表示ではスペック情報の最大幅制限も解除 */
+  .spec-info {
+    max-width: none !important;
+    width: 100% !important;
+  }
+
+  .spec-item {
+    max-width: none !important;
+    width: 100% !important;
+  }
+
   .product-list .card-content {
-    display: flex;                          /* シンプルなflexレイアウト */
-    flex-direction: row;
+    display: flex;                          /* flexレイアウト */
+    flex-direction: column;                 /* 縦並び（商品名 → 画像+スペック） */
+    gap: 2px;                              /* 間隔をさらに縮小（4px → 2px） */
+    padding: 6px 12px;                     /* 上下6px、左右12pxに調整 */
+  }
+
+  /* SP表示用：商品名・メーカーヘッダー */
+  .product-list .card-header {
+    width: 100%;
+    margin-bottom: 1px;        /* 下部マージンをさらに縮小（2px → 1px） */
+    margin-top: 0;  /* 上部マージンを削除 */
+    padding-top: 0; /* 上部パディングも削除 */
+  }
+
+  /* SP表示用：画像+情報ブロック */
+  .product-list .card-body {
+    display: flex;
+    flex-direction: row;                    /* 横並び（画像 + スペック） */
+    gap: 12px;
     align-items: flex-start;
-    gap: 12px;                             /* 左右の間隔 */
+    height: fit-content !important; /* 内容に合わせた高さに制限 */
   }
   
   .product-list .card-image {
     width: 120px;
     min-width: 120px;
     max-width: 120px;
-    flex: 0 0 120px;           /* 固定幅 */
     margin: 0;
+    flex: 0 0 120px;           /* 固定幅を120pxに拡大 */
+    display: flex;
+    align-items: stretch;      /* 縦方向に伸ばす */
+  }
+  
+  .product-list .card-image img {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    object-fit: contain;
+    align-self: flex-start;    /* 上揃えに変更 */
   }
   
   .product-list .card-info {
-    flex: 1;                   /* 残りスペースを使用 */
-    display: flex;
-    flex-direction: column;    /* 縦並び */
-    gap: 4px;
-    width: auto;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0px !important;       /* 要素間の間隔を最小限に（1px → 0px） */
+    flex: none !important;     /* 伸びを完全に無効化 */
     padding: 0;
     min-width: 0;
+    width: 100%;               /* 確実に100%幅を使用 */
+    max-width: none;           /* 最大幅制限を解除 */
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    height: fit-content !important; /* 内容に合わせた高さに制限 */
   }
 
-  /* 商品名 */
-  .card-info strong {
-    font-size: 1.0em;
-    line-height: 1.3;
-    margin: 0 0 4px 0;
+  /* card-info内のflex子要素の順序を制御 */
+  .product-list .card-info > div:first-child {
+    order: 1;                  /* 商品名・メーカー・スペック部分 */
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0;
+    height: fit-content !important; /* 内容に合わせた高さに制限 */
+    flex-shrink: 0 !important;     /* 縮小を防ぐ */
+  }
+
+  .product-list .card-info .price-block {
+    order: 2;                  /* 価格ブロックを後に */
+    width: 100%;
+    margin: 0px 0 0 0 !important; /* 上部マージンを最小限に（1px → 0px） */
+    text-align: left;          /* 左揃え */
+    padding-top: 0 !important; /* 上部パディングも削除 */
+  }
+
+  /* SP表示：商品名をヘッダーに配置 */
+  .product-list .card-header strong {
+    font-size: 0.9em;
+    line-height: 1.15;
+    margin: 0 0 2px 0;  /* 上部マージンは0のまま */
     display: block;
     width: 100%;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+    white-space: nowrap;        /* 1行に制限 */
+    overflow: hidden;           /* はみ出し部分を隠す */
+    text-overflow: ellipsis;    /* 省略記号を表示 */
+    font-weight: 600;
+    color: #333;
   }
   
-  /* メーカー名 */
-  .maker-name {
-    font-size: 0.85em;
+  /* SP表示：メーカー名をヘッダーに配置 */
+  .product-list .card-header .maker-name {
+    font-size: 0.7em;
     display: block;
-    margin: 0 0 8px 0;
+    margin: 0 0 4px 0;
     color: #666;
-    line-height: 1.2;
+    line-height: 1.05;
   }
 
-  /* 価格ブロック */
-  .price-block {
-    margin-top: auto;          /* 残りスペースを上に配置 */
-    width: 100%;
-    min-width: auto;
+  /* SP表示：PC用のヘッダーを非表示 */
+  .product-list .pc-only-header {
+    display: none;
+  }
+
+  /* スペック情報（card-info内の要素として） */
+  .product-list .card-info .spec-info {
+    display: flex;
+    flex-direction: row;        /* 横並びに変更（縦並びから修正） */
+    gap: 0px;                  /* 行間のギャップを最小限に（1px→0px） */
+    margin: 0px 0 0 0 !important; /* 上部マージンを最小限に（1px→0px） */
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0;
+    margin-bottom: 0 !important; /* 下部マージンも削除 */
+  }
+  
+  /* SP表示：価格ブロックとスペック情報の間隔を強制的に縮小 */
+  .product-list .card-info > div:first-child {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  
+  .product-list .card-info .price-block {
+    margin-top: 1px !important;
+    padding-top: 0 !important;
+  }
+  
+  /* SP表示：基本設定のmarginを強制的に上書き */
+  .product-list .card-info div {
+    margin-bottom: 0 !important;
+  }
+  
+  .product-list .card-info strong {
+    margin-bottom: 0 !important;
+  }
+  
+  .product-list .card-info span {
+    margin-bottom: 0 !important;
+  }
+  
+  /* SP表示：送料・ポイント還元の下側マージンを調整 */
+  .product-list .card-info .shipping-points-container {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  
+  .product-list .card-info .price-block {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  
+  /* SP表示：基本設定の幅制限を強制的に上書き */
+  .product-list .card-info {
+    max-width: none !important;
+    width: 100% !important;
+  }
+  
+  .product-list .card-info > div {
+    max-width: none !important;
+    width: 100% !important;
+  }
+  
+  .product-list .card-info .spec-info {
+    max-width: none !important;
+    width: 100% !important;
+  }
+  
+  .product-list .card-info .spec-info .spec-item {
+    max-width: none !important;
+    width: 100% !important;
+  }
+  
+  /* SP表示：価格ブロックの上部マージンを強制的に削除 */
+  .product-list .card-info .price-block {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+  
+  .product-list .card-info .price-block * {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+  
+  /* SP表示：価格エリア全体の上部マージンを強制的に削除 */
+  .product-list .card-info > div:nth-child(2) {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+  
+  .product-list .card-info .price-block,
+  .product-list .card-info .price-block *,
+  .product-list .card-info > div:nth-child(2),
+  .product-list .card-info > div:nth-child(2) * {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+  
+  /* SP表示：price-blockクラスの上部マージンを強制的に削除 */
+  .product-list .card-info .price-block {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+  
+  .product-list .card-info .price-block .normal-price-row,
+  .product-list .card-info .price-block .shipping-points-container {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
   }
 }
 
 .list-price-strikethrough {
   text-decoration: line-through;
-  color: #666;
+  color: #999;
   font-size: 1.2em !important;
 }
 
@@ -2012,16 +2762,37 @@ body {
 .discount-price-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-bottom: 4px;
-  gap: 8px;
+  gap: 12px;
 }
 
-.product-card .discount-text-new {
-  color: #dc3545;
-  font-size: 1.4em !important;
+.discount-rate-text {
+  color: #dc3545 !important;
+  font-size: 1.2em !important;
   font-weight: bold;
   flex-shrink: 0;
+}
+
+/* バッジスタイルの割引率（オプション） */
+.discount-rate-badge {
+  background: #dc3545;
+  color: white;
+  font-size: 1.0em !important;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 12px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+/* 通常価格行のスタイル */
+.normal-price-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 4px;
 }
 
 .product-card .effective-price-new {
@@ -2048,11 +2819,13 @@ body {
 .original-price-row {
   text-align: right;
   margin-bottom: 6px;
+  white-space: nowrap;
 }
 
 .original-price-row .list-price-strikethrough {
   font-size: 1.1em !important;
   color: #999;
+  text-decoration: line-through;
 }
 
 .campaign-badges-row {
@@ -2071,20 +2844,7 @@ body {
   line-height: 1;
 }
 
-.sale-badge {
-  background: #dc3545;
-  color: #fff !important;
-}
-
-.coupon-badge {
-  background: #007bff;
-  color: #fff !important;
-}
-
-.point-badge {
-  background: #ff8c00;
-  color: #fff !important;
-}
+/* 古いスタイルは上記で統合済み */
 
 /* レスポンシブ対応 */
 @media (max-width: 768px) {
@@ -2099,7 +2859,7 @@ body {
   }
   
   .product-card .effective-price-new {
-    font-size: 1.6em !important;
+    font-size: 1.2em !important;
   }
   
   .campaign-badges-row {
@@ -2110,4 +2870,24 @@ body {
   .campaign-badge {
     font-size: 0.65em;
   }
+  
+  /* SP表示：定価の色を基本設定に任せる */
+  .original-price-row .list-price-strikethrough {
+    color: inherit;
+  }
+  
+  /* SP表示：下揃えを中央揃えに変更 */
+  .price-row {
+    align-items: center !important;
+  }
+  
+  .actual-price {
+    align-items: center !important;
+  }
+  
+  .product-card .effective-price-new {
+    align-items: center !important;
+  }
 }
+
+
