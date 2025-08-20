@@ -607,31 +607,29 @@ function ProductsPageContent() {
           
           {/* 商品情報 */}
           <div className="card-info">
-            <div style={{ flex: 1 }}>
-              {/* PC表示用：商品名・メーカー（SP表示では非表示にする） */}
-              <div className="pc-only-header">
-                <strong>{product.name}</strong>
-                <span className="maker-name">{product.maker}</span>
+            {/* PC表示用：商品名・メーカー（SP表示では非表示にする） */}
+            <div className="pc-only-header">
+              <strong>{product.name}</strong>
+              <span className="maker-name">{product.maker}</span>
+            </div>
+            
+            {/* スペック情報 */}
+            <div className="spec-info">
+              <div className="spec-item">
+                <div className="spec-label">CPU</div>
+                <div className="spec-value">{product.cpu || '情報なし'}</div>
               </div>
-              
-              {/* スペック情報 */}
-              <div className="spec-info">
-                <div className="spec-item">
-                  <div className="spec-label">CPU</div>
-                  <div className="spec-value">{product.cpu || '情報なし'}</div>
-                </div>
-                <div className="spec-item">
-                  <div className="spec-label">GPU</div>
-                  <div className="spec-value">{product.gpu || '情報なし'}</div>
-                </div>
-                <div className="spec-item">
-                  <div className="spec-label">メモリ</div>
-                  <div className="spec-value">{product.memory || '情報なし'}</div>
-                </div>
-                <div className="spec-item">
-                  <div className="spec-label">ストレージ</div>
-                  <div className="spec-value">{product.storage || '情報なし'}</div>
-                </div>
+              <div className="spec-item">
+                <div className="spec-label">GPU</div>
+                <div className="spec-value">{product.gpu || '情報なし'}</div>
+              </div>
+              <div className="spec-item">
+                <div className="spec-label">メモリ</div>
+                <div className="spec-value">{product.memory || '情報なし'}</div>
+              </div>
+              <div className="spec-item">
+                <div className="spec-label">ストレージ</div>
+                <div className="spec-value">{product.storage || '情報なし'}</div>
               </div>
             </div>
           </div>

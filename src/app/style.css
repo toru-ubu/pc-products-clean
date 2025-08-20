@@ -2806,20 +2806,21 @@ body {
     }
   }
   
-  /* SP表示：固定幅で統一 */
+  /* SP表示：画面幅に応じたフレキシブル幅設定 */
   @media (max-width: 768px) {
     .product-list .card-info .spec-info,
     .product-list .card-info > div:first-child .spec-info,
     .product-list .card-info > div .spec-info,
     .product-list .card-info .spec-info.spec-info,
     .product-list .card-info .spec-info.spec-info.spec-info {
-      width: 200px !important;
-      max-width: 200px !important;
-      min-width: 200px !important;
+      width: calc(100vw - 200px) !important; /* 画面幅から画像と右端マージンを引いた幅（余白をさらに増加） */
+      max-width: calc(100vw - 200px) !important; /* 最大幅も同じ */
+      min-width: 80px !important; /* 最小幅を設定 */
       overflow: hidden !important;
       flex-direction: column !important;
       flex-wrap: nowrap !important;
       box-sizing: border-box !important;
+      flex: none !important; /* フレキシブルを無効化して計算幅に固定 */
     }
     
     /* 商品カード全体のオーバーフロー制御を強化 */
@@ -2838,12 +2839,13 @@ body {
       box-sizing: border-box !important;
     }
     
-    /* 固定幅制限 */
+    /* 画面幅に応じた幅制限 */
     .product-list .card-info > div:first-child {
-      width: 200px !important;
-      max-width: 200px !important;
-      min-width: 200px !important;
+      width: calc(100vw - 200px) !important;
+      max-width: calc(100vw - 200px) !important;
+      min-width: 80px !important;
       overflow: hidden !important;
+      flex: none !important;
     }
   }
   
@@ -2854,13 +2856,14 @@ body {
     .product-list .card-info .spec-info,
     .product-list .card-info .spec-info.spec-info,
     .product-list .card-info > div:first-child .spec-info {
-      width: 200px !important;
-      max-width: 200px !important;
-      min-width: 200px !important;
+      width: calc(100vw - 200px) !important;
+      max-width: calc(100vw - 200px) !important;
+      min-width: 80px !important;
       flex-direction: column !important;
       flex-wrap: nowrap !important;
       overflow: hidden !important;
-      flex-shrink: 0 !important;
+      flex: none !important;
+      flex-shrink: 0 !important; /* 縮小を無効化 */
     }
   }
   
