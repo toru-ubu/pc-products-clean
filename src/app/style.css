@@ -1086,6 +1086,8 @@ body {
     margin-top: 0;
     padding: 6px 12px;         /* 上下6px、左右12pxに調整 */
     min-height: auto;          /* 最小高さを自動に */
+    overflow: hidden !important; /* はみ出しを隠す */
+    box-sizing: border-box !important; /* パディングを含む幅計算 */
   }
   .product-card:last-child {
     border-bottom: none;
@@ -1489,6 +1491,7 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  overflow: hidden; /* 背景のスクロールを防止 */
 }
 
 /* モーダルコンテンツ */
@@ -1686,7 +1689,15 @@ body {
 @media (max-width: 768px) {
   .hierarchical-modal {
     max-width: 95vw;
-    max-height: 90vh;
+    max-height: 85vh; /* 最大高さを拡大 */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .hierarchical-filter-container {
+    max-height: 450px; /* 高さを拡大 */
+    flex: 1;
+    overflow-y: auto;
   }
   
   .filter-models-container {
@@ -1700,6 +1711,11 @@ body {
   
   .filter-series-label {
     font-size: 1em;
+  }
+  
+  .modal-button-group {
+    flex-shrink: 0; /* ボタンエリアを固定 */
+    margin-top: 16px;
   }
 }
 
@@ -1781,18 +1797,25 @@ body {
   .modal-content {
     min-width: 300px;
     max-width: 95vw;
+    max-height: 85vh; /* 最大高さを拡大 */
     padding: 20px;
+    display: flex;
+    flex-direction: column;
   }
   
   .filter-options-grid {
     grid-template-columns: 1fr;
     gap: 8px;
-    max-height: 300px;
+    max-height: 250px; /* 高さを拡大 */
+    flex: 1;
+    overflow-y: auto;
   }
   
   .modal-button-group {
     flex-direction: column;
     gap: 8px;
+    margin-top: 16px;
+    flex-shrink: 0; /* ボタンエリアを固定 */
   }
   
   .modal-button-group button {
@@ -2003,7 +2026,7 @@ body {
     flex-direction: row !important;       /* 横並び（ラベル左、値右） */
     align-items: center !important;
     justify-content: space-between !important;
-    padding: 4px 8px !important;          /* パディングをさらに縮める（6px 10px → 4px 8px） */
+    padding: 4px 4px !important;          /* パディングをさらに縮小 */
     min-height: 28px !important;          /* 高さをさらに縮める（32px → 28px） */
     width: 100% !important;    /* 横幅いっぱい（重要） */
     max-width: 100% !important; /* 最大幅も100%に設定 */
@@ -2013,6 +2036,7 @@ body {
     background: #f8f9fa !important;
     box-sizing: border-box !important;    /* パディングを含む */
     margin: 0 !important;      /* マージンをリセット */
+    overflow: hidden !important; /* はみ出しを隠す */
   }
 
   .product-list .card-info .spec-info .spec-item .spec-label {
@@ -2022,8 +2046,9 @@ body {
     font-weight: 500;
     line-height: 1.2;
     text-align: left;
-    flex: 0 0 auto;           /* 固定幅 */
-    min-width: 60px;          /* 最小幅を確保 */
+    flex: 0 0 35px;           /* 固定幅をさらに縮小 */
+    min-width: 35px;          /* 最小幅をさらに縮小 */
+    max-width: 35px;          /* 最大幅も制限 */
   }
 
   .product-list .card-info .spec-info .spec-item .spec-value {
@@ -2033,11 +2058,13 @@ body {
     line-height: 1.2;
     text-align: right;
     flex: 1;                  /* 残りスペースを使用 */
-    margin-left: 8px;
+    margin-left: 2px;         /* マージンをさらに縮小 */
     overflow: hidden !important;        /* はみ出しを隠す */
     text-overflow: ellipsis !important; /* 省略記号を表示 */
     white-space: nowrap !important;     /* 改行を禁止 */
     display: block !important;          /* blockで確実に表示 */
+    min-width: 0; /* flexアイテムの省略記号表示のため */
+    width: 100%; /* 幅を100%に設定 */
   }
   
 
@@ -2458,7 +2485,10 @@ body {
 
   .filter-buttons-inline button {
     flex: 1;
-    max-width: 120px;
+    max-width: 100px; /* 最大幅を縮小 */
+    padding: 6px 12px !important; /* パディングを縮小 */
+    font-size: 0.8em !important; /* フォントサイズを縮小 */
+    border-radius: 4px !important; /* 角丸を小さく */
   }
   
   /* 結果表示とソートのレスポンシブ対応 */
@@ -2644,13 +2674,16 @@ body {
   /* スペック情報（card-info内の要素として） */
   .product-list .card-info .spec-info {
     display: flex;
-    flex-direction: row;        /* 横並びに変更（縦並びから修正） */
-    gap: 0px;                  /* 行間のギャップを最小限に（1px→0px） */
+    flex-direction: column;     /* 縦並びに戻す */
+    gap: 2px;                  /* 行間のギャップを少し追加 */
     margin: 0px 0 0 0 !important; /* 上部マージンを最小限に（1px→0px） */
     width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0;
+    max-width: calc(100% - 24px) !important; /* 商品カードのパディング（左右12px×2）を考慮 */
+    min-width: 0 !important;
     margin-bottom: 0 !important; /* 下部マージンも削除 */
+    overflow: hidden !important; /* はみ出しを隠す */
+    box-sizing: border-box !important; /* パディングを含む幅計算 */
+    flex-wrap: nowrap !important; /* 縦並びなので折り返し不要 */
   }
   
   /* SP表示：価格ブロックとスペック情報の間隔を強制的に縮小 */
@@ -2702,15 +2735,34 @@ body {
   }
   
   .product-list .card-info .spec-info {
-    max-width: 100% !important;
+    max-width: calc(100% - 24px) !important; /* 商品カードのパディングを考慮 */
     width: 100% !important;
     overflow: hidden !important;
+    flex-wrap: wrap !important; /* 必要に応じて折り返し */
   }
   
   .product-list .card-info .spec-info .spec-item {
-    max-width: 100% !important;
     width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
     overflow: hidden !important;
+    flex-shrink: 0 !important;
+  }
+  
+
+  
+  /* SP表示：縦並びレイアウトで確実に制御 */
+  @media (max-width: 768px) {
+    .product-list .card-info .spec-info,
+    .product-list .card-info .spec-info.spec-info {
+      width: 100% !important;
+      max-width: calc(100% - 48px) !important; /* パディングをさらに拡大 */
+      min-width: 0 !important;
+      flex-direction: column !important;
+      flex-wrap: nowrap !important;
+      overflow: hidden !important;
+      flex-shrink: 0 !important;
+    }
   }
   
   /* SP表示：価格ブロックの上部マージンを強制的に削除 */

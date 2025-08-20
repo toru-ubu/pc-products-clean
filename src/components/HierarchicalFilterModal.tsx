@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 interface HierarchicalFilterModalProps {
   isOpen: boolean;
@@ -19,6 +19,20 @@ export const HierarchicalFilterModal = ({
   onSelectionChange,
   onApply
 }: HierarchicalFilterModalProps) => {
+  // モーダルが開いている時にbodyのスクロールを無効化
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    
+    // クリーンアップ関数
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isOpen]);
+
   // 全シリーズを最初から展開状態にする
   const [expandedSeries, setExpandedSeries] = useState<Set<string>>(
     new Set(Object.keys(hierarchyOptions))
@@ -134,7 +148,7 @@ export const HierarchicalFilterModal = ({
             className="btn-primary" 
             onClick={handleApplyAndClose}
           >
-            適用
+            適用して検索
           </button>
         </div>
       </div>

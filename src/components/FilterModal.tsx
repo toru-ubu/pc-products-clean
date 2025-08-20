@@ -1,3 +1,5 @@
+import React, { useEffect } from 'react';
+
 interface FilterModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -17,6 +19,20 @@ export const FilterModal = ({
   onSelectionChange,
   onApply
 }: FilterModalProps) => {
+  // モーダルが開いている時にbodyのスクロールを無効化
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    
+    // クリーンアップ関数
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const handleCheckboxChange = (value: string, checked: boolean) => {
@@ -60,7 +76,7 @@ export const FilterModal = ({
             className="btn-primary" 
             onClick={handleApplyAndClose}
           >
-            適用
+            適用して検索
           </button>
         </div>
       </div>
