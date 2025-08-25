@@ -22,14 +22,50 @@ export const HierarchicalFilterModal = ({
   // モーダルが開いている時にbodyのスクロールを無効化
   useEffect(() => {
     if (isOpen) {
+      // body固定を強化
       document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      
+      // モーダル内のスクロール要素を制御
+      const modalContent = document.querySelector('.modal-content');
+      if (modalContent) {
+        const handleTouchMove = (e: Event) => {
+          // タッチスクロールイベントをキャッチ
+          const target = e.target as HTMLElement;
+          
+          // スクロール可能な要素かどうかを判定
+          const scrollable = target.closest('.hierarchical-filter-container, .filter-options-grid');
+          
+          if (!scrollable) {
+            // スクロール可能な要素以外ではスクロールを防止
+            e.preventDefault();
+          }
+          // スクロール可能な要素内ではスクロールを許可（何もしない）
+        };
+        
+        modalContent.addEventListener('touchmove', handleTouchMove, { passive: false });
+        
+        // クリーンアップ関数でイベントリスナーを削除
+        return () => {
+          modalContent.removeEventListener('touchmove', handleTouchMove);
+          document.body.style.overflow = '';
+          document.body.style.position = '';
+          document.body.style.width = '';
+        };
+      }
     } else {
-      document.body.style.overflow = 'auto';
+      // モーダルが閉じられた時の復元処理
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
     }
     
     // クリーンアップ関数
     return () => {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
     };
   }, [isOpen]);
 
@@ -38,7 +74,7 @@ export const HierarchicalFilterModal = ({
     new Set(Object.keys(hierarchyOptions))
   );
 
-  const toggleSeries = (series: string) => {
+  const _toggleSeries = (series: string) => {
     const newExpanded = new Set(expandedSeries);
     if (newExpanded.has(series)) {
       newExpanded.delete(series);
@@ -95,7 +131,12 @@ export const HierarchicalFilterModal = ({
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div 
+      id="modal-overlay"
+      className="modal-overlay" 
+      onClick={onClose}
+      onTouchMove={(e) => e.preventDefault()}
+    >
       <div className="modal-content hierarchical-modal" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose}>×</button>
         

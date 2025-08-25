@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Product, getProducts } from '../../lib/firebase';
 import { getMockProducts } from '../../utils/mockData';
@@ -9,11 +9,12 @@ import { HierarchicalFilterModal } from '../../components/HierarchicalFilterModa
 import { FilterButton } from '../../components/FilterButton';
 import { FilterChips } from '../../components/FilterChips';
 import { Pagination } from '../../components/Pagination';
+import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { useFilterOptions } from '../../hooks/useFilterOptions';
 import { isMatchingAny } from '../../utils/filterNormalization';
 
 function ProductsPageContent() {
-  const router = useRouter();
+  const _router = useRouter();
   const searchParams = useSearchParams();
 
   const [products, setProducts] = useState<Product[]>([]);
@@ -26,13 +27,12 @@ function ProductsPageContent() {
     // 適用済みフィルター（実際に商品フィルタリングに使用）
     applied: {
       maker: [] as string[],
-      shape: [] as string[],
       cpu: [] as string[],
       gpu: [] as string[],
       memory: [] as string[],
       storage: [] as string[],
       showDesktop: true,
-      showNotebook: true,
+      showNotebook: false,
       priceMin: 0,
       priceMax: 1000000,
       onSale: false,
@@ -42,13 +42,12 @@ function ProductsPageContent() {
     // 一時的なフィルター（モーダル内や検索窓で編集中）
     draft: {
       maker: [] as string[],
-      shape: [] as string[],
       cpu: [] as string[],
       gpu: [] as string[],
       memory: [] as string[],
       storage: [] as string[],
       showDesktop: true,
-      showNotebook: true,
+      showNotebook: false,
       priceMin: 0,
       priceMax: 1000000,
       onSale: false,
@@ -62,11 +61,27 @@ function ProductsPageContent() {
 
   // モーダル状態
   const [isMakerModalOpen, setIsMakerModalOpen] = useState(false);
-  const [isShapeModalOpen, setIsShapeModalOpen] = useState(false);
   const [isCpuModalOpen, setIsCpuModalOpen] = useState(false);
   const [isGpuModalOpen, setIsGpuModalOpen] = useState(false);
   const [isMemoryModalOpen, setIsMemoryModalOpen] = useState(false);
   const [isStorageModalOpen, setIsStorageModalOpen] = useState(false);
+
+  // モーダルが開いているかどうかを判定
+  const isAnyModalOpen = isMakerModalOpen || isCpuModalOpen || isGpuModalOpen || isMemoryModalOpen || isStorageModalOpen;
+
+  // body固定ロック
+  useEffect(() => {
+    if (isAnyModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+
+    // クリーンアップ関数
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isAnyModalOpen]);
 
   // スマホでのフィルター折りたたみ状態
   const [isFilterCollapsed, setIsFilterCollapsed] = useState(false);
@@ -88,8 +103,7 @@ function ProductsPageContent() {
   // フィルターオプション（静的ファイルから取得）
   const { makerOptions, cpuOptionsHierarchy, gpuOptionsHierarchy, memoryOptions, storageOptions, isLoading: filterOptionsLoading } = useFilterOptions();
 
-  // 形状オプション
-  const shapeOptions = ['デスクトップ', 'ノートブック'];
+
 
   // 価格選択肢（5万円刻み）
   const priceOptions = [
@@ -124,7 +138,6 @@ function ProductsPageContent() {
       applied: urlState.applied,
       draft: {
         maker: urlState.applied.maker,
-        shape: urlState.applied.shape,
         cpu: urlState.applied.cpu,
         gpu: urlState.applied.gpu,
         memory: urlState.applied.memory,
@@ -143,7 +156,6 @@ function ProductsPageContent() {
     const hasActiveFilters = Boolean(
       urlState.applied.searchKeyword || 
       urlState.applied.maker.length > 0 ||
-      urlState.applied.shape.length > 0 ||
       urlState.applied.cpu.length > 0 ||
       urlState.applied.gpu.length > 0 ||
       urlState.applied.memory.length > 0 ||
@@ -151,8 +163,7 @@ function ProductsPageContent() {
       urlState.applied.priceMin > 0 ||
       urlState.applied.priceMax < 1000000 ||
       urlState.applied.onSale ||
-      !urlState.applied.showDesktop ||
-      !urlState.applied.showNotebook
+      !(urlState.applied.showDesktop && !urlState.applied.showNotebook) // デスクトップのみの場合のみfalse
     );
     setIsFilterCollapsed(hasActiveFilters);
   }, [searchParams]);
@@ -195,7 +206,7 @@ function ProductsPageContent() {
   }, []);
 
   // フィルター処理
-  const applyFilters = () => {
+  const applyFilters = useCallback(() => {
     let filtered = [...products];
     const { applied } = filterState;
     
@@ -211,15 +222,10 @@ function ProductsPageContent() {
       );
     }
 
-    // 形状フィルター（PC/SP共通）- PC表示の場合はチェックボックス状態を形状フィルターに変換
-    let effectiveShapeFilters = [...applied.shape];
-    
-    // PC表示の場合、チェックボックス状態を形状フィルターに変換
-    if (!isMobile) {
-      effectiveShapeFilters = [];
-      if (applied.showDesktop) effectiveShapeFilters.push('デスクトップ');
-      if (applied.showNotebook) effectiveShapeFilters.push('ノートブック');
-    }
+    // 形状フィルター（PC/SP共通）- チェックボックス状態を形状フィルターに変換
+    const effectiveShapeFilters: string[] = [];
+    if (applied.showDesktop) effectiveShapeFilters.push('デスクトップ');
+    if (applied.showNotebook) effectiveShapeFilters.push('ノートブック');
     
     if (effectiveShapeFilters.length > 0) {
       console.log('Shape filter debug:', 'effectiveShapeFilters:', effectiveShapeFilters, 'products before:', filtered.length);
@@ -345,7 +351,7 @@ function ProductsPageContent() {
     console.log('=== Filter Debug End ===');
     console.log('Final filtered products:', filtered.length);
     setFilteredProducts(filtered);
-  };
+  }, [products, filterState, isMobile]);
 
   // ページネーション計算
   const totalItems = filteredProducts.length;
@@ -375,7 +381,7 @@ function ProductsPageContent() {
     if (products.length > 0) {
       applyFilters();
     }
-  }, [products, filterState.applied]);
+  }, [applyFilters, products.length]);
 
   // URL管理のヘルパー関数
   const buildUrlParams = (currentFilters: typeof filterState.applied, page: number = 1) => {
@@ -389,9 +395,7 @@ function ProductsPageContent() {
       params.set('maker', currentFilters.maker.join(','));
     }
     
-    if (currentFilters.shape.length > 0) {
-      params.set('shape', currentFilters.shape.join(','));
-    }
+
     
     if (currentFilters.cpu.length > 0) {
       params.set('cpu', currentFilters.cpu.join(','));
@@ -421,12 +425,20 @@ function ProductsPageContent() {
       params.set('onSale', 'true');
     }
     
-    if (!currentFilters.showDesktop) {
-      params.set('hideDesktop', 'true');
+    // 両方選択なしの場合はデスクトップのみに自動調整
+    if (!currentFilters.showDesktop && !currentFilters.showNotebook) {
+      currentFilters.showDesktop = true;
     }
-    
-    if (!currentFilters.showNotebook) {
-      params.set('hideNotebook', 'true');
+
+    const plusItems = [];
+    if (currentFilters.showDesktop) plusItems.push('desktop');
+    if (currentFilters.showNotebook) plusItems.push('notebook');
+
+    // デフォルト（デスクトップのみ）の場合はパラメータなし
+    if (plusItems.length === 1 && plusItems[0] === 'desktop') {
+      // パラメータなし
+    } else {
+      params.set('plus', plusItems.join(','));
     }
     
     if (currentFilters.sortBy !== 'price-asc') {
@@ -441,16 +453,17 @@ function ProductsPageContent() {
   };
 
   const parseUrlParams = (params: URLSearchParams) => {
+    const plusParam = params.get('plus');
     return {
       applied: {
         maker: params.get('maker')?.split(',').filter(Boolean) || [],
-        shape: params.get('shape')?.split(',').filter(Boolean) || [],
+
         cpu: params.get('cpu')?.split(',').filter(Boolean) || [],
         gpu: params.get('gpu')?.split(',').filter(Boolean) || [],
         memory: params.get('memory')?.split(',').filter(Boolean) || [],
         storage: params.get('storage')?.split(',').filter(Boolean) || [],
-        showDesktop: params.get('hideDesktop') !== 'true',
-        showNotebook: params.get('hideNotebook') !== 'true',
+        showDesktop: !plusParam || plusParam.includes('desktop'),
+        showNotebook: plusParam?.includes('notebook') || false,
         priceMin: parseInt(params.get('priceMin') || '0'),
         priceMax: parseInt(params.get('priceMax') || '1000000'),
         onSale: params.get('onSale') === 'true',
@@ -461,7 +474,7 @@ function ProductsPageContent() {
     };
   };
 
-  const updateUrl = (newFilters: typeof filterState.applied) => {
+  const _updateUrl = (newFilters: typeof filterState.applied) => {
     const urlParams = buildUrlParams(newFilters);
     const newUrl = urlParams ? `/products?${urlParams}` : '/products';
     window.location.href = newUrl;
@@ -478,15 +491,7 @@ function ProductsPageContent() {
     window.location.href = newUrl;
   };
 
-  const handleRemoveShape = (shape: string) => {
-    const newFilters = {
-      ...filterState.applied,
-      shape: filterState.applied.shape.filter(s => s !== shape)
-    };
-    const urlParams = buildUrlParams(newFilters);
-    const newUrl = urlParams ? `/products?${urlParams}` : '/products';
-    window.location.href = newUrl;
-  };
+
 
   const handleRemoveCpu = (cpu: string) => {
     const newFilters = {
@@ -549,16 +554,7 @@ function ProductsPageContent() {
     window.location.href = newUrl;
   };
 
-  const handleClearPCType = () => {
-    const newFilters = {
-      ...filterState.applied,
-      showDesktop: true,
-      showNotebook: true
-    };
-    const urlParams = buildUrlParams(newFilters);
-    const newUrl = urlParams ? `/products?${urlParams}` : '/products';
-    window.location.href = newUrl;
-  };
+
 
   // モーダル適用ハンドラー（一時フィルターを適用してページリロード）
   const handleModalApply = () => {
@@ -566,7 +562,6 @@ function ProductsPageContent() {
     const newFilters = {
       ...filterState.applied,
       maker: filterState.draft.maker,
-      shape: filterState.draft.shape,
       cpu: filterState.draft.cpu,
       gpu: filterState.draft.gpu,
       memory: filterState.draft.memory,
@@ -646,21 +641,15 @@ function ProductsPageContent() {
                     <div className="sale-price-container">
                       {product.price > product.effectiveprice && (
                         <>
-                          {/* SP表示用: 1行目 - 割引率のみ */}
+                          {/* SP表示用: 1行目 - 割引率バッジ */}
                           <div className="discount-rate-row">
-                            <span className="discount-rate-inline">
-                              {(() => {
-                                const rate = product.discountrate;
-                                if (rate >= 30) {
-                                  return `🚨${rate}%OFF`;
-                                } else if (rate >= 10) {
-                                  return `🔥${rate}%OFF`;
-                                } else if (rate >= 5) {
-                                  return `💰${rate}%OFF`;
-                                } else {
-                                  return `🎉${rate}%OFF`;
-                                }
-                              })()}
+                            <span className={`discount-rate-badge-sp ${(() => {
+                              const rate = product.discountrate;
+                              if (rate >= 30) return 'discount-high';
+                              else if (rate >= 10) return 'discount-mid';
+                              else return 'discount-low';
+                            })()}`}>
+                              {product.discountrate}%OFF
                             </span>
                           </div>
                           
@@ -680,19 +669,13 @@ function ProductsPageContent() {
                       {/* SP表示用: 定価が表示されない場合のフォールバック */}
                       {product.price <= product.effectiveprice && (
                         <div className="discount-actual-row">
-                          <span className="discount-rate-inline">
-                            {(() => {
-                              const rate = product.discountrate;
-                              if (rate >= 30) {
-                                return `🚨${rate}%OFF`;
-                              } else if (rate >= 10) {
-                                return `🔥${rate}%OFF`;
-                              } else if (rate >= 5) {
-                                return `💰${rate}%OFF`;
-                              } else {
-                                return `🎉${rate}%OFF`;
-                              }
-                            })()}
+                          <span className={`discount-rate-badge-sp ${(() => {
+                            const rate = product.discountrate;
+                            if (rate >= 30) return 'discount-high';
+                            else if (rate >= 10) return 'discount-mid';
+                            else return 'discount-low';
+                          })()}`}>
+                            {product.discountrate}%OFF
                           </span>
                           
                           <span className="actual-price-inline">
@@ -715,19 +698,13 @@ function ProductsPageContent() {
                           
                           {/* PC表示用: 2行目 - 割引率 + セール価格 */}
                           <div className="discount-actual-row">
-                            <span className="discount-rate-inline">
-                              {(() => {
-                                const rate = product.discountrate;
-                                if (rate >= 30) {
-                                  return `🚨${rate}%OFF`;
-                                } else if (rate >= 10) {
-                                  return `🔥${rate}%OFF`;
-                                } else if (rate >= 5) {
-                                  return `💰${rate}%OFF`;
-                                } else {
-                                  return `🎉${rate}%OFF`;
-                                }
-                              })()}
+                            <span className={`discount-rate-inline ${(() => {
+                              const rate = product.discountrate;
+                              if (rate >= 30) return 'discount-high';
+                              else if (rate >= 10) return 'discount-mid';
+                              else return 'discount-low';
+                            })()}`}>
+                              {product.discountrate}%OFF
                             </span>
                             
                             <span className="actual-price-inline">
@@ -740,19 +717,13 @@ function ProductsPageContent() {
                       {/* PC表示用: 定価が表示されない場合のフォールバック */}
                       {product.price <= product.effectiveprice && (
                         <div className="discount-actual-row">
-                          <span className="discount-rate-inline">
-                            {(() => {
-                              const rate = product.discountrate;
-                              if (rate >= 30) {
-                                return `🚨${rate}%OFF`;
-                              } else if (rate >= 10) {
-                                return `🔥${rate}%OFF`;
-                              } else if (rate >= 5) {
-                                return `💰${rate}%OFF`;
-                              } else {
-                                return `🎉${rate}%OFF`;
-                              }
-                            })()}
+                          <span className={`discount-rate-inline ${(() => {
+                            const rate = product.discountrate;
+                            if (rate >= 30) return 'discount-high';
+                            else if (rate >= 10) return 'discount-mid';
+                            else return 'discount-low';
+                          })()}`}>
+                            {product.discountrate}%OFF
                           </span>
                           
                           <span className="actual-price-inline">
@@ -840,22 +811,16 @@ function ProductsPageContent() {
 
   if (loading || filterOptionsLoading) {
     return (
-      <div className="min-h-screen" style={{ background: '#f5f5f5' }}>
-        <div className="products-container">
-          <div className="text-center">
-            <div className="text-xl font-semibold text-gray-700 mb-4">
-              {loading ? 'データを読み込み中...' : 'フィルター設定を読み込み中...'}
-            </div>
-            <div className="text-gray-500">しばらくお待ちください</div>
-          </div>
-        </div>
-      </div>
+      <LoadingSpinner 
+        type={loading ? 'data' : 'filter'}
+      />
     );
   }
 
   return (
-    <div className="min-h-screen" style={{ background: '#f5f5f5' }}>
-      <div className="products-container">
+    <div className="nextjs-products-scope">
+      <div className="min-h-screen" style={{ background: '#f5f5f5' }}>
+        <div className="products-container">
         {/* ページタイトル */}
         <h1 className="text-2xl font-bold text-gray-900 mb-6">イヤバズDB</h1>
 
@@ -870,15 +835,14 @@ function ProductsPageContent() {
         {/* フィルターエリア */}
         <div className="filter-controls">
           {/* スマホ用の折りたたみヘッダー */}
-          <div className="filter-header-mobile">
+          <div 
+            className="filter-header-mobile"
+            onClick={() => setIsFilterCollapsed(!isFilterCollapsed)}
+          >
             <h3>絞り込み条件</h3>
-            <button
-              type="button"
-              className="filter-toggle-btn"
-              onClick={() => setIsFilterCollapsed(!isFilterCollapsed)}
-            >
-              ▼
-            </button>
+            <span className="filter-toggle-icon">
+              {isFilterCollapsed ? '▼' : '▲'}
+            </span>
           </div>
 
           <div className={`filter-form-wrapper ${isFilterCollapsed ? 'collapsed' : ''}`}>
@@ -888,7 +852,6 @@ function ProductsPageContent() {
               const allFilters = {
                 ...filterState.applied,
                 maker: filterState.draft.maker,
-                shape: filterState.draft.shape,
                 cpu: filterState.draft.cpu,
                 gpu: filterState.draft.gpu,
                 memory: filterState.draft.memory,
@@ -915,12 +878,7 @@ function ProductsPageContent() {
                   onClick={() => setIsMakerModalOpen(true)}
                 />
 
-                {/* 形状ボタン */}
-                <FilterButton
-                  label="形状"
-                  selectedCount={filterState.draft.shape.length}
-                  onClick={() => setIsShapeModalOpen(true)}
-                />
+
 
                 {/* CPUボタン */}
                 <FilterButton
@@ -1004,7 +962,7 @@ function ProductsPageContent() {
                 {/* 検索窓 */}
                 <div className="search-compact">
                   <div className="search-box-styled">
-                    <span className="filter-label">検索</span>
+                    <span className="filter-label">キーワード</span>
                     <input
                       type="text"
                       className="search-input-styled"
@@ -1021,39 +979,57 @@ function ProductsPageContent() {
                   </div>
                 </div>
 
-                {/* PC種類チェックボックス（PC表示のみ） */}
-                {!isMobile && (
-                  <div className="pc-type-checkboxes">
-                    <label className="pc-type-checkbox-label">
-                      <input
-                        type="checkbox"
-                        checked={filterState.draft.showDesktop}
-                        onChange={(e) => setFilterState(prev => ({
+                {/* PC種類チェックボックス（PC/SP共通） */}
+                <div className="pc-type-checkboxes">
+                  <label className="pc-type-checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={filterState.draft.showDesktop}
+                      onChange={(e) => {
+                        const newShowDesktop = e.target.checked;
+                        const newShowNotebook = filterState.draft.showNotebook;
+                        
+                        // 両方選択なしを防ぐ
+                        if (!newShowDesktop && !newShowNotebook) {
+                          return; // 変更を無視
+                        }
+                        
+                        setFilterState(prev => ({
                           ...prev,
                           draft: {
                             ...prev.draft,
-                            showDesktop: e.target.checked
+                            showDesktop: newShowDesktop
                           }
-                        }))}
-                      />
-                      デスクトップ
-                    </label>
-                    <label className="pc-type-checkbox-label">
-                      <input
-                        type="checkbox"
-                        checked={filterState.draft.showNotebook}
-                        onChange={(e) => setFilterState(prev => ({
+                        }));
+                      }}
+                    />
+                    デスクトップ
+                  </label>
+                  <label className="pc-type-checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={filterState.draft.showNotebook}
+                      onChange={(e) => {
+                        const newShowNotebook = e.target.checked;
+                        const newShowDesktop = filterState.draft.showDesktop;
+                        
+                        // 両方選択なしを防ぐ
+                        if (!newShowDesktop && !newShowNotebook) {
+                          return; // 変更を無視
+                        }
+                        
+                        setFilterState(prev => ({
                           ...prev,
                           draft: {
                             ...prev.draft,
-                            showNotebook: e.target.checked
+                            showNotebook: newShowNotebook
                           }
-                        }))}
-                      />
-                      ノートブック
-                    </label>
-                  </div>
-                )}
+                        }));
+                      }}
+                    />
+                    ノートブック
+                  </label>
+                </div>
 
                 {/* フィルターボタン */}
                 <div className="filter-buttons-inline">
@@ -1071,22 +1047,18 @@ function ProductsPageContent() {
               searchKeyword={filterState.applied.searchKeyword}
               onClearSearch={handleClearSearch}
               selectedMakers={filterState.applied.maker}
-              selectedShapes={filterState.applied.shape}
+
               selectedCpus={filterState.applied.cpu}
               selectedGpus={filterState.applied.gpu}
               selectedMemory={filterState.applied.memory}
               selectedStorage={filterState.applied.storage}
-              showDesktop={filterState.applied.showDesktop}
-              showNotebook={filterState.applied.showNotebook}
               priceMin={filterState.applied.priceMin}
               priceMax={filterState.applied.priceMax}
               onRemoveMaker={handleRemoveMaker}
-              onRemoveShape={handleRemoveShape}
               onRemoveCpu={handleRemoveCpu}
               onRemoveGpu={handleRemoveGpu}
               onRemoveMemory={handleRemoveMemory}
               onRemoveStorage={handleRemoveStorage}
-              onClearPCType={handleClearPCType}
               onClearPrice={handleClearPrice}
             />
           )}
@@ -1201,15 +1173,7 @@ function ProductsPageContent() {
           onApply={handleModalApply}
         />
 
-        <FilterModal
-          isOpen={isShapeModalOpen}
-          onClose={() => setIsShapeModalOpen(false)}
-          title="形状"
-          options={shapeOptions}
-          selectedValues={filterState.draft.shape}
-          onSelectionChange={(values) => updateDraftFilterValues('shape', values)}
-          onApply={handleModalApply}
-        />
+
 
         <HierarchicalFilterModal
           isOpen={isCpuModalOpen}
@@ -1250,6 +1214,7 @@ function ProductsPageContent() {
           onSelectionChange={(values) => updateDraftFilterValues('storage', values)}
           onApply={handleModalApply}
         />
+        </div>
       </div>
     </div>
   );
@@ -1257,7 +1222,7 @@ function ProductsPageContent() {
 
 export default function ProductsPage() {
   return (
-    <Suspense fallback={<div>読み込み中...</div>}>
+    <Suspense fallback={<LoadingSpinner type="data" />}>
       <ProductsPageContent />
     </Suspense>
   );

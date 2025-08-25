@@ -104,13 +104,7 @@
       "RTX 5060 Ti (16GB)",
       "RTX 5060 Ti (8GB)",
       "RTX 5060 (8GB)",
-      "RTX 5050 (8GB)",
-      "RTX 5090 Laptop (24GB)",
-      "RTX 5080 Laptop (16GB)",
-      "RTX 5070 Ti Laptop (12GB)",
-      "RTX 5070 Laptop (8GB)",
-      "RTX 5060 Laptop (8GB)",
-      "RTX 5050 Laptop (8GB)"
+      "RTX 5050 (8GB)"
     ],
     "RTX 40シリーズ": [
       "RTX 4080 SUPER (16GB)",
@@ -119,13 +113,25 @@
       "RTX 4070 (12GB)",
       "RTX 4060 Ti (8GB)",
       "RTX 4060 (8GB)",
-      "RTX 4050 (6GB)",
+      "RTX 4050 (6GB)"
+    ],
+    "RTX 30シリーズ": [
+      "RTX 3050 (6GB)"
+    ],
+    "RTX 50 Laptopシリーズ": [
+      "RTX 5090 Laptop (24GB)",
+      "RTX 5080 Laptop (16GB)",
+      "RTX 5070 Ti Laptop (12GB)",
+      "RTX 5070 Laptop (8GB)",
+      "RTX 5060 Laptop (8GB)",
+      "RTX 5050 Laptop (8GB)"
+    ],
+    "RTX 40 Laptopシリーズ": [
       "RTX 4070 Laptop (8GB)",
       "RTX 4060 Laptop (8GB)",
       "RTX 4050 Laptop (6GB)"
     ],
-    "RTX 30シリーズ": [
-      "RTX 3050 (6GB)",
+    "RTX 30 Laptopシリーズ": [
       "RTX 3060 Laptop (6GB) 又は UHD",
       "RTX 3050 Laptop (6GB)",
       "RTX 3050 Laptop (4GB)"
