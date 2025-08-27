@@ -2,6 +2,7 @@ export interface Product {
   id: string;
   name: string;
   maker: string;
+  type: string; // PC形状（デスクトップ・ノートブック）
   price: number;
   effectiveprice: number;
   cpu: string;
@@ -15,11 +16,13 @@ export interface Product {
     type: string;
     amount: number;
   }>;
+  campaignIds: string[];
   discountrate: number;
   shippingFee: number;
+  regularPoint: number;
   category: string;
-  createdAt: Date | string;
-  updatedAt: Date | string;
+  createdAt: Date | null;
+  updatedAt: Date | null;
 }
 
 export interface FilterState {
