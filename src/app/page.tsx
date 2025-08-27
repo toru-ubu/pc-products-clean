@@ -121,16 +121,13 @@ export default function Home() {
 
         {/* 下段：キーワード検索 */}
         <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-4">
-            <div className="text-lg font-semibold text-gray-700 mb-2">キーワード検索</div>
-          </div>
-          <div className="flex gap-2">
+          <div className="search-container">
             <input
               type="text"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
-              placeholder="商品名、型番、スペックなどを入力"
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="メーカー・スペック・キーワード"
+              className="search-input"
               onKeyPress={(e) => {
                 if (e.key === 'Enter') {
                   handleKeywordSearch();
@@ -139,7 +136,7 @@ export default function Home() {
             />
             <button 
               onClick={handleKeywordSearch}
-              className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition-colors"
+              className="search-button-red"
             >
               検索
             </button>
