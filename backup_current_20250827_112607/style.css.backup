@@ -31,81 +31,6 @@ body {
   background: #f5f5f5;
 }
 
-/* ===== ローディングスピナー ===== */
-
-/* PC表示用：大きなスピナー */
-.loading-spinner-large {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 20px;
-  gap: 32px;
-}
-
-.spinner-circle {
-  width: 80px;
-  height: 80px;
-  border: 4px solid #e5e7eb;
-  border-top: 4px solid #007bff;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-.spinner-text {
-  text-align: center;
-}
-
-/* SP表示用：小さなスピナー */
-.loading-spinner-mobile {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
-  gap: 20px;
-}
-
-.spinner-circle-small {
-  width: 50px;
-  height: 50px;
-  border: 3px solid #e5e7eb;
-  border-top: 3px solid #007bff;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-.spinner-text-mobile {
-  text-align: center;
-}
-
-/* スピナーアニメーション */
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* レスポンシブ対応 */
-@media (max-width: 768px) {
-  .loading-spinner-large {
-    display: none;
-  }
-  
-  .loading-spinner-mobile {
-    display: flex;
-  }
-}
-
-@media (min-width: 769px) {
-  .loading-spinner-large {
-    display: flex;
-  }
-  
-  .loading-spinner-mobile {
-    display: none;
-  }
-}
-
 /* コンテナの背景色も強制適用 */
 .container, .min-h-screen {
   background: #f5f5f5;
@@ -217,8 +142,6 @@ body {
   width: 100%;
   box-sizing: border-box;
 }
-
-
 
 /* ===== 絞り込み機能のスタイル ===== */
 
@@ -387,7 +310,7 @@ body {
   border-radius: 8px;
   transition: all 0.2s ease;
   min-width: 220px;
-  gap: 12px; /* 検索文字と入力欄の間の余白を増やす */
+  gap: 8px;
 }
 
 .search-box-styled:hover {
@@ -430,7 +353,6 @@ body {
   transition: all 0.2s ease;
   gap: 8px;
   min-width: 280px;
-  width: 100%; /* 幅を100%に設定 */
 }
 
 .price-box-styled:hover {
@@ -448,10 +370,7 @@ body {
   align-items: center;
   gap: 8px;
   flex: 1;
-  margin-left: 12px; /* 価格文字とセレクトボックスの間の余白を増やす */
-  margin-right: 12px; /* 右側にも余白を追加 */
-  justify-content: flex-start; /* 左寄せに変更 */
-  gap: 16px; /* セレクトボックス間の余白を増やす */
+  margin-left: 8px;
 }
 
 .price-select-styled {
@@ -465,7 +384,6 @@ body {
   border-radius: 4px;
   min-width: 100px;
   flex: 1;
-  text-align: center; /* テキストを中央揃え */
 }
 
 .price-select-styled:focus {
@@ -1000,13 +918,8 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0;
-  padding: 16px;
-  background: #fff;
-  border: 1px solid #e5e5e5;
-  border-bottom: none;
-  border-radius: 8px 8px 0 0;
-  box-shadow: none;
+  margin-bottom: 20px;
+  padding: 0;
 }
 
 .title-area {
@@ -1119,17 +1032,15 @@ body {
   }
 }
 
-
-
 /* 商品カードのホバー効果 */
 .product-card:hover {
   background: transparent;
 }
 
-/* 最初のカードに上角丸（検索結果ヘッダーと繋げるため削除） */
+/* 最初のカードに上角丸 */
 .product-card:first-child {
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
 }
 
 /* 最後のカードに下角丸と下線 */
@@ -1889,22 +1800,16 @@ body {
   .modal-content {
     width: 85vw;
     max-width: none;
-    max-height: 70dvh; /* 動的ビューポート対応 */
-    max-height: 70vh;  /* フォールバック */
+    max-height: 70vh;
     padding: 20px;
-    padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)); /* Safe Area対応 */
     display: flex;
     flex-direction: column;
-    transform: translateY(-5%); /* 中央から上へシフト（微調整） */
   }
   
   .hierarchical-modal {
     width: 88vw;
     max-width: none;
-    max-height: 75dvh; /* 動的ビューポート対応（高さを下げる） */
-    max-height: 75vh;  /* フォールバック */
-    padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)); /* Safe Area対応 */
-    transform: translateY(-5%); /* 中央から上へシフト（微調整） */
+    max-height: 80vh;
   }
   
   .filter-options-grid {
@@ -2575,17 +2480,14 @@ body {
     width: 100% !important;
     flex-direction: row !important;
     align-items: center !important;
-    gap: 12px !important; /* 検索文字と入力欄の間の余白を増やす */
+    gap: 8px !important;
     padding: 8px 12px !important;
     min-height: 40px !important;
   }
   
   .search-input-styled {
     width: 100% !important;
-    font-size: 16px !important; /* 16px以上で自動ズーム防止 */
-    transform: scale(0.85); /* 見た目を0.85em相当に調整 */
-    transform-origin: left center;
-    -webkit-text-size-adjust: 100%; /* Safari自動ズーム防止 */
+    font-size: 0.9em !important;
   }
   
   /* 価格ボックススタイルのレスポンシブ対応 */
@@ -2594,7 +2496,7 @@ body {
     width: 100% !important;
     flex-direction: row !important;
     align-items: center !important;
-    gap: 12px !important; /* 価格文字とセレクトボックスの間の余白を増やす */
+    gap: 8px !important;
     padding: 8px 12px !important;
     min-height: 40px !important;
     max-height: 40px !important; /* 高さを他のボックスと統一 */
@@ -2602,9 +2504,8 @@ body {
   
   .price-selects-styled {
     flex-direction: row !important;
-    gap: 16px !important; /* セレクトボックス間の余白を増やす */
-    margin-left: 12px !important; /* 価格文字とセレクトボックスの間の余白を増やす */
-    margin-right: 12px !important; /* 右側にも余白を追加 */
+    gap: 4px !important;
+    margin-left: 0 !important;
     flex: 1 !important;
     align-items: center !important; /* 中央揃え */
   }
@@ -2666,15 +2567,7 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 12px 16px;
-    background: #fff;
-    border: 1px solid #e5e5e5;
-    border-bottom: none;
-    border-radius: 6px 6px 0 0;
-    box-shadow: none;
-    margin-left: -12px;
-    margin-right: -12px;
-    width: calc(100% + 24px);
+    padding: 0;
   }
   
   .results-sort-right {

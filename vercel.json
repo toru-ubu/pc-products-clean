@@ -4,34 +4,6 @@
       "maxDuration": 30
     }
   },
-  "headers": [
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "https://earbuds-plus.jp"
-        },
-        {
-          "key": "Access-Control-Allow-Methods",
-          "value": "GET, POST, PUT, DELETE, OPTIONS"
-        },
-        {
-          "key": "Access-Control-Allow-Headers",
-          "value": "Content-Type, Authorization"
-        },
-        {
-          "key": "Access-Control-Max-Age",
-          "value": "86400"
-        }
-      ]
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/db/(.*)",
-      "destination": "/products"
-    }
-  ],
+  "headers": [],
   "public": true
 }

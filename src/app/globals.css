@@ -24,3 +24,201 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* TOPページ用スタイル */
+.search-button {
+  @apply p-6 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-button-horizontal {
+  @apply p-3 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* モーダルスタイル */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #6b7280;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.modal-close:hover {
+  background-color: #f3f4f6;
+}
+
+.modal-header {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+}
+
+.modal-button-group {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-primary {
+  background-color: #2563eb;
+  color: white;
+  padding: 0.75rem 2rem;
+  border-radius: 0.5rem;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #1d4ed8;
+}
+
+/* フィルターオプションスタイル */
+.filter-options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+}
+
+.filter-option-label {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.filter-option-label:hover {
+  background-color: #f3f4f6;
+}
+
+.filter-option-checkbox {
+  margin-right: 0.5rem;
+}
+
+/* 階層フィルタースタイル */
+.hierarchical-filter-container {
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+}
+
+.filter-series-group {
+  margin-bottom: 1rem;
+}
+
+.filter-series-header {
+  background-color: #f9fafb;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.filter-series-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.series-name {
+  margin-left: 0.5rem;
+  flex: 1;
+}
+
+.selected-count {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.filter-models-container {
+  margin-left: 1.5rem;
+}
+
+.filter-model-label {
+  display: flex;
+  align-items: center;
+  padding: 0.25rem 0;
+  cursor: pointer;
+}
+
+.filter-model-label:hover {
+  background-color: #f3f4f6;
+  border-radius: 0.25rem;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .search-button {
+    min-height: 120px;
+    padding: 1rem;
+  }
+  
+  .search-button-horizontal {
+    min-height: 40px;
+    padding: 0.75rem;
+  }
+  
+  .modal-content {
+    padding: 1.5rem;
+    max-width: 95vw;
+  }
+  
+  .filter-options-grid {
+    grid-template-columns: 1fr;
+  }
+}

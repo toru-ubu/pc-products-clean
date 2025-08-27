@@ -1,10 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // basePath: '/db', // Cloudflare側でパス変換するためコメントアウト
+
   async headers() {
     return [
       {
-        // APIルートに対するCORS設定
+        // APIルートに対するCORS設定（ベースパス適用後）
         source: '/api/:path*',
         headers: [
           {
@@ -29,16 +31,7 @@ const nextConfig: NextConfig = {
       }
     ];
   },
-  
-  // 開発環境でのCORS対応
-  async rewrites() {
-    return [
-      {
-        source: '/db/:path*',
-        destination: '/products'
-      }
-    ];
-  }
+
 };
 
 export default nextConfig;
