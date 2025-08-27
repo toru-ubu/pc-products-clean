@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>イヤバズDB ウィジェット 完全版</title>
+    <style>
+        /* イヤバズDB ウィジェット用 完全埋め込みCSS */
+        .earbuds-widget-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .pt-16 {
+            padding-top: 4rem;
+        }
+        
+        .pb-0 {
+            padding-bottom: 0;
+        }
+        
+        .mb-0 {
+            margin-bottom: 0;
+        }
+        
+        .w-96 {
+            width: 24rem;
+        }
+        
+        .h-96 {
+            height: 24rem;
+        }
+        
+        .mx-auto {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .w-full {
+            width: 100%;
+        }
+        
+        .h-full {
+            height: 100%;
+        }
+        
+        .max-w-2xl {
+            max-width: 42rem;
+        }
+        
+        .px-4 {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        
+        .pb-16 {
+            padding-bottom: 4rem;
+        }
+        
+        .grid {
+            display: grid;
+        }
+        
+        .grid-cols-1 {
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+        
+        .gap-4 {
+            gap: 1rem;
+        }
+        
+        .mb-8 {
+            margin-bottom: 2rem;
+        }
+        
+        .filter-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+        
+        .filter-btn:hover {
+            border-color: #007bff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .filter-btn-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .filter-btn-icon {
+            font-size: 24px;
+            width: 40px;
+            text-align: center;
+        }
+        
+        .filter-btn-text {
+            flex: 1;
+        }
+        
+        .filter-btn-title {
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .filter-btn-subtitle {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .search-section {
+            margin-top: 20px;
+        }
+        
+        .search-input-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        .search-input:focus {
+            border-color: #007bff;
+        }
+        
+        .search-input::placeholder {
+            color: #9ca3af;
+        }
+        
+        .search-btn {
+            padding: 12px 24px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .search-btn:hover {
+            background: #0056b3;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .modal-close:hover {
+            color: #333;
+        }
+        
+        .modal-header {
+            padding: 20px 20px 10px 20px;
+            margin: 0;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .filter-options-grid {
+            padding: 0 20px 20px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .filter-option {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .filter-option:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .filter-option input[type="checkbox"] {
+            margin-right: 8px;
+        }
+        
+        .filter-option-text {
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .modal-actions {
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+            text-align: right;
+        }
+        
+        .modal-apply-btn {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .modal-apply-btn:hover {
+            background: #0056b3;
+        }
+        
+        @media (min-width: 768px) {
+            .md\\:grid-cols-2 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .w-96 {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .h-96 {
+                height: auto;
+                max-height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="earbuds-widget-container">
+        <!-- ヘッダー -->
+        <div class="text-center pt-16 pb-0">
+            <div class="mb-0">
+                <!-- ロゴアイコン -->
+                <div class="w-96 h-96 mx-auto mb-0">
+                    <img
+                        src="https://pc-products-clean.vercel.app/images/earbuds_db.png"
+                        alt="イヤバズDB"
+                        class="w-full h-full"
+                        id="earbuds-db-logo"
+                    />
+                </div>
+            </div>
+        </div>
+
+        <!-- メイン検索エリア -->
+        <div class="max-w-2xl mx-auto px-4 pb-16">
+            <!-- 上段：メーカー、GPU -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                <!-- メーカーから探す -->
+                <button
+                    id="maker-filter-btn"
+                    class="filter-btn"
+                    onclick="openMakerModal()"
+                >
+                    <div class="filter-btn-content">
+                        <div class="filter-btn-icon">🏭</div>
+                        <div class="filter-btn-text">
+                            <div class="filter-btn-title">メーカーから探す</div>
+                            <div class="filter-btn-subtitle" id="maker-selected-text">選択してください</div>
+                        </div>
+                    </div>
+                </button>
+
+                <!-- GPUから探す -->
+                <button
+                    id="gpu-filter-btn"
+                    class="filter-btn"
+                    onclick="openGpuModal()"
+                >
+                    <div class="filter-btn-content">
+                        <div class="filter-btn-icon">🎮</div>
+                        <div class="filter-btn-text">
+                            <div class="filter-btn-title">GPUから探す</div>
+                            <div class="filter-btn-subtitle" id="gpu-selected-text">選択してください</div>
+                        </div>
+                    </div>
+                </button>
+            </div>
+
+            <!-- 下段：キーワード検索 -->
+            <div class="search-section">
+                <div class="search-input-group">
+                    <input
+                        type="text"
+                        id="keyword-input"
+                        class="search-input"
+                        placeholder="商品名やスペックで検索..."
+                        onkeypress="handleKeywordKeyPress(event)"
+                    />
+                    <button
+                        id="keyword-search-btn"
+                        class="search-btn"
+                        onclick="executeKeywordSearch()"
+                    >
+                        検索
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- モーダル -->
+        <div id="maker-modal" class="modal-overlay" style="display: none;">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <button class="modal-close" onclick="closeMakerModal()">×</button>
+                <h2 class="modal-header">メーカーを選択</h2>
+                <div class="filter-options-grid" id="maker-options">
+                    <!-- メーカーオプションが動的に追加されます -->
+                </div>
+                <div class="modal-actions">
+                    <button class="modal-apply-btn" onclick="applyMakerFilter()">適用</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="gpu-modal" class="modal-overlay" style="display: none;">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <button class="modal-close" onclick="closeGpuModal()">×</button>
+                <h2 class="modal-header">GPUを選択</h2>
+                <div class="filter-options-grid" id="gpu-options">
+                    <!-- GPUオプションが動的に追加されます -->
+                </div>
+                <div class="modal-actions">
+                    <button class="modal-apply-btn" onclick="applyGpuFilter()">適用</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // イヤバズDB ウィジェット用 完全埋め込みJavaScript
+        
+        // グローバル変数
+        let makerOptions = ['ドスパラ', 'マウス', 'フロンティア', 'Lenovo', 'パソコン工房', 'ツクモ', 'サイコム'];
+        let gpuOptions = ['RTX 4070', 'RTX 4080', 'RTX 4090', 'RTX 4060', 'RTX 4050', 'RTX 3090', 'RTX 3080'];
+        let selectedMaker = [];
+        let selectedGpu = [];
+
+        // デバッグ用ログ関数
+        function log(message) {
+            console.log('[イヤバズDB ウィジェット]', message);
+        }
+
+        // ウィジェット専用のURL生成関数
+        function buildWidgetUrl(params) {
+            try {
+                const baseUrl = 'https://earbuds-plus.jp/db/';
+                const queryString = new URLSearchParams(params).toString();
+                return queryString ? `${baseUrl}?${queryString}` : baseUrl;
+            } catch (error) {
+                console.error('URL生成エラー:', error);
+                return baseUrl;
+            }
+        }
+
+        // メーカーオプションをモーダルに追加
+        function populateMakerOptions() {
+            try {
+                const container = document.getElementById('maker-options');
+                if (!container) {
+                    log('メーカーオプションコンテナが見つかりません');
+                    return;
+                }
+                
+                container.innerHTML = '';
+                
+                makerOptions.forEach(option => {
+                    const label = document.createElement('label');
+                    label.className = 'filter-option';
+                    
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.value = option;
+                    checkbox.checked = selectedMaker.includes(option);
+                    checkbox.onchange = (e) => handleMakerSelection(option, e.target.checked);
+                    
+                    const text = document.createElement('span');
+                    text.className = 'filter-option-text';
+                    text.textContent = option;
+                    
+                    label.appendChild(checkbox);
+                    label.appendChild(text);
+                    container.appendChild(label);
+                });
+                
+                log('メーカーオプション設定完了:', makerOptions.length + '個');
+            } catch (error) {
+                console.error('メーカーオプション設定エラー:', error);
+            }
+        }
+
+        // GPUオプションをモーダルに追加
+        function populateGpuOptions() {
+            try {
+                const container = document.getElementById('gpu-options');
+                if (!container) {
+                    log('GPUオプションコンテナが見つかりません');
+                    return;
+                }
+                
+                container.innerHTML = '';
+                
+                gpuOptions.forEach(option => {
+                    const label = document.createElement('label');
+                    label.className = 'filter-option';
+                    
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.value = option;
+                    checkbox.checked = selectedGpu.includes(option);
+                    checkbox.onchange = (e) => handleGpuSelection(option, e.target.checked);
+                    
+                    const text = document.createElement('span');
+                    text.className = 'filter-option-text';
+                    text.textContent = option;
+                    
+                    label.appendChild(checkbox);
+                    label.appendChild(text);
+                    container.appendChild(label);
+                });
+                
+                log('GPUオプション設定完了:', gpuOptions.length + '個');
+            } catch (error) {
+                console.error('GPUオプション設定エラー:', error);
+            }
+        }
+
+        // メーカー選択処理
+        function handleMakerSelection(value, checked) {
+            try {
+                if (checked) {
+                    if (!selectedMaker.includes(value)) {
+                        selectedMaker.push(value);
+                    }
+                } else {
+                    selectedMaker = selectedMaker.filter(item => item !== value);
+                }
+                updateMakerSelectedText();
+                log('メーカー選択更新:', selectedMaker);
+            } catch (error) {
+                console.error('メーカー選択処理エラー:', error);
+            }
+        }
+
+        // GPU選択処理
+        function handleGpuSelection(value, checked) {
+            try {
+                if (checked) {
+                    if (!selectedGpu.includes(value)) {
+                        selectedGpu.push(value);
+                    }
+                } else {
+                    selectedGpu = selectedGpu.filter(item => item !== value);
+                }
+                updateGpuSelectedText();
+                log('GPU選択更新:', selectedGpu);
+            } catch (error) {
+                console.error('GPU選択処理エラー:', error);
+            }
+        }
+
+        // メーカー選択テキスト更新
+        function updateMakerSelectedText() {
+            try {
+                const element = document.getElementById('maker-selected-text');
+                if (element) {
+                    element.textContent = selectedMaker.length > 0 ? selectedMaker.join(', ') : '選択してください';
+                }
+            } catch (error) {
+                console.error('メーカー選択テキスト更新エラー:', error);
+            }
+        }
+
+        // GPU選択テキスト更新
+        function updateGpuSelectedText() {
+            try {
+                const element = document.getElementById('gpu-selected-text');
+                if (element) {
+                    element.textContent = selectedGpu.length > 0 ? selectedGpu.join(', ') : '選択してください';
+                }
+            } catch (error) {
+                console.error('GPU選択テキスト更新エラー:', error);
+            }
+        }
+
+        // メーカーモーダルを開く
+        function openMakerModal() {
+            try {
+                const modal = document.getElementById('maker-modal');
+                if (modal) {
+                    modal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                    populateMakerOptions();
+                    log('メーカーモーダルを開きました');
+                } else {
+                    log('メーカーモーダルが見つかりません');
+                }
+            } catch (error) {
+                console.error('メーカーモーダルを開くエラー:', error);
+            }
+        }
+
+        // メーカーモーダルを閉じる
+        function closeMakerModal() {
+            try {
+                const modal = document.getElementById('maker-modal');
+                if (modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                    log('メーカーモーダルを閉じました');
+                }
+            } catch (error) {
+                console.error('メーカーモーダルを閉じるエラー:', error);
+            }
+        }
+
+        // GPUモーダルを開く
+        function openGpuModal() {
+            try {
+                const modal = document.getElementById('gpu-modal');
+                if (modal) {
+                    modal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                    populateGpuOptions();
+                    log('GPUモーダルを開きました');
+                } else {
+                    log('GPUモーダルが見つかりません');
+                }
+            } catch (error) {
+                console.error('GPUモーダルを開くエラー:', error);
+            }
+        }
+
+        // GPUモーダルを閉じる
+        function closeGpuModal() {
+            try {
+                const modal = document.getElementById('gpu-modal');
+                if (modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                    log('GPUモーダルを閉じました');
+                }
+            } catch (error) {
+                console.error('GPUモーダルを閉じるエラー:', error);
+            }
+        }
+
+        // メーカーフィルター適用
+        function applyMakerFilter() {
+            try {
+                const params = {};
+                if (selectedMaker.length > 0) {
+                    params.maker = selectedMaker.join(',');
+                }
+                
+                const widgetUrl = buildWidgetUrl(params);
+                log('メーカーフィルター適用:', widgetUrl);
+                window.location.href = widgetUrl;
+            } catch (error) {
+                console.error('メーカーフィルター適用エラー:', error);
+            }
+        }
+
+        // GPUフィルター適用
+        function applyGpuFilter() {
+            try {
+                const params = {};
+                if (selectedGpu.length > 0) {
+                    params.gpu = selectedGpu.join(',');
+                }
+                
+                const widgetUrl = buildWidgetUrl(params);
+                log('GPUフィルター適用:', widgetUrl);
+                window.location.href = widgetUrl;
+            } catch (error) {
+                console.error('GPUフィルター適用エラー:', error);
+            }
+        }
+
+        // キーワード検索実行
+        function executeKeywordSearch() {
+            try {
+                const input = document.getElementById('keyword-input');
+                const keyword = input ? input.value.trim() : '';
+                
+                if (keyword) {
+                    const params = { keyword: keyword };
+                    const widgetUrl = buildWidgetUrl(params);
+                    log('キーワード検索実行:', widgetUrl);
+                    window.location.href = widgetUrl;
+                } else {
+                    log('キーワードが入力されていません');
+                }
+            } catch (error) {
+                console.error('キーワード検索実行エラー:', error);
+            }
+        }
+
+        // キーワード検索のEnterキー処理
+        function handleKeywordKeyPress(event) {
+            try {
+                if (event.key === 'Enter') {
+                    executeKeywordSearch();
+                }
+            } catch (error) {
+                console.error('キーワード検索Enterキー処理エラー:', error);
+            }
+        }
+
+        // 初期化処理
+        function initializeWidget() {
+            try {
+                log('ウィジェット初期化開始');
+                
+                // モーダル外クリックで閉じる処理
+                const makerModal = document.getElementById('maker-modal');
+                const gpuModal = document.getElementById('gpu-modal');
+                
+                if (makerModal) {
+                    makerModal.addEventListener('click', function(e) {
+                        if (e.target === makerModal) {
+                            closeMakerModal();
+                        }
+                    });
+                }
+                
+                if (gpuModal) {
+                    gpuModal.addEventListener('click', function(e) {
+                        if (e.target === gpuModal) {
+                            closeGpuModal();
+                        }
+                    });
+                }
+                
+                log('ウィジェット初期化完了');
+            } catch (error) {
+                console.error('ウィジェット初期化エラー:', error);
+            }
+        }
+
+        // DOM読み込み完了時に初期化
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeWidget);
+        } else {
+            initializeWidget();
+        }
+    </script>
+</body>
+</html>

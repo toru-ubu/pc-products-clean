@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>イヤバズDB ウィジェット</title>
+    <link rel="stylesheet" href="https://pc-products-clean.vercel.app/widgets/widget-standalone.css">
+</head>
+<body>
+    <div id="earbuds-widget-container">
+        <!-- ヘッダー -->
+        <div class="text-center pt-16 pb-0">
+            <div class="mb-0">
+                <!-- ロゴアイコン -->
+                <div class="w-96 h-96 mx-auto mb-0">
+                    <img
+                        src="https://pc-products-clean.vercel.app/images/earbuds_db.png"
+                        alt="イヤバズDB"
+                        class="w-full h-full"
+                        id="earbuds-db-logo"
+                    />
+                </div>
+            </div>
+        </div>
+
+        <!-- メイン検索エリア -->
+        <div class="max-w-2xl mx-auto px-4 pb-16">
+            <!-- 上段：メーカー、GPU -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                <!-- メーカーから探す -->
+                <button
+                    id="maker-filter-btn"
+                    class="filter-btn"
+                    onclick="openMakerModal()"
+                >
+                    <div class="filter-btn-content">
+                        <div class="filter-btn-icon">🏭</div>
+                        <div class="filter-btn-text">
+                            <div class="filter-btn-title">メーカーから探す</div>
+                            <div class="filter-btn-subtitle" id="maker-selected-text">選択してください</div>
+                        </div>
+                    </div>
+                </button>
+
+                <!-- GPUから探す -->
+                <button
+                    id="gpu-filter-btn"
+                    class="filter-btn"
+                    onclick="openGpuModal()"
+                >
+                    <div class="filter-btn-content">
+                        <div class="filter-btn-icon">🎮</div>
+                        <div class="filter-btn-text">
+                            <div class="filter-btn-title">GPUから探す</div>
+                            <div class="filter-btn-subtitle" id="gpu-selected-text">選択してください</div>
+                        </div>
+                    </div>
+                </button>
+            </div>
+
+            <!-- 下段：キーワード検索 -->
+            <div class="search-section">
+                <div class="search-input-group">
+                    <input
+                        type="text"
+                        id="keyword-input"
+                        class="search-input"
+                        placeholder="商品名やスペックで検索..."
+                        onkeypress="handleKeywordKeyPress(event)"
+                    />
+                    <button
+                        id="keyword-search-btn"
+                        class="search-btn"
+                        onclick="executeKeywordSearch()"
+                    >
+                        検索
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- モーダル -->
+        <div id="maker-modal" class="modal-overlay" style="display: none;">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <button class="modal-close" onclick="closeMakerModal()">×</button>
+                <h2 class="modal-header">メーカーを選択</h2>
+                <div class="filter-options-grid" id="maker-options">
+                    <!-- メーカーオプションが動的に追加されます -->
+                </div>
+                <div class="modal-actions">
+                    <button class="modal-apply-btn" onclick="applyMakerFilter()">適用</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="gpu-modal" class="modal-overlay" style="display: none;">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <button class="modal-close" onclick="closeGpuModal()">×</button>
+                <h2 class="modal-header">GPUを選択</h2>
+                <div class="filter-options-grid" id="gpu-options">
+                    <!-- GPUオプションが動的に追加されます -->
+                </div>
+                <div class="modal-actions">
+                    <button class="modal-apply-btn" onclick="applyGpuFilter()">適用</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://pc-products-clean.vercel.app/widgets/widget-standalone.js"></script>
+</body>
+</html>

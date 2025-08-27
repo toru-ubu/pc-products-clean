@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>イヤバズDB ウィジェット テスト</title>
+    <style>
+        /* 基本的なスタイル */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        #earbuds-widget-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .filter-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            text-align: left;
+        }
+        
+        .filter-btn:hover {
+            border-color: #007bff;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        
+        .search-btn {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 400px;
+            width: 90%;
+        }
+    </style>
+</head>
+<body>
+    <div id="earbuds-widget-container">
+        <h2>イヤバズDB ウィジェット</h2>
+        
+        <!-- メーカーボタン -->
+        <button class="filter-btn" onclick="openMakerModal()">
+            🏭 メーカーから探す
+        </button>
+        
+        <!-- GPUボタン -->
+        <button class="filter-btn" onclick="openGpuModal()">
+            🎮 GPUから探す
+        </button>
+        
+        <!-- キーワード検索 -->
+        <input type="text" class="search-input" placeholder="商品名やスペックで検索..." id="keyword-input">
+        <button class="search-btn" onclick="executeKeywordSearch()">検索</button>
+        
+        <!-- メーカーモーダル -->
+        <div id="maker-modal" class="modal-overlay">
+            <div class="modal-content">
+                <h3>メーカーを選択</h3>
+                <button onclick="selectMaker('ドスパラ')">ドスパラ</button>
+                <button onclick="selectMaker('マウス')">マウス</button>
+                <button onclick="closeMakerModal()">閉じる</button>
+            </div>
+        </div>
+        
+        <!-- GPUモーダル -->
+        <div id="gpu-modal" class="modal-overlay">
+            <div class="modal-content">
+                <h3>GPUを選択</h3>
+                <button onclick="selectGpu('RTX4070')">RTX 4070</button>
+                <button onclick="selectGpu('RTX4080')">RTX 4080</button>
+                <button onclick="closeGpuModal()">閉じる</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // シンプルなテスト用JavaScript
+        function openMakerModal() {
+            document.getElementById('maker-modal').style.display = 'flex';
+        }
+        
+        function closeMakerModal() {
+            document.getElementById('maker-modal').style.display = 'none';
+        }
+        
+        function openGpuModal() {
+            document.getElementById('gpu-modal').style.display = 'flex';
+        }
+        
+        function closeGpuModal() {
+            document.getElementById('gpu-modal').style.display = 'none';
+        }
+        
+        function selectMaker(maker) {
+            alert('選択されたメーカー: ' + maker);
+            closeMakerModal();
+        }
+        
+        function selectGpu(gpu) {
+            alert('選択されたGPU: ' + gpu);
+            closeGpuModal();
+        }
+        
+        function executeKeywordSearch() {
+            const keyword = document.getElementById('keyword-input').value;
+            if (keyword) {
+                alert('検索キーワード: ' + keyword);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -12,52 +12,117 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* ダークモード設定を無効化し、常にライトモードで表示 */
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: #ffffff !important;
+  color: #171717 !important;
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* TOPページ用スタイル */
-.search-button {
-  @apply p-6 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg;
-  min-height: 160px;
+/* コンテナ全体を中央配置 */
+#earbuds-widget-container {
+  min-height: 100vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
-.search-button-horizontal {
-  @apply p-2 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md;
+/* メイン検索エリア */
+.max-w-2xl {
+  width: 100%;
+  max-width: 600px;
+}
+
+/* 説明テキスト */
+.description-text {
+  text-align: center;
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #374151;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+/* フィルターボタン行（横並び） */
+.filter-buttons-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* フィルターボタンスタイル */
+.filter-btn {
+  @apply p-4 transition-all duration-200 transform hover:scale-105 shadow-md;
+  background: #2563eb;
+  border: 2px solid #2563eb;
+  cursor: pointer;
   min-height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: 1;
+  font-weight: 600;
+  font-size: 1rem;
+  color: white;
+  border-radius: 12px;
 }
 
-/* 一体化検索デザイン */
-.search-container {
+.filter-btn:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2), 0 2px 4px -1px rgba(37, 99, 235, 0.1);
+}
+
+.filter-btn-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.filter-btn-icon {
+  font-size: 1.5rem;
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+}
+
+.filter-btn-text {
+  flex: 1;
+  text-align: left;
+}
+
+.filter-btn-title {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+}
+
+.filter-btn-subtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* 検索セクション */
+.search-section {
+  margin-top: 2rem;
+}
+
+.search-input-group {
   display: flex;
   width: 100%;
-  border-radius: 6px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 2px solid #2563eb;
+  min-height: 50px;
 }
 
 .search-input {
   flex: 1;
-  padding: 12px 16px;
+  padding: 12px 20px;
   border: none;
   outline: none;
-  font-size: 16px;
+  font-size: 1rem;
   background: white;
   color: #000000;
 }
@@ -66,7 +131,7 @@ body {
   color: #9ca3af;
 }
 
-.search-button-red {
+.search-btn {
   background-color: #2563eb;
   color: white;
   padding: 12px 24px;
@@ -74,10 +139,10 @@ body {
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s;
-  font-size: 16px;
+  font-size: 1rem;
 }
 
-.search-button-red:hover {
+.search-btn:hover {
   background-color: #1d4ed8;
 }
 
@@ -239,35 +304,141 @@ body {
   border-radius: 0.25rem;
 }
 
-/* レスポンシブ対応 */
-@media (max-width: 768px) {
-  .search-button {
-    min-height: 120px;
-    padding: 1rem;
+.model-name {
+  margin-left: 0.5rem;
+}
+
+/* ===== PC専用設定（769px以上） ===== */
+@media (min-width: 769px) {
+  .modal-content {
+    width: 90vw;
+    max-width: 900px;
+    max-height: 80vh;
+    padding: 2rem;
   }
   
-  .search-button-horizontal {
+  .filter-options-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .filter-option-label {
+    font-size: 1.05em;
+    padding: 0.75rem;
+  }
+  
+  .modal-header {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .btn-primary {
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+  }
+}
+
+/* ===== SP専用設定（768px以下） ===== */
+@media (max-width: 768px) {
+  .description-text {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .filter-buttons-row {
+    flex-direction: row;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .filter-btn {
     min-height: 40px;
     padding: 0.5rem;
+    font-size: 0.75rem;
+  }
+  
+  .search-section {
+    margin-top: 1rem;
+  }
+  
+  .search-input-group {
+    min-height: 40px;
   }
   
   .search-input {
-    padding: 10px 12px;
-    font-size: 14px;
+    padding: 8px 12px;
+    font-size: 0.875rem;
   }
   
-  .search-button-red {
-    padding: 10px 16px;
-    font-size: 14px;
+  .search-btn {
+    padding: 8px 16px;
+    font-size: 0.875rem;
   }
   
   .modal-content {
+    width: 85vw;
+    max-width: none;
+    max-height: 70vh;
     padding: 1.5rem;
-    max-width: 95vw;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .hierarchical-modal {
+    width: 88vw;
+    max-width: none;
+    max-height: 75vh;
   }
   
   .filter-options-grid {
     grid-template-columns: 1fr;
+    gap: 0.5rem;
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 0.125rem;
+  }
+  
+  .hierarchical-filter-container {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 0.125rem;
+    min-height: 0;
+  }
+  
+  .filter-models-container {
+    grid-template-columns: 1fr;
+    gap: 0.375rem;
+    max-height: none;
+    overflow-y: visible;
+  }
+  
+  .filter-series-header {
+    padding: 0.625rem 0.75rem;
+  }
+  
+  .filter-series-label {
+    font-size: 1em;
+  }
+  
+  .modal-button-group {
+    flex-direction: column;
+    gap: 0.375rem;
+    margin-top: 0.25rem;
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+  
+  .modal-button-group button {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    font-size: 0.9em;
+  }
+  
+  .modal-header {
+    margin-top: 0;
+    margin-bottom: 0.125rem;
+    font-size: 0.9em;
+    padding: 0;
   }
 }
 
