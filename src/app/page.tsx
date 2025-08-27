@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { FilterModal } from '../components/FilterModal';
 import { HierarchicalFilterModal } from '../components/HierarchicalFilterModal';
 import { useFilterOptions } from '../hooks/useFilterOptions';
@@ -64,34 +65,35 @@ export default function Home() {
   // キーワード検索実行
   const handleKeywordSearch = () => {
     if (keyword.trim()) {
-      executeSearch('keyword', [keyword.trim()]);
+      // search側と同じパラメータ名を使用
+      const params = new URLSearchParams();
+      params.set('keyword', keyword.trim());
+      router.push(`/search?${params.toString()}`);
     }
   };
 
   return (
     <div className="min-h-screen bg-white">
       {/* ヘッダー */}
-      <div className="text-center pt-16 pb-12">
-        <div className="mb-8">
+      <div className="text-center pt-16 pb-0">
+        <div className="mb-0">
           {/* ロゴアイコン */}
-          <div className="w-24 h-24 mx-auto mb-4">
-            <svg viewBox="0 0 100 100" className="w-full h-full">
-              {/* サーバーラック風のアイコン */}
-              <rect x="10" y="10" width="80" height="80" fill="none" stroke="#2563eb" strokeWidth="3"/>
-              <line x1="10" y1="30" x2="90" y2="30" stroke="#2563eb" strokeWidth="2"/>
-              <line x1="10" y1="50" x2="90" y2="50" stroke="#2563eb" strokeWidth="2"/>
-              <line x1="10" y1="70" x2="90" y2="70" stroke="#2563eb" strokeWidth="2"/>
-              <line x1="30" y1="10" x2="30" y2="90" stroke="#2563eb" strokeWidth="2"/>
-              <line x1="70" y1="10" x2="70" y2="90" stroke="#2563eb" strokeWidth="2"/>
-            </svg>
+          <div className="w-96 h-96 mx-auto mb-0">
+            <Image
+              src="/images/earbuds_db.png"
+              alt="イヤバズDB"
+              width={384}
+              height={384}
+              className="w-full h-full"
+              key="earbuds-db-logo"
+              priority
+            />
           </div>
-          <h1 className="text-4xl font-bold text-blue-600 mb-2">イヤバズDB</h1>
-          <p className="text-lg text-gray-600">ゲーミングPCが探せるデータベース</p>
         </div>
       </div>
 
       {/* メイン検索エリア */}
-      <div className="max-w-4xl mx-auto px-4 pb-16">
+      <div className="max-w-2xl mx-auto px-4 pb-16">
         {/* 上段：メーカー、CPU、GPU */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           {/* メーカーから探す */}

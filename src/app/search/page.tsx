@@ -388,14 +388,12 @@ function ProductsPageContent() {
     const params = new URLSearchParams();
     
     if (currentFilters.searchKeyword.trim()) {
-      params.set('search', currentFilters.searchKeyword);
+      params.set('keyword', currentFilters.searchKeyword);
     }
     
     if (currentFilters.maker.length > 0) {
       params.set('maker', currentFilters.maker.join(','));
     }
-    
-
     
     if (currentFilters.cpu.length > 0) {
       params.set('cpu', currentFilters.cpu.join(','));
@@ -457,7 +455,6 @@ function ProductsPageContent() {
     return {
       applied: {
         maker: params.get('maker')?.split(',').filter(Boolean) || [],
-
         cpu: params.get('cpu')?.split(',').filter(Boolean) || [],
         gpu: params.get('gpu')?.split(',').filter(Boolean) || [],
         memory: params.get('memory')?.split(',').filter(Boolean) || [],
@@ -467,7 +464,7 @@ function ProductsPageContent() {
         priceMin: parseInt(params.get('priceMin') || '0'),
         priceMax: parseInt(params.get('priceMax') || '1000000'),
         onSale: params.get('onSale') === 'true',
-        searchKeyword: params.get('search') || '',
+        searchKeyword: params.get('keyword') || '',
         sortBy: params.get('sort') || 'price-asc'
       },
       currentPage: parseInt(params.get('page') || '1')

@@ -36,7 +36,7 @@ body {
 }
 
 .search-button-horizontal {
-  @apply p-3 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md;
+  @apply p-2 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md;
   min-height: 50px;
   display: flex;
   align-items: center;
@@ -47,9 +47,9 @@ body {
 .search-container {
   display: flex;
   width: 100%;
-  border-radius: 8px;
+  border-radius: 6px;
   overflow: hidden;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
 }
 
 .search-input {
@@ -247,7 +247,7 @@ body {
   
   .search-button-horizontal {
     min-height: 40px;
-    padding: 0.75rem;
+    padding: 0.5rem;
   }
   
   .search-input {
@@ -267,5 +267,124 @@ body {
   
   .filter-options-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* 統一フッターのスタイル */
+.unified-footer {
+  background-color: #ffffff !important;
+  padding: 1rem 0 !important;
+  margin-top: 3rem !important;
+  font-size: 0.875rem !important;
+  color: #000000 !important;
+  text-align: center !important;
+  border-top: 1px solid #e5e7eb !important;
+}
+
+.unified-footer section {
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding: 0 1rem !important;
+}
+
+/* サイト情報セクション */
+.unified-footer .site-info {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+.unified-footer .info-links {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-wrap: wrap !important;
+  gap: 0.5rem !important;
+}
+
+.unified-footer .info-links a {
+  color: #000000 !important;
+  text-decoration: none !important;
+  transition: color 0.2s ease !important;
+}
+
+.unified-footer .info-links a:hover {
+  color: #666666 !important;
+  text-decoration: underline !important;
+}
+
+.unified-footer .separator {
+  color: #000000 !important;
+  margin: 0 0.25rem !important;
+}
+
+.unified-footer .copyright {
+  font-size: 0.875rem !important;
+  color: #000000 !important;
+}
+
+/* 統一ヘッダーのスタイル */
+.unified-header {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  width: 100% !important;
+  height: 112px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* ヘッダーコンテナ */
+.l-header__inner {
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 1rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* ロゴエリア */
+.l-header__logo {
+  flex-shrink: 0 !important;
+  text-align: center !important;
+}
+
+.c-headLogo {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.c-headLogo__link {
+  text-decoration: none !important;
+  color: #000000 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.c-headLogo__img {
+  height: auto !important;
+  max-height: 80px !important;
+  width: auto !important;
+  max-width: 280px !important;
+  object-fit: contain !important;
+}
+
+/* フッターのレスポンシブ対応 */
+@media (max-width: 768px) {
+  .unified-footer {
+    padding: 0.75rem 0 !important;
+  }
+  
+  .unified-footer .info-links {
+    flex-direction: column !important;
+    gap: 0.25rem !important;
+  }
+  
+  .unified-footer .separator {
+    display: none !important;
   }
 }
