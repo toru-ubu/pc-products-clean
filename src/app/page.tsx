@@ -120,27 +120,25 @@ export default function Home() {
         </div>
 
         {/* 下段：キーワード検索 */}
-        <div className="max-w-2xl mx-auto">
-          <div className="search-container">
-            <input
-              type="text"
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              placeholder="メーカー・スペック・キーワード"
-              className="search-input"
-              onKeyPress={(e) => {
-                if (e.key === 'Enter') {
-                  handleKeywordSearch();
-                }
-              }}
-            />
-            <button 
-              onClick={handleKeywordSearch}
-              className="search-button-red"
-            >
-              検索
-            </button>
-          </div>
+        <div className="search-container">
+          <input
+            type="text"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            placeholder="メーカー・スペック・キーワード"
+            className="search-input"
+            onKeyPress={(e) => {
+              if (e.key === 'Enter') {
+                handleKeywordSearch();
+              }
+            }}
+          />
+          <button 
+            onClick={handleKeywordSearch}
+            className="search-button-red"
+          >
+            検索
+          </button>
         </div>
       </div>
 

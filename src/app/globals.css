@@ -46,8 +46,7 @@ body {
 /* 一体化検索デザイン */
 .search-container {
   display: flex;
-  max-width: 600px;
-  margin: 0 auto;
+  width: 100%;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -67,7 +66,7 @@ body {
 }
 
 .search-button-red {
-  background-color: #ef4444;
+  background-color: #2563eb;
   color: white;
   padding: 12px 24px;
   border: none;
@@ -78,7 +77,7 @@ body {
 }
 
 .search-button-red:hover {
-  background-color: #dc2626;
+  background-color: #1d4ed8;
 }
 
 /* モーダルスタイル */
@@ -249,10 +248,6 @@ body {
   .search-button-horizontal {
     min-height: 40px;
     padding: 0.75rem;
-  }
-  
-  .search-container {
-    margin: 0 1rem;
   }
   
   .search-input {

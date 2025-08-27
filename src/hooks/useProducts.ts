@@ -36,7 +36,7 @@ export const useProducts = () => {
     console.log('データをキャッシュに保存:', cacheKey);
   }, []);
 
-  const retryWithBackoff = async (operation: () => Promise<void>, attempt: number = 1) => {
+  const _retryWithBackoff = async (operation: () => Promise<void>, attempt: number = 1) => {
     try {
       await operation();
     } catch (err) {
@@ -48,7 +48,7 @@ export const useProducts = () => {
         setRetryCount(attempt);
         
         // 指数バックオフでリトライ
-        setTimeout(() => retryWithBackoff(operation, attempt + 1), delay);
+        setTimeout(() => _retryWithBackoff(operation, attempt + 1), delay);
       } else {
         console.error('最大リトライ回数に達しました。モックデータを使用します。');
         setError('データの取得に失敗しました。仮のデータを表示しています。');
@@ -60,7 +60,7 @@ export const useProducts = () => {
     }
   };
 
-  const loadProducts = async () => {
+  const loadProducts = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -91,7 +91,7 @@ export const useProducts = () => {
       setError('データの読み込み中にエラーが発生しました。');
       setLoading(false);
     }
-  };
+  }, [setCachedProducts]);
 
   const retryLoadProducts = () => {
     setRetryCount(0);
@@ -113,7 +113,7 @@ export const useProducts = () => {
 
   useEffect(() => {
     loadProducts();
-  }, []);
+  }, [loadProducts]);
 
   return {
     products,
