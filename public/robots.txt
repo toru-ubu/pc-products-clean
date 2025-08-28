@@ -1,0 +1,28 @@
+# イヤバズDB - 検索エンジンクロール許可設定
+# /db/配下はクロールを許可し、noindexメタタグでインデックスを禁止
+
+# APIのみ禁止（データ保護）
+User-agent: *
+Disallow: /api/
+
+# 主要検索エンジンにもAPIのみ禁止
+User-agent: Googlebot
+Disallow: /api/
+
+User-agent: Bingbot
+Disallow: /api/
+
+User-agent: Slurp
+Disallow: /api/
+
+User-agent: DuckDuckBot
+Disallow: /api/
+
+User-agent: Baiduspider
+Disallow: /api/
+
+User-agent: YandexBot
+Disallow: /api/
+
+# サイトマップも無効化
+# Sitemap: https://earbuds-plus.jp/db/sitemap.xml

@@ -31,6 +31,42 @@ body {
   background: #f5f5f5;
 }
 
+/* ===== ページタイトル帯 ===== */
+
+/* ページタイトル帯のスタイル */
+.page-title-banner {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  padding: 16px 0 !important;
+  margin-bottom: 5px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 帯内のproducts-containerのパディングを0にする */
+.page-title-banner .products-container {
+  padding: 0 16px !important;
+}
+
+.page-title-banner h1 {
+  margin: 0 !important;
+  color: white !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+  font-size: 1.125rem !important;
+  font-weight: 600 !important;
+  text-align: left !important;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .page-title-banner {
+    padding: 12px 0 !important;
+    margin-bottom: 5px !important;
+  }
+  
+  .page-title-banner h1 {
+    font-size: 0.875rem !important;
+  }
+}
+
 /* ===== ローディングスピナー ===== */
 
 /* PC表示用：大きなスピナー */
@@ -1554,31 +1590,32 @@ body {
   height: 100vh;
   background: rgba(0,0,0,0.45);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   z-index: 1000;
   overflow: hidden; /* 背景のスクロールを防止 */
   touch-action: none; /* SPでのタッチスクロール防止 */
+  padding-top: 6vh; /* 上部に余白を追加（さらに下げる） */
 }
 
 /* モーダルコンテンツ */
 .modal-content {
-  background: white;
-  border-radius: 8px;
-  padding: 24px;
-  width: 90vw;
-  max-width: 900px;
-  max-height: 80vh;
-  position: relative;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  background: white !important;
+  border-radius: 8px !important;
+  padding: 24px !important;
+  width: 85vw !important;
+  max-width: 800px !important;
+  max-height: 75vh !important;
+  position: relative !important;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2) !important;
 }
 
 /* モーダルヘッダー */
 .modal-header {
   margin-top: 0;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   text-align: center;
-  font-size: 1.3em;
+  font-size: 1.1em;
   font-weight: bold;
   color: #333;
   padding: 0;
@@ -1648,12 +1685,12 @@ body {
 
 /* モーダルボタングループ */
 .modal-button-group {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  margin-top: 24px;
-  margin-bottom: 0;
-  flex-shrink: 0; /* ボタンエリアを固定 */
+  display: flex !important;
+  gap: 12px !important;
+  justify-content: center !important;
+  margin-top: 2px !important;
+  margin-bottom: 0 !important;
+  flex-shrink: 0 !important; /* ボタンエリアを固定 */
 }
 
 /* ===== 階層フィルターモーダル専用スタイル ===== */

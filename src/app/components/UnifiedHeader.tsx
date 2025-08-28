@@ -11,7 +11,7 @@ export default function UnifiedHeader() {
         <div className="l-header__logo">
           <div className="c-headLogo -img">
             <Link 
-              href="https://earbuds-plus.jp/" 
+              href="https://earbuds-plus.jp/db" 
               title="イヤバズ+" 
               className="c-headLogo__link" 
               rel="home"

@@ -25,6 +25,87 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* 超サイバーパンク風背景 */
+.gaming-background {
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 20%, #16213e 40%, #0f3460 60%, #533483 80%, #ff00ff 100%) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.gaming-background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(0, 255, 255, 0.25) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 0, 255, 0.25) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(0, 255, 255, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 60% 60%, rgba(255, 255, 0, 0.1) 0%, transparent 50%);
+  animation: ultraCyberpunkGlow 4s ease-in-out infinite alternate;
+}
+
+.gaming-background::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  background-image: 
+    linear-gradient(90deg, transparent 98%, rgba(0, 255, 255, 0.3) 100%),
+    linear-gradient(0deg, transparent 98%, rgba(255, 0, 255, 0.3) 100%);
+  background-size: 30px 30px;
+  animation: cyberpunkGrid 8s linear infinite;
+  opacity: 0.3;
+}
+
+/* ルートページ専用のbody背景上書き */
+.root-page {
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 20%, #16213e 40%, #0f3460 60%, #533483 80%, #ff00ff 100%) !important;
+}
+
+/* ルートページのbody背景も上書き */
+body .root-page {
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 20%, #16213e 40%, #0f3460 60%, #533483 80%, #ff00ff 100%) !important;
+}
+
+/* style.cssのbody背景を上書き */
+body.root-page,
+.root-page body {
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 20%, #16213e 40%, #0f3460 60%, #533483 80%, #ff00ff 100%) !important;
+}
+
+/* ルートページのモーダル位置調整 */
+.root-page .modal-overlay {
+  align-items: center !important;
+  padding-top: 0 !important;
+}
+
+@keyframes ultraCyberpunkGlow {
+  0% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes cyberpunkGrid {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(30px, 30px);
+  }
+}
+
 /* TOPページ用スタイル */
 .search-button {
   @apply p-6 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg;
@@ -41,6 +122,29 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* 価格帯ボタン専用スタイル */
+.price-range-button {
+  @apply p-2 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* 正方形価格帯ボタン専用スタイル */
+.price-range-button-square {
+  @apply p-1 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-md;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.1;
+  word-break: keep-all;
 }
 
 /* 一体化検索デザイン */
@@ -90,7 +194,7 @@ body {
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
-  align-items: center;
+  align-items: center !important;
   justify-content: center;
   z-index: 1000;
   padding: 1rem;
@@ -249,6 +353,17 @@ body {
   .search-button-horizontal {
     min-height: 40px;
     padding: 0.5rem;
+  }
+  
+  .price-range-button {
+    min-height: 32px;
+    padding: 0.25rem 0.5rem;
+    font-size: 12px;
+  }
+  
+  .price-range-button-square {
+    padding: 0.25rem;
+    font-size: 10px;
   }
   
   .search-input {

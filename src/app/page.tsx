@@ -2,23 +2,21 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import Link from 'next/link';
 import { FilterModal } from '../components/FilterModal';
 import { HierarchicalFilterModal } from '../components/HierarchicalFilterModal';
 import { useFilterOptions } from '../hooks/useFilterOptions';
 
 export default function Home() {
   const router = useRouter();
-  const { makerOptions, cpuOptionsHierarchy, gpuOptionsHierarchy } = useFilterOptions();
+  const { makerOptions, gpuOptionsHierarchy } = useFilterOptions();
 
   // モーダル状態
   const [isMakerModalOpen, setIsMakerModalOpen] = useState(false);
-  const [isCpuModalOpen, setIsCpuModalOpen] = useState(false);
   const [isGpuModalOpen, setIsGpuModalOpen] = useState(false);
 
   // 選択された値
   const [selectedMaker, setSelectedMaker] = useState<string[]>([]);
-  const [selectedCpu, setSelectedCpu] = useState<string[]>([]);
   const [selectedGpu, setSelectedGpu] = useState<string[]>([]);
   const [keyword, setKeyword] = useState('');
 
@@ -28,8 +26,6 @@ export default function Home() {
     
     if (type === 'maker' && values.length > 0) {
       params.set('maker', values.join(','));
-    } else if (type === 'cpu' && values.length > 0) {
-      params.set('cpu', values.join(','));
     } else if (type === 'gpu' && values.length > 0) {
       params.set('gpu', values.join(','));
     } else if (type === 'keyword' && keyword.trim()) {
@@ -51,9 +47,6 @@ export default function Home() {
       case 'maker':
         values = selectedMaker;
         break;
-      case 'cpu':
-        values = selectedCpu;
-        break;
       case 'gpu':
         values = selectedGpu;
         break;
@@ -73,43 +66,24 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* ヘッダー */}
-      <div className="text-center pt-16 pb-0">
-        <div className="mb-0">
-          {/* ロゴアイコン */}
-          <div className="w-96 h-96 mx-auto mb-0">
-            <Image
-              src="/images/earbuds_db.png"
-              alt="イヤバズDB"
-              width={384}
-              height={384}
-              className="w-full h-full"
-              key="earbuds-db-logo"
-              priority
-            />
-          </div>
-        </div>
-      </div>
-
+    <div className="min-h-screen gaming-background root-page">
       {/* メイン検索エリア */}
-      <div className="max-w-2xl mx-auto px-4 pb-16">
-        {/* 上段：メーカー、CPU、GPU */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <div className="max-w-2xl mx-auto px-4 pt-16 pb-16 relative z-10">
+        {/* タイトル */}
+        <div className="text-center mb-8">
+          <h1 className="text-xs sm:text-sm md:text-base lg:text-lg font-bold text-white leading-tight relative z-10">
+            メーカー横断で探せる日本最大のゲーミングPC検索データベース
+          </h1>
+        </div>
+
+        {/* 上段：メーカー、GPU */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           {/* メーカーから探す */}
           <button
             onClick={() => setIsMakerModalOpen(true)}
             className="search-button-horizontal bg-red-500 hover:bg-red-600 text-white"
           >
             <div className="font-semibold">メーカーから探す</div>
-          </button>
-
-          {/* CPUから探す */}
-          <button
-            onClick={() => setIsCpuModalOpen(true)}
-            className="search-button-horizontal bg-blue-500 hover:bg-blue-600 text-white"
-          >
-            <div className="font-semibold">CPUから探す</div>
           </button>
 
           {/* GPUから探す */}
@@ -121,8 +95,8 @@ export default function Home() {
           </button>
         </div>
 
-        {/* 下段：キーワード検索 */}
-        <div className="search-container">
+        {/* 中段：キーワード検索 */}
+        <div className="search-container mb-8">
           <input
             type="text"
             value={keyword}
@@ -142,6 +116,37 @@ export default function Home() {
             検索
           </button>
         </div>
+
+        {/* 下段：価格帯から探す */}
+        <div className="text-center mb-4">
+          <h3 className="text-sm md:text-base font-semibold text-white mb-4">価格帯から探す</h3>
+          <div className="grid grid-cols-4 gap-2 md:gap-3">
+            <Link 
+              href="/search?priceMax=100000"
+              className="price-range-button-square bg-white border border-blue-500 text-blue-500 hover:bg-blue-50 flex items-center justify-center"
+            >
+              <div className="font-semibold text-xs md:text-sm">10万円以下</div>
+            </Link>
+            <Link 
+              href="/search?priceMin=100000&priceMax=200000"
+              className="price-range-button-square bg-white border border-blue-500 text-blue-500 hover:bg-blue-50 flex items-center justify-center"
+            >
+              <div className="font-semibold text-xs md:text-sm">10万円〜20万円</div>
+            </Link>
+            <Link 
+              href="/search?priceMin=200000&priceMax=300000"
+              className="price-range-button-square bg-white border border-blue-500 text-blue-500 hover:bg-blue-50 flex items-center justify-center"
+            >
+              <div className="font-semibold text-xs md:text-sm">20万円〜30万円</div>
+            </Link>
+            <Link 
+              href="/search?priceMin=300000"
+              className="price-range-button-square bg-white border border-blue-500 text-blue-500 hover:bg-blue-50 flex items-center justify-center"
+            >
+              <div className="font-semibold text-xs md:text-sm">30万円以上</div>
+            </Link>
+          </div>
+        </div>
       </div>
 
       {/* モーダル群 */}
@@ -153,16 +158,6 @@ export default function Home() {
         selectedValues={selectedMaker}
         onSelectionChange={setSelectedMaker}
         onApply={() => handleModalApply('maker')}
-      />
-
-      <HierarchicalFilterModal
-        isOpen={isCpuModalOpen}
-        onClose={() => setIsCpuModalOpen(false)}
-        title="CPU"
-        hierarchyOptions={cpuOptionsHierarchy}
-        selectedValues={selectedCpu}
-        onSelectionChange={setSelectedCpu}
-        onApply={() => handleModalApply('cpu')}
       />
 
       <HierarchicalFilterModal

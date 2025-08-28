@@ -12,6 +12,7 @@ import { Pagination } from '../../components/Pagination';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { useFilterOptions } from '../../hooks/useFilterOptions';
 import { isMatchingAny } from '../../utils/filterNormalization';
+import { generateDynamicTitle } from '../../utils/titleGenerator';
 
 function ProductsPageContent() {
   const _router = useRouter();
@@ -351,6 +352,10 @@ function ProductsPageContent() {
     console.log('=== Filter Debug End ===');
     console.log('Final filtered products:', filtered.length);
     setFilteredProducts(filtered);
+    
+    // 動的タイトル更新
+    const dynamicTitle = generateDynamicTitle(filterState);
+    document.title = dynamicTitle;
   }, [products, filterState, isMobile]);
 
   // ページネーション計算
@@ -382,6 +387,12 @@ function ProductsPageContent() {
       applyFilters();
     }
   }, [applyFilters, products.length]);
+
+  // 初期タイトル設定
+  useEffect(() => {
+    const dynamicTitle = generateDynamicTitle(filterState);
+    document.title = dynamicTitle;
+  }, []);
 
   // URL管理のヘルパー関数
   const buildUrlParams = (currentFilters: typeof filterState.applied, page: number = 1) => {
@@ -817,9 +828,16 @@ function ProductsPageContent() {
   return (
     <div className="nextjs-products-scope">
       <div className="min-h-screen" style={{ background: '#f5f5f5' }}>
+        {/* ページタイトル帯 */}
+        <div className="page-title-banner">
+          <div className="products-container">
+            <h1>
+              {generateDynamicTitle(filterState)}
+            </h1>
+          </div>
+        </div>
+        
         <div className="products-container">
-        {/* ページタイトル */}
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">イヤバズDB</h1>
 
         {/* エラー表示 */}
         {error && (
