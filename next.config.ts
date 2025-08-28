@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   basePath: '/db', // Cloudflare統合用のベースパス設定
+  assetPrefix: '/db', // 静的ファイル用のプレフィックス設定
 
   // ESLintの警告をエラーにしない
   eslint: {

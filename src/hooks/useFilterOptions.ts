@@ -18,7 +18,7 @@ export const getFilterOptions = async (): Promise<FilterOptions> => {
   }
 
   try {
-    const response = await fetch('/db/config/filter-options.json');
+    const response = await fetch('/config/filter-options.json');
     if (!response.ok) {
       throw new Error(`Failed to fetch filter options: ${response.status}`);
     }
