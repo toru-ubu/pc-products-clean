@@ -33,9 +33,9 @@ export default function Home() {
     }
 
     if (params.toString()) {
-      router.push(`/search?${params.toString()}`);
+      router.push(`/db/search?${params.toString()}`);
     } else {
-      router.push('/search');
+      router.push('/db/search');
     }
   };
 
@@ -61,7 +61,7 @@ export default function Home() {
       // search側と同じパラメータ名を使用
       const params = new URLSearchParams();
       params.set('keyword', keyword.trim());
-      router.push(`/search?${params.toString()}`);
+      router.push(`/db/search?${params.toString()}`);
     }
   };
 
@@ -122,25 +122,25 @@ export default function Home() {
           <h3 className="text-sm md:text-base font-semibold text-white mb-4">価格帯から探す</h3>
           <div className="grid grid-cols-4 gap-2 md:gap-3">
             <Link 
-              href="/search?priceMax=100000"
+              href="/db/search?priceMax=100000"
               className="price-range-button-square bg-white border border-blue-500 text-blue-500 hover:bg-blue-50 flex items-center justify-center"
             >
               <div className="font-semibold text-xs md:text-sm">10万円以下</div>
             </Link>
             <Link 
-              href="/search?priceMin=100000&priceMax=200000"
+              href="/db/search?priceMin=100000&priceMax=200000"
               className="price-range-button-square bg-white border border-blue-500 text-blue-500 hover:bg-blue-50 flex items-center justify-center"
             >
               <div className="font-semibold text-xs md:text-sm">10万円〜20万円</div>
             </Link>
             <Link 
-              href="/search?priceMin=200000&priceMax=300000"
+              href="/db/search?priceMin=200000&priceMax=300000"
               className="price-range-button-square bg-white border border-blue-500 text-blue-500 hover:bg-blue-50 flex items-center justify-center"
             >
               <div className="font-semibold text-xs md:text-sm">20万円〜30万円</div>
             </Link>
             <Link 
-              href="/search?priceMin=300000"
+              href="/db/search?priceMin=300000"
               className="price-range-button-square bg-white border border-blue-500 text-blue-500 hover:bg-blue-50 flex items-center justify-center"
             >
               <div className="font-semibold text-xs md:text-sm">30万円以上</div>

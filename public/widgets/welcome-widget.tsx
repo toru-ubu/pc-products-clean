@@ -37,9 +37,9 @@ export default function Home() {
     }
 
     if (params.toString()) {
-      router.push(`/search?${params.toString()}`);
+      router.push(`/db/search?${params.toString()}`);
     } else {
-      router.push('/search');
+      router.push('/db/search');
     }
   };
 
@@ -68,7 +68,7 @@ export default function Home() {
       // search側と同じパラメータ名を使用
       const params = new URLSearchParams();
       params.set('keyword', keyword.trim());
-      router.push(`/search?${params.toString()}`);
+      router.push(`/db/search?${params.toString()}`);
     }
   };
 
