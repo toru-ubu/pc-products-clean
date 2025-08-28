@@ -367,7 +367,7 @@ function ProductsPageContent() {
 
   // フィルタークリア（真のページリロード）
   const clearFilters = () => {
-    window.location.href = '/search';
+    window.location.href = '/db/search';
   };
 
   // 一時フィルター更新のヘルパー関数（適用ボタンまでは実際のappliedを変更しない）
@@ -484,7 +484,7 @@ function ProductsPageContent() {
 
   const _updateUrl = (newFilters: typeof filterState.applied) => {
     const urlParams = buildUrlParams(newFilters);
-    const newUrl = urlParams ? `/search?${urlParams}` : '/search';
+    const newUrl = urlParams ? `/db/search?${urlParams}` : '/db/search';
     window.location.href = newUrl;
   };
 
@@ -495,7 +495,7 @@ function ProductsPageContent() {
       maker: filterState.applied.maker.filter(m => m !== maker)
     };
     const urlParams = buildUrlParams(newFilters);
-    const newUrl = urlParams ? `/search?${urlParams}` : '/search';
+    const newUrl = urlParams ? `/db/search?${urlParams}` : '/db/search';
     window.location.href = newUrl;
   };
 
@@ -507,7 +507,7 @@ function ProductsPageContent() {
       cpu: filterState.applied.cpu.filter(c => c !== cpu)
     };
     const urlParams = buildUrlParams(newFilters);
-    const newUrl = urlParams ? `/search?${urlParams}` : '/search';
+    const newUrl = urlParams ? `/db/search?${urlParams}` : '/db/search';
     window.location.href = newUrl;
   };
 
@@ -517,7 +517,7 @@ function ProductsPageContent() {
       gpu: filterState.applied.gpu.filter(g => g !== gpu)
     };
     const urlParams = buildUrlParams(newFilters);
-    const newUrl = urlParams ? `/search?${urlParams}` : '/search';
+    const newUrl = urlParams ? `/db/search?${urlParams}` : '/db/search';
     window.location.href = newUrl;
   };
 
@@ -527,7 +527,7 @@ function ProductsPageContent() {
       memory: filterState.applied.memory.filter(m => m !== memory)
     };
     const urlParams = buildUrlParams(newFilters);
-    const newUrl = urlParams ? `/search?${urlParams}` : '/search';
+    const newUrl = urlParams ? `/db/search?${urlParams}` : '/db/search';
     window.location.href = newUrl;
   };
 
@@ -537,7 +537,7 @@ function ProductsPageContent() {
       storage: filterState.applied.storage.filter(s => s !== storage)
     };
     const urlParams = buildUrlParams(newFilters);
-    const newUrl = urlParams ? `/search?${urlParams}` : '/search';
+    const newUrl = urlParams ? `/db/search?${urlParams}` : '/db/search';
     window.location.href = newUrl;
   };
 
@@ -547,7 +547,7 @@ function ProductsPageContent() {
       searchKeyword: ''
     };
     const urlParams = buildUrlParams(newFilters);
-    const newUrl = urlParams ? `/search?${urlParams}` : '/search';
+    const newUrl = urlParams ? `/db/search?${urlParams}` : '/db/search';
     window.location.href = newUrl;
   };
 
@@ -558,7 +558,7 @@ function ProductsPageContent() {
       priceMax: 1000000
     };
     const urlParams = buildUrlParams(newFilters);
-    const newUrl = urlParams ? `/search?${urlParams}` : '/search';
+    const newUrl = urlParams ? `/db/search?${urlParams}` : '/db/search';
     window.location.href = newUrl;
   };
 
@@ -577,14 +577,14 @@ function ProductsPageContent() {
     };
     
     const urlParams = buildUrlParams(newFilters, 1); // 新しい検索時は1ページ目
-    const newUrl = urlParams ? `/search?${urlParams}` : '/search';
+    const newUrl = urlParams ? `/db/search?${urlParams}` : '/db/search';
     window.location.href = newUrl;
   };
 
   // ページ変更ハンドラー
   const handlePageChange = (page: number) => {
     const urlParams = buildUrlParams(filterState.applied, page);
-    const newUrl = urlParams ? `/search?${urlParams}` : '/search';
+    const newUrl = urlParams ? `/db/search?${urlParams}` : '/db/search';
     window.location.href = newUrl;
   };
 
@@ -879,7 +879,7 @@ function ProductsPageContent() {
                 searchKeyword: filterState.draft.searchKeyword
               };
               const urlParams = buildUrlParams(allFilters, 1); // 新しい検索時は1ページ目
-              const newUrl = urlParams ? `/search?${urlParams}` : '/search';
+              const newUrl = urlParams ? `/db/search?${urlParams}` : '/db/search';
               window.location.href = newUrl;
             }}>
             {/* 1行目: フィルターボタン行 */}
@@ -1106,7 +1106,7 @@ function ProductsPageContent() {
                   
                   // URLも更新（1ページ目で）
                   const urlParams = buildUrlParams(newFilters, 1);
-                  const newUrl = urlParams ? `/search?${urlParams}` : '/search';
+                  const newUrl = urlParams ? `/db/search?${urlParams}` : '/db/search';
                   window.location.href = newUrl;
                 }}
               >
@@ -1130,7 +1130,7 @@ function ProductsPageContent() {
                 // URLも更新（1ページ目で）
                 const newFilters = { ...filterState.applied, sortBy: newSort };
                 const urlParams = buildUrlParams(newFilters, 1);
-                const newUrl = urlParams ? `/search?${urlParams}` : '/search';
+                const newUrl = urlParams ? `/db/search?${urlParams}` : '/db/search';
                 window.location.href = newUrl;
               }}>
                 <option value="price-asc">価格安い順</option>
