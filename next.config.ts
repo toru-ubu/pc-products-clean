@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // basePath: '/db', // Cloudflare側でパス変換するためコメントアウト
+  basePath: '/db', // Cloudflare統合用のベースパス設定
 
   // ESLintの警告をエラーにしない
   eslint: {
