@@ -367,7 +367,7 @@ function ProductsPageContent() {
 
   // フィルタークリア（真のページリロード）
   const clearFilters = () => {
-    window.location.href = '/db/search';
+            window.location.href = '/db/search';
   };
 
   // 一時フィルター更新のヘルパー関数（適用ボタンまでは実際のappliedを変更しない）
