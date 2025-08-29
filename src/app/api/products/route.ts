@@ -3,7 +3,9 @@ import { getProducts } from '@/lib/firebase';
 
 // CORS設定
 const corsHeaders = {
-  'Access-Control-Allow-Origin': 'https://earbuds-plus.jp',
+  'Access-Control-Allow-Origin': process.env.NODE_ENV === 'development' 
+    ? '*' 
+    : 'https://earbuds-plus.jp',
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   'Access-Control-Max-Age': '86400', // 24時間

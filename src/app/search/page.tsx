@@ -1083,9 +1083,12 @@ function ProductsPageContent() {
         <div className="results-and-sort-header">
           {/* 左端の検索結果表示 */}
           <div className="results-count">
-                          <span className="text-gray-600">
-                検索結果 <span className="font-semibold text-gray-900">{filteredProducts.length.toLocaleString()}</span>件
-              </span>
+            <span className="text-gray-600">
+              検索結果 <span className="font-semibold text-gray-900">{filteredProducts.length.toLocaleString()}</span>件
+            </span>
+            <span className="text-gray-400 text-sm ml-2">
+              このページにはPRが含まれます。
+            </span>
           </div>
           
           {/* 右端のSALEボタンとソート */}

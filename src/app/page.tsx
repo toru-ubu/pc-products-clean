@@ -72,7 +72,8 @@ export default function Home() {
         {/* タイトル */}
         <div className="text-center mb-8">
           <h1 className="text-xs sm:text-sm md:text-base lg:text-lg font-bold text-white leading-tight relative z-10">
-            メーカー横断で探せる日本最大のゲーミングPC検索データベース
+            <span className="block sm:inline">メーカー横断で探せる</span>
+            <span className="block sm:inline">日本最大級のゲーミングPC検索ツール</span>
           </h1>
         </div>
 
@@ -131,13 +132,19 @@ export default function Home() {
               href="/search?priceMin=100000&priceMax=200000"
               className="price-range-button-square bg-white border border-blue-500 text-blue-500 hover:bg-blue-50 flex items-center justify-center"
             >
-              <div className="font-semibold text-xs md:text-sm">10万円〜20万円</div>
+              <div className="font-semibold text-xs md:text-sm">
+                <span className="block sm:inline">10万円</span>
+                <span className="block sm:inline">〜20万円</span>
+              </div>
             </Link>
             <Link 
               href="/search?priceMin=200000&priceMax=300000"
               className="price-range-button-square bg-white border border-blue-500 text-blue-500 hover:bg-blue-50 flex items-center justify-center"
             >
-              <div className="font-semibold text-xs md:text-sm">20万円〜30万円</div>
+              <div className="font-semibold text-xs md:text-sm">
+                <span className="block sm:inline">20万円</span>
+                <span className="block sm:inline">〜30万円</span>
+              </div>
             </Link>
             <Link 
               href="/search?priceMin=300000"

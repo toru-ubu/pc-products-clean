@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
     return [
       {
         // APIルートに対するCORS設定（ベースパス適用後）
-        source: '/api/:path*',
+        source: '/db/api/:path*',
         headers: [
           {
             key: 'Access-Control-Allow-Origin',

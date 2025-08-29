@@ -12,7 +12,7 @@ export default function UnifiedFooter() {
             運営会社
           </Link>
           <span className="separator">|</span>
-          <Link href="https://earbuds-plus.jp/company/about">
+          <Link href="https://earbuds-plus.jp/company/">
             会社概要
           </Link>
           <span className="separator">|</span>

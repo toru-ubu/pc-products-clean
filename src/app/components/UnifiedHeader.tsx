@@ -2,12 +2,27 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 
 export default function UnifiedHeader() {
+  const pathname = usePathname();
+  const isDbPage = pathname === '/db' || pathname.startsWith('/db/');
+
   return (
     <header className="unified-header">
       <div className="l-header__inner l-container">
-        {/* ロゴエリア */}
+        {/* 左端のテキストリンク（デバッグ用：常に表示） */}
+        <div className="l-header__back-link">
+          <Link 
+            href="https://earbuds-plus.jp/" 
+            title="イヤバズ+に戻る" 
+            className="back-link"
+          >
+            &lt;&lt; イヤバズに戻る
+          </Link>
+        </div>
+
+        {/* 中央のロゴエリア */}
         <div className="l-header__logo">
           <div className="c-headLogo -img">
             <Link 
@@ -17,7 +32,7 @@ export default function UnifiedHeader() {
               rel="home"
             >
               <Image
-                src="/images/ear-buds-plus1575_450-.png"
+                src="/db/images/earbuds_kidukeba (1).png"
                 alt="イヤバズ（テストサイト）"
                 width={1575}
                 height={450}
