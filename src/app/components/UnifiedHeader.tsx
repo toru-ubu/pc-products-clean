@@ -6,21 +6,23 @@ import { usePathname } from 'next/navigation';
 
 export default function UnifiedHeader() {
   const pathname = usePathname();
-  const isDbPage = pathname === '/db' || pathname.startsWith('/db/');
+  const isDbRootPage = pathname === '/' && !pathname.startsWith('/search');
 
   return (
     <header className="unified-header">
       <div className="l-header__inner l-container">
-        {/* 左端のテキストリンク（デバッグ用：常に表示） */}
-        <div className="l-header__back-link">
-          <Link 
-            href="https://earbuds-plus.jp/" 
-            title="イヤバズ+に戻る" 
-            className="back-link"
-          >
-            &lt;&lt; イヤバズに戻る
-          </Link>
-        </div>
+        {/* 左端のテキストリンク（/dbのみで表示） */}
+        {isDbRootPage && (
+          <div className="l-header__back-link">
+            <Link 
+              href="https://earbuds-plus.jp/" 
+              title="イヤバズ+に戻る" 
+              className="back-link"
+            >
+              &lt;&lt; イヤバズに戻る
+            </Link>
+          </div>
+        )}
 
         {/* 中央のロゴエリア */}
         <div className="l-header__logo">

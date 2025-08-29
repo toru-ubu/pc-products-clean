@@ -462,20 +462,26 @@ body.root-page,
   padding: 0 1rem !important;
   display: flex !important;
   align-items: center !important;
-  justify-content: space-between !important;
+  justify-content: center !important;
+  position: relative !important;
 }
 
 /* 左端のテキストリンクエリア */
 .l-header__back-link {
-  flex-shrink: 0 !important;
-  text-align: left !important;
+  position: absolute !important;
+  left: 1rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  z-index: 10 !important;
 }
 
 /* 中央のロゴエリア */
 .l-header__logo {
-  flex-shrink: 0 !important;
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
   text-align: center !important;
-  flex-grow: 1 !important;
   display: flex !important;
   justify-content: center !important;
 }
