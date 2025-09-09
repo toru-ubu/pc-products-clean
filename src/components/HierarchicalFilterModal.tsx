@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 interface HierarchicalFilterModalProps {
   isOpen: boolean;
@@ -19,6 +19,7 @@ export const HierarchicalFilterModal = ({
   onSelectionChange,
   onApply
 }: HierarchicalFilterModalProps) => {
+
   // モーダルが開いている時にbodyのスクロールを無効化
   useEffect(() => {
     if (isOpen) {
@@ -27,33 +28,7 @@ export const HierarchicalFilterModal = ({
       document.body.style.position = 'fixed';
       document.body.style.width = '100%';
       
-      // モーダル内のスクロール要素を制御
-      const modalContent = document.querySelector('.modal-content');
-      if (modalContent) {
-        const handleTouchMove = (e: Event) => {
-          // タッチスクロールイベントをキャッチ
-          const target = e.target as HTMLElement;
-          
-          // スクロール可能な要素かどうかを判定
-          const scrollable = target.closest('.hierarchical-filter-container, .filter-options-grid');
-          
-          if (!scrollable) {
-            // スクロール可能な要素以外ではスクロールを防止
-            e.preventDefault();
-          }
-          // スクロール可能な要素内ではスクロールを許可（何もしない）
-        };
-        
-        modalContent.addEventListener('touchmove', handleTouchMove, { passive: false });
-        
-        // クリーンアップ関数でイベントリスナーを削除
-        return () => {
-          modalContent.removeEventListener('touchmove', handleTouchMove);
-          document.body.style.overflow = '';
-          document.body.style.position = '';
-          document.body.style.width = '';
-        };
-      }
+      // 旧実装では特別なタッチ制御なし
     } else {
       // モーダルが閉じられた時の復元処理
       document.body.style.overflow = '';
@@ -73,6 +48,43 @@ export const HierarchicalFilterModal = ({
   const [expandedSeries, setExpandedSeries] = useState<Set<string>>(
     new Set(Object.keys(hierarchyOptions))
   );
+
+  // GPUモーダル時のみ: 表示ラベルから (NGB) を分岐がない場合に限り隠す
+  // 内部値は従来どおりフル文字列（RAM付き）を使用してマッチング精度を維持する
+  const gpuDisplayLabels = useMemo(() => {
+    if (title !== 'GPU') return null;
+
+    const labelsBySeries: Record<string, Record<string, string>> = {};
+
+    Object.entries(hierarchyOptions).forEach(([series, models]) => {
+      // ベース名ごとにVRAM容量の分岐数を集計
+      const baseToInfo: Record<string, { vramSet: Set<string> }> = {};
+
+      models.forEach((model) => {
+        const baseForGrouping = model.replace(/\s*\(\d+GB\)/g, '').trim();
+        const vramMatch = model.match(/\((\d+GB)\)/);
+        const vram = vramMatch ? vramMatch[1] : '';
+
+        if (!baseToInfo[baseForGrouping]) {
+          baseToInfo[baseForGrouping] = { vramSet: new Set<string>() };
+        }
+        if (vram) baseToInfo[baseForGrouping].vramSet.add(vram);
+      });
+
+      const labelMap: Record<string, string> = {};
+
+      models.forEach((model) => {
+        const baseForGrouping = model.replace(/\s*\(\d+GB\)/g, '').trim();
+        const hasMultipleVram = (baseToInfo[baseForGrouping]?.vramSet.size || 0) > 1;
+        // 分岐している場合はRAMを表示に残し、分岐がない場合は表示からのみRAMを除去
+        labelMap[model] = hasMultipleVram ? model : model.replace(/\s*\(\d+GB\)/g, '').trim();
+      });
+
+      labelsBySeries[series] = labelMap;
+    });
+
+    return labelsBySeries;
+  }, [hierarchyOptions, title]);
 
   const _toggleSeries = (series: string) => {
     const newExpanded = new Set(expandedSeries);
@@ -130,6 +142,8 @@ export const HierarchicalFilterModal = ({
     onClose();
   };
 
+  // 旧実装ではスワイプ閉じるなし
+
   return (
     <div 
       id="modal-overlay"
@@ -139,9 +153,7 @@ export const HierarchicalFilterModal = ({
     >
       <div className="modal-content hierarchical-modal" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose}>×</button>
-        
         <h2 className="modal-header">{title}を選択</h2>
-        
         <div className="hierarchical-filter-container">
           {Object.entries(hierarchyOptions).map(([series, models]) => (
             <div key={series} className="filter-series-group">
@@ -176,7 +188,7 @@ export const HierarchicalFilterModal = ({
                       checked={selectedValues.includes(model)}
                       onChange={(e) => handleModelToggle(model, e.target.checked)}
                     />
-                    <span className="model-name">{model}</span>
+                    <span className="model-name">{title === 'GPU' && gpuDisplayLabels ? (gpuDisplayLabels[series]?.[model] || model) : model}</span>
                   </label>
                 ))}
               </div>

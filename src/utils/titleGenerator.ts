@@ -89,5 +89,5 @@ export const generateDynamicTitle = (filterState: {
   
   // タイトルを組み立て
   const mainTitle = titleParts.join(' ');
-  return `${mainTitle} ${sortDisplay} | イヤバズDB`;
+  return `${mainTitle} ${sortDisplay} | イヤバズnavi`;
 };

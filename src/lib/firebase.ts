@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
+import { getAnalytics, logEvent } from 'firebase/analytics'; // ← Analytics機能を追加
 
 // Firebase設定
 const firebaseConfig = {
@@ -8,12 +9,71 @@ const firebaseConfig = {
   projectId: "pc-price-db",
   storageBucket: "pc-price-db.appspot.com",
   messagingSenderId: "871225073845",
-  appId: "1:871225073845:web:abcdefghijklmnop"
+  appId: "1:871225073845:web:17f515c55848dfdb2b5efc", // ← 正しいappIdに修正
+  measurementId: "G-97K6QY9QW9"
 };
 
 // Firebase初期化
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
+
+// Analytics初期化（クライアントサイドのみ）
+let analytics: any = null;
+if (typeof window !== 'undefined') {
+  try {
+    analytics = getAnalytics(app);
+    console.log('Firebase Analytics initialized successfully');
+  } catch (error) {
+    console.error('Firebase Analytics initialization error:', error);
+  }
+}
+
+// カスタムイベント送信関数
+export const logCustomEvent = (eventName: string, parameters: any) => {
+  try {
+    console.log('=== Analytics Event Debug ===');
+    console.log('Event name:', eventName);
+    console.log('Parameters:', parameters);
+    console.log('Analytics object exists:', !!analytics);
+    console.log('Window object exists:', typeof window !== 'undefined');
+    console.log('Current URL:', typeof window !== 'undefined' ? window.location.href : 'N/A');
+    
+    if (analytics) {
+      logEvent(analytics, eventName, parameters);
+      console.log('✅ Analytics event sent successfully:', eventName, parameters);
+    } else {
+      console.warn('❌ Analytics not initialized, event not sent:', eventName);
+      console.warn('Analytics object:', analytics);
+    }
+    console.log('=== End Analytics Event Debug ===');
+  } catch (error) {
+    console.error('❌ Analytics event error:', error);
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : 'No stack trace'
+    });
+  }
+};
+
+// Firebase Analytics設定テスト関数
+export const testAnalytics = () => {
+  console.log('=== Firebase Analytics Test ===');
+  console.log('Firebase config:', firebaseConfig);
+  console.log('Analytics object:', analytics);
+  console.log('Is client side:', typeof window !== 'undefined');
+  
+  if (analytics) {
+    // テストイベントを送信
+    logCustomEvent('test_event', {
+      test_parameter: 'test_value',
+      timestamp: new Date().toISOString()
+    });
+    console.log('✅ Test event sent');
+  } else {
+    console.log('❌ Analytics not available for testing');
+  }
+  console.log('=== End Analytics Test ===');
+};
 
 // 商品データの型定義
 export interface Product {

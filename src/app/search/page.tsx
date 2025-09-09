@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Product, getProducts } from '../../lib/firebase';
+import { Product, logCustomEvent } from '../../lib/firebase';
 import { getMockProducts } from '../../utils/mockData';
 import { FilterModal } from '../../components/FilterModal';
 import { HierarchicalFilterModal } from '../../components/HierarchicalFilterModal';
@@ -13,6 +13,7 @@ import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { useFilterOptions } from '../../hooks/useFilterOptions';
 import { isMatchingAny } from '../../utils/filterNormalization';
 import { generateDynamicTitle } from '../../utils/titleGenerator';
+
 
 function ProductsPageContent() {
   const _router = useRouter();
@@ -56,6 +57,18 @@ function ProductsPageContent() {
     }
   });
 
+  // ページビューイベントを送信
+  useEffect(() => {
+    // クライアントサイドでのみ実行
+    if (typeof window !== 'undefined') {
+      logCustomEvent('page_view', {
+        page_name: 'search',
+        page_title: '商品一覧',
+        current_filters: filterState.applied
+      });
+    }
+  }, []); // 初回読み込み時のみ実行
+
   // ページネーション状態
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
@@ -84,8 +97,7 @@ function ProductsPageContent() {
     };
   }, [isAnyModalOpen]);
 
-  // スマホでのフィルター折りたたみ状態
-  const [isFilterCollapsed, setIsFilterCollapsed] = useState(false);
+  // スマホでのフィルター折りたたみは廃止（常時展開）
 
   // ウィンドウサイズを検知（PC表示かSP表示かを判定）
   const [isMobile, setIsMobile] = useState(false);
@@ -152,50 +164,47 @@ function ProductsPageContent() {
       }
     });
     setCurrentPage(urlState.currentPage);
-
-    // スマホでフィルターが適用されている場合は折りたたむ
-    const hasActiveFilters = Boolean(
-      urlState.applied.searchKeyword || 
-      urlState.applied.maker.length > 0 ||
-      urlState.applied.cpu.length > 0 ||
-      urlState.applied.gpu.length > 0 ||
-      urlState.applied.memory.length > 0 ||
-      urlState.applied.storage.length > 0 ||
-      urlState.applied.priceMin > 0 ||
-      urlState.applied.priceMax < 1000000 ||
-      urlState.applied.onSale ||
-      !(urlState.applied.showDesktop && !urlState.applied.showNotebook) // デスクトップのみの場合のみfalse
-    );
-    setIsFilterCollapsed(hasActiveFilters);
   }, [searchParams]);
 
-  // データ取得
+  // データ取得（API経由・CDNキャッシュ対象）
   useEffect(() => {
     const loadProducts = async () => {
       try {
         setLoading(true);
         setError(null);
-        
-        // Firebaseからデータを取得
-        const firebaseProducts = await getProducts();
-        
-        if (firebaseProducts.length > 0) {
-          console.log('Firebaseから商品データを取得:', firebaseProducts.length, '件');
-          setProducts(firebaseProducts);
-          setFilteredProducts(firebaseProducts);
+
+        const params = new URLSearchParams();
+        params.set('limit', '5000');
+
+        const res = await fetch(`/db/api/products?${params.toString()}`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          cache: 'force-cache'
+        });
+
+        if (!res.ok) {
+          throw new Error(`API error: ${res.status}`);
+        }
+
+        const data = await res.json();
+        const apiProducts: Product[] = data?.products || [];
+
+        if (apiProducts.length > 0) {
+          console.log('APIから商品データを取得:', apiProducts.length, '件');
+          setProducts(apiProducts);
+          setFilteredProducts(apiProducts);
         } else {
-          console.log('Firebaseからデータが取得できませんでした。モックデータを使用します。');
+          console.log('APIからデータが0件。モックデータを使用します。');
           const mockData = getMockProducts();
           setProducts(mockData);
           setFilteredProducts(mockData);
         }
-        
+
         setLoading(false);
       } catch (err) {
         console.error('データ取得エラー:', err);
         setError('データの読み込み中にエラーが発生しました。モックデータを表示します。');
-        
-        // エラー時はモックデータを使用
+
         const mockData = getMockProducts();
         setProducts(mockData);
         setFilteredProducts(mockData);
@@ -461,6 +470,63 @@ function ProductsPageContent() {
     return params.toString();
   };
 
+  // 分析送信用のフィルター要約ペイロードを生成
+  const buildFilterAnalyticsPayload = (currentFilters: typeof filterState.applied, page: number = 1) => {
+    const plusItems: string[] = [];
+    if (currentFilters.showDesktop) plusItems.push('desktop');
+    if (currentFilters.showNotebook) plusItems.push('notebook');
+
+    const priceRange =
+      currentFilters.priceMin === 0 && currentFilters.priceMax === 1000000
+        ? 'all'
+        : `${currentFilters.priceMin}-${currentFilters.priceMax}`;
+
+    // 短い要約文字列（カーディナリティ抑制のため値を圧縮）
+    const filtersSummary = [
+      `maker=${currentFilters.maker.slice(0, 5).join(',') || '(none)'}`,
+      `cpu=${currentFilters.cpu.slice(0, 5).join(',') || '(none)'}`,
+      `gpu=${currentFilters.gpu.slice(0, 5).join(',') || '(none)'}`,
+      `mem=${currentFilters.memory.slice(0, 5).join(',') || '(none)'}`,
+      `sto=${currentFilters.storage.slice(0, 5).join(',') || '(none)'}`,
+      `price=${priceRange}`,
+      `plus=${plusItems.join(',') || 'desktop'}`,
+      `on_sale=${String(currentFilters.onSale)}`,
+      `kw=${currentFilters.searchKeyword ? 'yes' : 'no'}`,
+      `sort=${currentFilters.sortBy}`,
+      `page=${page}`
+    ].join('|');
+
+    return {
+      // 既存パラメータ（維持）
+      search_keyword: currentFilters.searchKeyword,
+      maker_count: currentFilters.maker.length,
+      cpu_count: currentFilters.cpu.length,
+      gpu_count: currentFilters.gpu.length,
+      memory_count: currentFilters.memory.length,
+      storage_count: currentFilters.storage.length,
+      price_min: currentFilters.priceMin,
+      price_max: currentFilters.priceMax,
+      show_desktop: currentFilters.showDesktop,
+      show_notebook: currentFilters.showNotebook,
+      on_sale: currentFilters.onSale,
+      total_filters: Object.keys(currentFilters).length,
+
+      // 追加する詳細パラメータ（文字列化）
+      maker_values: currentFilters.maker.join(',') || '(none)',
+      cpu_values: currentFilters.cpu.join(',') || '(none)',
+      gpu_values: currentFilters.gpu.join(',') || '(none)',
+      memory_values: currentFilters.memory.join(',') || '(none)',
+      storage_values: currentFilters.storage.join(',') || '(none)',
+      price_range: priceRange,
+      plus: plusItems.join(',') || 'desktop',
+      sort_type: currentFilters.sortBy,
+      page,
+
+      // ユーザーが作成済みのカスタム定義名に合わせる（要約）
+      filters_applied: filtersSummary
+    } as const;
+  };
+
   const parseUrlParams = (params: URLSearchParams) => {
     const plusParam = params.get('plus');
     return {
@@ -576,6 +642,9 @@ function ProductsPageContent() {
       storage: filterState.draft.storage
     };
     
+    // 検索イベントを送信（詳細フィルター値付き）
+    logCustomEvent('search', buildFilterAnalyticsPayload(newFilters, 1));
+
     const urlParams = buildUrlParams(newFilters, 1); // 新しい検索時は1ページ目
     const newUrl = urlParams ? `/db/search?${urlParams}` : '/db/search';
     window.location.href = newUrl;
@@ -590,7 +659,21 @@ function ProductsPageContent() {
 
   // 商品カードコンポーネント
   const ProductCard = ({ product }: { product: Product }) => (
-    <a href={product.productUrl} target="_blank" rel="nofollow sponsored" className="product-card">
+    <a href={product.productUrl} target="_blank" rel="nofollow sponsored" className="product-card" onClick={() => logCustomEvent('click', {
+      item_id: product.id, 
+      item_name: product.name,
+      item_maker: product.maker,
+      item_price: product.price,
+      item_effective_price: product.effectiveprice,
+      item_discount_rate: product.discountrate,
+      item_cpu: product.cpu,
+      item_gpu: product.gpu,
+      item_memory: product.memory,
+      item_storage: product.storage,
+      item_type: product.type,
+      current_page: currentPage,
+      current_sort: filterState.applied.sortBy
+    })}>
       <div className="card-content">
         {/* SP表示用：商品名・メーカーヘッダー */}
         <div className="card-header">
@@ -758,13 +841,27 @@ function ProductsPageContent() {
                     // キャンペーンタイプをグループ化（対応済みタイプのみ）
                     const campaignTypes = [...new Set(product.campaigns.map(c => c.type))];
                     const hasPointCampaign = campaignTypes.includes('ポイント');
-                    
+
                     // ポイント以外で対応するタイプのみフィルタ
                     const allowedTypes = ['クーポン', 'セール'];
-                    const otherCampaigns = campaignTypes.filter(type => 
+
+                    // 価格ベースの割引を検出（discountrate または price vs effectiveprice）
+                    const hasSaleByPrice = (
+                      typeof product.discountrate === 'number' && product.discountrate > 0
+                    ) || (
+                      product.effectiveprice > 0 && product.price > product.effectiveprice
+                    );
+
+                    // キャンペーンと価格割引を統合し、重複を避ける
+                    const displayTypesSet = new Set<string>(campaignTypes);
+                    const hasSaleType = campaignTypes.includes('セール');
+                    const hasCouponType = campaignTypes.includes('クーポン');
+                    const shouldAddSale = hasSaleByPrice && !hasSaleType && !hasCouponType;
+                    if (shouldAddSale) displayTypesSet.add('セール');
+                    const otherCampaigns = [...displayTypesSet].filter(type =>
                       type !== 'ポイント' && allowedTypes.includes(type)
                     );
-                    
+
                     return (
                       <>
                         {hasPointCampaign && (
@@ -828,14 +925,7 @@ function ProductsPageContent() {
   return (
     <div className="nextjs-products-scope">
       <div className="min-h-screen" style={{ background: '#f5f5f5' }}>
-        {/* ページタイトル帯 */}
-        <div className="page-title-banner">
-          <div className="products-container">
-            <h1>
-              {generateDynamicTitle(filterState)}
-            </h1>
-          </div>
-        </div>
+        {/* ページタイトル帯（廃止） */}
         
         <div className="products-container">
 
@@ -849,18 +939,7 @@ function ProductsPageContent() {
 
         {/* フィルターエリア */}
         <div className="filter-controls">
-          {/* スマホ用の折りたたみヘッダー */}
-          <div 
-            className="filter-header-mobile"
-            onClick={() => setIsFilterCollapsed(!isFilterCollapsed)}
-          >
-            <h3>絞り込み条件</h3>
-            <span className="filter-toggle-icon">
-              {isFilterCollapsed ? '▼' : '▲'}
-            </span>
-          </div>
-
-          <div className={`filter-form-wrapper ${isFilterCollapsed ? 'collapsed' : ''}`}>
+          <div className={`filter-form-wrapper`}>
             <form className="filter-form" onSubmit={(e) => { 
               e.preventDefault(); 
               // 一時フィルターも含めて全て適用してページリロード
@@ -878,10 +957,82 @@ function ProductsPageContent() {
                 onSale: filterState.draft.onSale,
                 searchKeyword: filterState.draft.searchKeyword
               };
+              
+              // 検索イベントを送信
+              logCustomEvent('search', buildFilterAnalyticsPayload(allFilters, 1));
+              
               const urlParams = buildUrlParams(allFilters, 1); // 新しい検索時は1ページ目
               const newUrl = urlParams ? `/db/search?${urlParams}` : '/db/search';
               window.location.href = newUrl;
             }}>
+            {/* SP専用: 最上段にキーワード→価格を配置 */}
+            <div className="filter-section sp-only">
+              <div className="sp-search-price-row">
+                {/* キーワード */}
+                <div className="search-compact">
+                  <div className="search-box-styled">
+                    <span className="filter-label">キーワード</span>
+                    <input
+                      type="text"
+                      className="search-input-styled"
+                      placeholder="商品名、スペックなど"
+                      value={filterState.draft.searchKeyword}
+                      onChange={(e) => setFilterState(prev => ({
+                        ...prev,
+                        draft: {
+                          ...prev.draft,
+                          searchKeyword: e.target.value
+                        }
+                      }))}
+                    />
+                  </div>
+                </div>
+                {/* 価格 */}
+                <div className="price-range-compact">
+                  <div className="price-box-styled">
+                    <span className="filter-label">価格</span>
+                    <div className="price-selects-styled">
+                      <select 
+                        className="price-select-styled"
+                        value={filterState.draft.priceMin || ''}
+                        onChange={(e) => setFilterState(prev => ({
+                          ...prev,
+                          draft: {
+                            ...prev.draft,
+                            priceMin: e.target.value ? parseInt(e.target.value) : 0
+                          }
+                        }))}
+                      >
+                        {priceOptions.map((option) => (
+                          <option key={option.label} value={option.value || ''}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                      <span className="price-separator-styled">〜</span>
+                      <select 
+                        className="price-select-styled"
+                        value={filterState.draft.priceMax === 1000000 ? '' : filterState.draft.priceMax}
+                        onChange={(e) => setFilterState(prev => ({
+                          ...prev,
+                          draft: {
+                            ...prev.draft,
+                            priceMax: e.target.value ? parseInt(e.target.value) : 1000000
+                          }
+                        }))}
+                      >
+                        {priceOptions.map((option) => (
+                          <option key={option.label} value={option.value || ''}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* 1行目: フィルターボタン行 */}
             <div className="filter-section">
               <h3 className="filter-section-title">絞り込み条件</h3>
@@ -922,14 +1073,47 @@ function ProductsPageContent() {
                   selectedCount={filterState.draft.storage.length}
                   onClick={() => setIsStorageModalOpen(true)}
                 />
+
+                {/* SP専用：PC種類（ストレージの右隣に配置） */}
+                <div className="pc-type-inline sp-only">
+                  <button
+                    type="button"
+                    className={`pc-type-pill ${filterState.draft.showDesktop ? 'active' : ''}`}
+                    onClick={() => {
+                      const next = !filterState.draft.showDesktop;
+                      // 両方falseは不可 → もう一方がtrueなら切り替えOK、両方falseになる場合は無視
+                      if (!next && !filterState.draft.showNotebook) return;
+                      setFilterState(prev => ({
+                        ...prev,
+                        draft: { ...prev.draft, showDesktop: next }
+                      }));
+                    }}
+                  >
+                    デスクトップ
+                  </button>
+                  <button
+                    type="button"
+                    className={`pc-type-pill ${filterState.draft.showNotebook ? 'active' : ''}`}
+                    onClick={() => {
+                      const next = !filterState.draft.showNotebook;
+                      if (!next && !filterState.draft.showDesktop) return;
+                      setFilterState(prev => ({
+                        ...prev,
+                        draft: { ...prev.draft, showNotebook: next }
+                      }));
+                    }}
+                  >
+                    ノートブック
+                  </button>
+                </div>
               </div>
             </div>
 
             {/* 2行目: 価格範囲と検索窓とPC種類とボタン */}
             <div className="filter-section">
               <div className="price-search-pc-type-buttons-row">
-                {/* 価格範囲 */}
-                <div className="price-range-compact">
+                {/* 価格範囲（PCのみ表示、SPでは上のsp-onlyを使用） */}
+                <div className="price-range-compact pc-only">
                   <div className="price-box-styled">
                     <span className="filter-label">価格</span>
                     <div className="price-selects-styled">
@@ -974,8 +1158,8 @@ function ProductsPageContent() {
                   </div>
                 </div>
 
-                {/* 検索窓 */}
-                <div className="search-compact">
+                {/* 検索窓（PCのみ表示、SPでは上のsp-onlyを使用） */}
+                <div className="search-compact pc-only">
                   <div className="search-box-styled">
                     <span className="filter-label">キーワード</span>
                     <input
@@ -1063,30 +1247,95 @@ function ProductsPageContent() {
               onClearSearch={handleClearSearch}
               selectedMakers={filterState.applied.maker}
 
-              selectedCpus={filterState.applied.cpu}
-              selectedGpus={filterState.applied.gpu}
+              selectedCpus={(() => {
+                // シリーズが完全包含されている場合はシリーズ名で集約
+                const covered = new Set<string>();
+                const result: string[] = [];
+                Object.entries(cpuOptionsHierarchy).forEach(([series, models]) => {
+                  if (models.length > 0 && models.every(m => filterState.applied.cpu.includes(m))) {
+                    result.push(series);
+                    models.forEach(m => covered.add(m));
+                  }
+                });
+                filterState.applied.cpu.forEach(v => { if (!covered.has(v)) result.push(v); });
+                return result;
+              })()}
+              selectedGpus={(() => {
+                const covered = new Set<string>();
+                const result: string[] = [];
+                Object.entries(gpuOptionsHierarchy).forEach(([series, models]) => {
+                  if (models.length > 0 && models.every(m => filterState.applied.gpu.includes(m))) {
+                    result.push(series);
+                    models.forEach(m => covered.add(m));
+                  }
+                });
+                filterState.applied.gpu.forEach(v => { if (!covered.has(v)) result.push(v); });
+                return result;
+              })()}
               selectedMemory={filterState.applied.memory}
               selectedStorage={filterState.applied.storage}
               priceMin={filterState.applied.priceMin}
               priceMax={filterState.applied.priceMax}
               onRemoveMaker={handleRemoveMaker}
-              onRemoveCpu={handleRemoveCpu}
-              onRemoveGpu={handleRemoveGpu}
+              onRemoveCpu={(cpu) => {
+                // シリーズ名が来た場合は配下の全モデルを削除
+                if (cpuOptionsHierarchy[cpu]) {
+                  const modelsSet = new Set(cpuOptionsHierarchy[cpu]);
+                  const newFilters = {
+                    ...filterState.applied,
+                    cpu: filterState.applied.cpu.filter(c => !modelsSet.has(c))
+                  };
+                  const urlParams = buildUrlParams(newFilters);
+                  const newUrl = urlParams ? `/db/search?${urlParams}` : '/db/search';
+                  window.location.href = newUrl;
+                } else {
+                  handleRemoveCpu(cpu);
+                }
+              }}
+              onRemoveGpu={(gpu) => {
+                if (gpuOptionsHierarchy[gpu]) {
+                  const modelsSet = new Set(gpuOptionsHierarchy[gpu]);
+                  const newFilters = {
+                    ...filterState.applied,
+                    gpu: filterState.applied.gpu.filter(g => !modelsSet.has(g))
+                  };
+                  const urlParams = buildUrlParams(newFilters);
+                  const newUrl = urlParams ? `/db/search?${urlParams}` : '/db/search';
+                  window.location.href = newUrl;
+                } else {
+                  handleRemoveGpu(gpu);
+                }
+              }}
               onRemoveMemory={handleRemoveMemory}
               onRemoveStorage={handleRemoveStorage}
               onClearPrice={handleClearPrice}
             />
           )}
+          
+          {/* SP表示専用PR文言 */}
+          <div className="pr-notice-sp">
+            <span className="text-gray-400 text-xs">
+              このページにはPRが含まれます
+            </span>
+          </div>
         </div>
+
+        {/* 結果タイトル（フィルター直下・件数行の直前） */}
+        <h1 className="results-title">
+          {generateDynamicTitle(filterState)}
+        </h1>
+
+        {/* SP限定：タイトル直下のPR表記 */}
+        <div className="pr-under-title-sp">このページにはPRが含まれます。</div>
 
         {/* 検索結果とソート・SALEボタンの配置 */}
         <div className="results-and-sort-header">
           {/* 左端の検索結果表示 */}
           <div className="results-count">
             <span className="text-gray-600">
-              検索結果 <span className="font-semibold text-gray-900">{filteredProducts.length.toLocaleString()}</span>件
+              検索結果 <span className="font-semibold text-red-600">{filteredProducts.length.toLocaleString()}</span>件
             </span>
-            <span className="text-gray-400 text-sm ml-2">
+            <span className="text-gray-400 text-sm ml-2 pr-text-pc">
               このページにはPRが含まれます。
             </span>
           </div>
@@ -1121,6 +1370,13 @@ function ProductsPageContent() {
             <div className="sort-selector-inline">
               <select value={filterState.applied.sortBy} onChange={(e) => {
                 const newSort = e.target.value;
+                
+                // ソートイベントを送信
+                logCustomEvent('sort', {
+                  sort_type: newSort,
+                  previous_sort: filterState.applied.sortBy
+                });
+                
                 setFilterState(prev => ({
                   ...prev,
                   applied: {
@@ -1145,6 +1401,8 @@ function ProductsPageContent() {
             </div>
           </div>
         </div>
+
+
 
         {/* 商品一覧 */}
         <div className="product-list">

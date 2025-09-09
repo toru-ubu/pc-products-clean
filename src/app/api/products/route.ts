@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getProducts } from '@/lib/firebase';
 
+// CDN/ISRキャッシュ（30分）
+export const revalidate = 1800;
+
 // CORS設定
 const corsHeaders = {
   'Access-Control-Allow-Origin': process.env.NODE_ENV === 'development' 
@@ -97,8 +100,14 @@ export async function GET(request: NextRequest) {
 
     console.log(`API: 商品データ取得成功 - ${paginatedProducts.length}件 / 総${filteredProducts.length}件`);
 
+    // APIレスポンスをCDNキャッシュ可能にする
+    const cacheHeaders = {
+      ...corsHeaders,
+      'Cache-Control': 'public, s-maxage=1800, stale-while-revalidate=86400'
+    } as Record<string, string>;
+
     return NextResponse.json(responseData, {
-      headers: corsHeaders
+      headers: cacheHeaders
     });
 
   } catch (error) {

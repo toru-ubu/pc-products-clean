@@ -81,7 +81,7 @@ export default function Home() {
           <div className="w-96 h-96 mx-auto mb-0">
             <Image
               src="/images/earbuds_db.png"
-              alt="イヤバズDB"
+              alt="イヤバズnavi"
               width={384}
               height={384}
               className="w-full h-full"

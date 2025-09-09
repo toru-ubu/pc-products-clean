@@ -11,19 +11,6 @@ export default function UnifiedHeader() {
   return (
     <header className="unified-header">
       <div className="l-header__inner l-container">
-        {/* 左端のテキストリンク（/dbのみで表示） */}
-        {isDbRootPage && (
-          <div className="l-header__back-link">
-            <Link 
-              href="https://earbuds-plus.jp/" 
-              title="イヤバズ+に戻る" 
-              className="back-link"
-            >
-              &lt;&lt; イヤバズに戻る
-            </Link>
-          </div>
-        )}
-
         {/* 中央のロゴエリア */}
         <div className="l-header__logo">
           <div className="c-headLogo -img">

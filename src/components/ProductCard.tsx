@@ -1,14 +1,36 @@
 import Link from 'next/link';
 import { Product } from '../types/product';
+import { logCustomEvent } from '../lib/firebase'; // ← Analytics機能を追加
 
 interface ProductCardProps {
   product: Product;
 }
 
 export const ProductCard = ({ product }: ProductCardProps) => {
+  const handleProductClick = () => {
+    // デバッグ用ログ
+    console.log('Product clicked:', product.name);
+    
+    // 商品クリックイベントを送信（標準的なイベント名に変更）
+    logCustomEvent('click', {
+      item_id: product.id,
+      item_name: product.name,
+      item_category: product.maker,
+      price: product.price,
+      currency: 'JPY',
+      item_variant: product.cpu,
+      item_brand: product.maker
+    });
+  };
+
   return (
     <div className="product-card">
-      <Link href={product.productUrl} target="_blank" rel="nofollow sponsored">
+      <Link 
+        href={product.productUrl} 
+        target="_blank" 
+        rel="nofollow sponsored"
+        onClick={handleProductClick} // ← クリックイベント追加
+      >
         <div className="card-content">
           {/* 商品画像 */}
           <div className="card-image">

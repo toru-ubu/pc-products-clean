@@ -67,6 +67,17 @@ export default function Home() {
 
   return (
     <div className="min-h-screen gaming-background root-page">
+      {/* イヤバズ+に戻るボタン */}
+      <div className="back-to-earbuds">
+        <a 
+          href="https://earbuds-plus.jp/" 
+          title="イヤバズ+に戻る" 
+          className="back-link-white"
+        >
+          &lt;&lt; イヤバズに戻る
+        </a>
+      </div>
+      
       {/* メイン検索エリア */}
       <div className="max-w-2xl mx-auto px-4 pt-16 pb-16 relative z-10">
         {/* タイトル */}

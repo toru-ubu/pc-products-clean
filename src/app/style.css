@@ -164,15 +164,16 @@ body {
   
   /* スマホ用フィルターUI調整 */
   .filter-controls {
-    margin: 0 0 12px 0 !important;
+    margin: 0 0 20px 0 !important;
     padding: 8px !important;
   }
 
   /* スマホ用折りたたみヘッダー */
   .filter-header-mobile {
     display: flex;
-    justify-content: space-between;
+    justify-content: center; /* 中央寄せに変更 */
     align-items: center;
+    gap: 6px; /* テキストと矢印の間隔 */
     margin-bottom: 2px;
     padding: 4px 8px;
     background: transparent;
@@ -185,7 +186,7 @@ body {
   .filter-header-mobile h3 {
     margin: 0;
     font-size: 0.9em;
-    color: #333;
+    color: #666; /* 少し薄いグレーに */
     font-weight: 600;
     pointer-events: none;
   }
@@ -232,6 +233,76 @@ body {
   .filter-buttons button {
     width: 100% !important;
   }
+  
+  /* SP：キーワードを最上段、次に価格、下にボタン類→PC種類→クリア/検索 */
+  .price-search-pc-type-buttons-row { display: grid !important; grid-template-columns: 1fr !important; row-gap: 8px !important; }
+  .search-compact { order: 1 !important; }
+  .price-range-compact { order: 2 !important; }
+  .filter-buttons-row { order: 3 !important; }
+  /* SPでは元のPC種類ブロックを完全に非表示（複製済み） */
+  .pc-type-checkboxes { display: none !important; order: 4 !important; height: 0 !important; padding: 0 !important; margin: 0 !important; border: 0 !important; }
+  .price-search-pc-type-buttons-row .pc-type-checkboxes { display: none !important; height: 0 !important; padding: 0 !important; margin: 0 !important; border: 0 !important; }
+  .filter-buttons-inline { order: 5 !important; }
+  /* SP：新設 sp-only を表示、pc-only は隠す */
+  .sp-only { display: block !important; }
+  .pc-only { display: none !important; }
+  
+  /* SP：セクション順は元のまま（PC種類/クリア/検索が上に来ないように） */
+  .filter-form > .filter-section:nth-of-type(1) { order: initial !important; }
+  .filter-form > .filter-section:nth-of-type(2) { order: initial !important; }
+  /* 個々のボタンの並び替え（2列グリッドを仮定）*/
+  /* SP：メーカー/CPU/GPU/メモリ/ストレージの並びのみ変更。PC種類/クリア/検索には影響しない */
+  .filter-buttons-row { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+  .filter-buttons-row .filter-button:nth-child(1) { order: 1; } /* メーカー */
+  .filter-buttons-row .filter-button:nth-child(2) { order: 2; } /* CPU */
+  .filter-buttons-row .filter-button:nth-child(3) { order: 3; } /* GPU */
+  .filter-buttons-row .filter-button:nth-child(4) { order: 4; } /* メモリ */
+  .filter-buttons-row .filter-button:nth-child(5) { order: 5; grid-column: 1 / 2; } /* ストレージ 左 */
+  .filter-buttons-row .pc-type-inline {
+    order: 6;
+    grid-column: 2 / 3;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    gap: 0 !important; /* 余白なしで連結 */
+    min-height: 28px !important;
+    padding: 0 !important;
+    background: transparent !important; /* 下線タブに合わせて背景/枠線を除去 */
+    border: none !important;
+    border-radius: 0 !important;
+    overflow: visible !important;
+  }
+  .filter-buttons-row .pc-type-inline .pc-type-pill {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: transparent !important; /* 下線タブ：背景なし */
+    color: #333 !important;            /* 未選択：文字グレー */
+    font-size: 0.68em !important;
+    font-weight: 500 !important;       /* 視認性のためやや太く */
+    border: none !important;            /* 外枠なし */
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    padding: 6px 8px !important;        /* 下線見やすい余白 */
+    border-bottom: 2px solid #d0d7de !important; /* 未選択：薄灰の下線 */
+    transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .filter-buttons-row .pc-type-inline .pc-type-pill + .pc-type-pill { border-left: none !important; }
+  .filter-buttons-row .pc-type-inline .pc-type-pill.active {
+    color: #007bff !important;                 /* 選択：文字青 */
+    border-bottom-color: #007bff !important;   /* 選択：下線青 */
+  }
+  /* SP：ラベルのフォントサイズ/太さを統一 */
+  .filter-button .filter-button-text {
+    font-size: 0.8em !important; /* メーカー/CPU/GPU/メモリ/ストレージ */
+    font-weight: 700 !important;
+  }
+  .price-range-compact .filter-label,
+  .search-compact .filter-label {
+    font-size: 0.8em !important; /* 価格/キーワード */
+    font-weight: 700 !important;
+  }
 }
 
 /* デスクトップでは折りたたみヘッダーを非表示 */
@@ -241,7 +312,177 @@ body {
   }
 
   .filter-section-title {
-    display: block;
+    display: none; /* PCでは見出しテキストを非表示 */
+  }
+
+  /* PCのみ：フィルター領域を白背景のカード風に */
+  .filter-controls {
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  }
+
+  /* PCのみ：1行目と2行目の縦の間隔をさらに詰める（1px） */
+  .filter-form {
+    gap: 1px;
+  }
+  .filter-section {
+    padding-bottom: 1px;
+  }
+
+  /* PCのみ：前回の縮小調整を元に戻す */
+  .filter-buttons-row {
+    gap: 8px !important;
+  }
+  .filter-buttons-row .filter-button {
+    height: 48px !important;
+    min-height: 48px !important;
+    min-width: 140px !important;
+    padding: 12px 16px !important;
+    font-size: 1em !important;
+    flex: 1 !important;
+  }
+
+  .price-box-styled,
+  .search-box-styled {
+    min-height: 48px !important;
+    max-height: none !important;
+    padding: 12px 16px !important;
+  }
+
+  .pc-type-checkboxes {
+    min-height: auto !important;
+    height: auto !important;
+    padding: 8px 12px !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .pc-type-checkbox-label {
+    font-size: 0.9em !important;
+  }
+
+  .filter-buttons-inline button {
+    height: auto !important;
+    min-height: auto !important;
+    padding: 10px 20px !important;
+    font-size: 1em !important;
+  }
+  /* PC：sp-only を隠し、pc-only を表示 */
+  .sp-only { display: none !important; }
+  .pc-only { display: initial !important; }
+
+  /* PCのみ：価格と検索の下線位置を厳密に揃える */
+  .price-box-styled,
+  .search-box-styled {
+    padding: 8px 10px !important;          /* 横パディングも削減して全体幅を短縮 */
+    border-bottom: 1px solid #d0d7de !important; /* 同一線幅 */
+  }
+
+  .search-input-styled,
+  .price-select-styled {
+    height: 28px !important;               /* 同一高さ */
+    line-height: 28px !important;          /* テキストの縦位置を統一 */
+    font-size: 1rem !important;            /* 同一フォントサイズ */
+  }
+
+  /* PCのみ：価格+検索の合計幅を詰める */
+  /* 2行目の要素を中央揃えで均等配置（PCのみ） */
+  .price-search-pc-type-buttons-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly; /* 均等配置 */
+    padding: 0 28px; /* 左右余白を少し大きめに */
+    column-gap: 24px;
+    row-gap: 0;
+    margin-bottom: 8px; /* 下側余白を調整 */
+  }
+  /* 1行目：左右の位置を2行目に合わせ、ボタン幅は自動伸長で揃える */
+  .filter-buttons-row {
+    padding: 0 28px;            /* 2行目と同じ左右余白 */
+    margin-top: 28px;           /* 左右の余白と同じ幅で上余白を確保 */
+  }
+  .filter-buttons-row .filter-button {
+    flex: 1 !important;         /* 均等に伸長して両端を揃える */
+    max-width: none !important; /* 幅制限を解除 */
+  }
+
+  /* クリア/検索を個別アイテムとして扱う（ラッパーをフラット化） */
+  .filter-buttons-inline {
+    display: contents;
+  }
+  .price-range-compact .price-box-styled {
+    min-width: auto !important;
+    max-width: 350px !important; /* ご要望の幅に短縮 */
+    width: 100% !important;
+    overflow: hidden !important; /* 内容のはみ出しを防止 */
+  }
+  .search-compact .search-box-styled {
+    min-width: auto !important; /* 幅を固定せず調整可能に */
+    max-width: 350px !important; /* 価格と統一 */
+    width: 100% !important;
+  }
+
+  /* PCのみ：価格ラベルとセレクト群の詰め調整（下線幅そのまま） */
+  .price-range-compact .filter-label {
+    min-width: 56px !important; /* 価格ラベルをややコンパクトに */
+  }
+
+  .price-range-compact .price-selects-styled {
+    margin-left: 4px !important;  /* ラベルとの間をさらに詰める */
+    margin-right: 8px !important;
+    gap: 8px !important;          /* 下限・上限の間隔も詰める */
+    justify-content: flex-start !important;
+    flex: 1 1 auto !important;
+  }
+
+  .price-range-compact .price-select-styled {
+    min-width: 90px !important;   /* セレクトの最小幅を小さく */
+    flex: 0 0 auto !important;    /* 不要な伸長を抑制 */
+    padding: 2px 4px !important;  /* さらにコンパクトに */
+    text-align: center !important;
+  }
+
+  .price-range-compact .price-separator-styled {
+    margin: 0 2px !important;     /* セパレータの余白も微調整 */
+  }
+
+  /* PCのみ：ラベル文字サイズを統一して小さく（0.8em） */
+  .filter-button-text {
+    font-size: 0.8em !important; /* メーカー/CPU/GPU/メモリ/ストレージ */
+    font-weight: 700 !important;
+  }
+  .price-range-compact .filter-label,
+  .search-compact .filter-label {
+    font-size: 0.8em !important; /* 価格/キーワードのラベル */
+    font-weight: 700 !important;
+  }
+}
+
+/* PCのみ：2行目とバッジの間隔調整＋左右位置合わせ */
+@media (min-width: 769px) {
+  .price-search-pc-type-buttons-row {
+    margin-bottom: 28px !important; /* バッジが無い場合でも下余白を確保 */
+  }
+  .filter-chips-container {
+    margin-top: -27px !important; /* 直上の28pxと相殺して 1px に見せる */
+    padding-top: 0 !important;
+    padding-left: 28px !important;  /* 左端を1・2行目と揃える */
+    padding-right: 28px !important; /* 右端も検索ボタンの右端から出ないよう揃える */
+  }
+}
+
+/* PCのみ：1行目と2行目の間隔が広がる競合を最終的に打ち消す */
+@media (min-width: 769px) {
+  .filter-form { gap: 1px !important; }
+  .filter-section { padding-bottom: 1px !important; }
+}
+
+/* PCのみ：バッジ下の余白を1.5倍に（視覚的に間を持たせる） */
+@media (min-width: 769px) {
+  .filter-chips-container {
+    padding-bottom: 28px !important; /* 左右の余白と同じ幅で下余白を確保 */
   }
 }
 
@@ -261,7 +502,7 @@ body {
 /* 絞り込み機能のスタイル */
 .filter-controls {
   padding: 16px;
-  margin: 0 0 16px 0;
+  margin: 0 0 28px 0; /* PCはやや広め */
 }
 
 .filter-form {
@@ -418,22 +659,23 @@ body {
   width: 100%;
   min-height: 48px;
   padding: 12px 16px;
-  background: white;
-  border: 1px solid #d0d7de;
-  border-radius: 8px;
+  background: transparent; /* 下線のみのシンプルな見た目 */
+  border: none;            /* 枠線なし */
+  border-bottom: 1px solid #d0d7de; /* 下線のみ */
+  border-radius: 0;
   transition: all 0.2s ease;
   min-width: 220px;
   gap: 12px; /* 検索文字と入力欄の間の余白を増やす */
 }
 
 .search-box-styled:hover {
-  border-color: #007bff;
-  background-color: #f8f9fa;
+  border-bottom-color: #007bff !important; /* 下線だけ色を変える（!importantで競合解消） */
+  background-color: transparent;
 }
 
 .search-box-styled:focus-within {
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  border-bottom-color: #007bff !important; /* 下線だけ強調（!importantで競合解消） */
+  box-shadow: none;
 }
 
 .search-input-styled {
@@ -458,11 +700,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  min-height: 48px;
-  padding: 12px 16px;
-  background: white;
-  border: 1px solid #d0d7de;
-  border-radius: 8px;
+  min-height: 48px; /* 元に戻す */
+  padding: 12px 16px; /* 元に戻す */
+  background: transparent; /* 下線のみのシンプルな見た目 */
+  border: none;            /* 枠線なし */
+  border-bottom: 1px solid #d0d7de; /* 下線のみ */
+  border-radius: 0;
   transition: all 0.2s ease;
   gap: 8px;
   min-width: 280px;
@@ -470,13 +713,13 @@ body {
 }
 
 .price-box-styled:hover {
-  border-color: #007bff;
-  background-color: #f8f9fa;
+  border-bottom-color: #007bff !important; /* 下線だけ色を変える（!importantで競合解消） */
+  background-color: transparent;
 }
 
 .price-box-styled:focus-within {
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  border-bottom-color: #007bff !important; /* 下線だけ強調（!importantで競合解消） */
+  box-shadow: none;
 }
 
 .price-selects-styled {
@@ -484,21 +727,21 @@ body {
   align-items: center;
   gap: 8px;
   flex: 1;
-  margin-left: 12px; /* 価格文字とセレクトボックスの間の余白を増やす */
-  margin-right: 12px; /* 右側にも余白を追加 */
+  margin-left: 12px; /* 元に戻す */
+  margin-right: 12px; /* 元に戻す */
   justify-content: flex-start; /* 左寄せに変更 */
-  gap: 16px; /* セレクトボックス間の余白を増やす */
+  gap: 16px; /* 元に戻す */
 }
 
 .price-select-styled {
   border: none;
   outline: none;
-  background: #f8f9fa;
+  background: transparent; /* 背景もフラットに */
   font-size: 1em;
   color: #333;
   cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: 4px 8px; /* 元に戻す */
+  border-radius: 0;
   min-width: 100px;
   flex: 1;
   text-align: center; /* テキストを中央揃え */
@@ -519,7 +762,7 @@ body {
 .filter-chips-container {
   margin-top: 8px;
   padding: 8px 0;
-  border-top: 1px solid #e9ecef;
+  border-top: none; /* バッジ上の横線を非表示に */
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -540,7 +783,7 @@ body {
   align-items: center;
   gap: 3px;
   padding: 3px 6px;
-  border-radius: 12px;
+  border-radius: 6px; /* クリア/検索ボタンと同じ角丸に統一 */
   font-size: 0.75rem;
   font-weight: 500;
   border: 1px solid;
@@ -875,9 +1118,9 @@ body {
   justify-content: center;
   padding: 8px 12px;
   min-width: 160px;
-  background: #f8f9fa;
-  border: 1px solid #d0d7de;
-  border-radius: 8px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
 }
 
 /* PC表示で形状フィルターボタンを非表示（形状ボタンは削除済み） */
@@ -1056,6 +1299,23 @@ body {
   border-bottom: none;
   border-radius: 8px 8px 0 0;
   box-shadow: none;
+}
+
+/* 検索結果タイトル（フィルター直下に表示） */
+.results-title {
+  margin: 40px 0 16px 0; /* さらに大きく広げる */
+  color: #111;
+  font-size: 1.25rem; /* 少し大きく */
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+@media (max-width: 768px) {
+  .results-title {
+    font-size: 1rem; /* 少し大きく */
+    margin: 28px 0 12px 0; /* SPでも大きく広げる */
+    font-weight: 700;
+  }
 }
 
 .title-area {
@@ -1603,33 +1863,31 @@ body {
   height: 100vh;
   background: rgba(0,0,0,0.45);
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   z-index: 1000;
   overflow: hidden; /* 背景のスクロールを防止 */
   touch-action: none; /* SPでのタッチスクロール防止 */
-  padding-top: 0; /* 上部余白を完全に削除 */
 }
 
 /* モーダルコンテンツ */
 .modal-content {
-  background: white !important;
-  border-radius: 8px !important;
-  padding: 24px !important;
-  width: 85vw !important;
-  max-width: 800px !important;
-  max-height: 75vh !important;
-  position: relative !important;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2) !important;
-  margin-top: 60px !important; /* タイトル帯の真ん中くらいまで上に移動 */
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  width: 90vw;
+  max-width: 900px;
+  max-height: 76vh; /* PCでボタンが見切れないように少し低く */
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 
 /* モーダルヘッダー */
 .modal-header {
   margin-top: 0;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
   text-align: center;
-  font-size: 1.1em;
+  font-size: 1.3em;
   font-weight: bold;
   color: #333;
   padding: 0;
@@ -1700,22 +1958,150 @@ body {
 
 /* モーダルボタングループ */
 .modal-button-group {
-  display: flex !important;
-  gap: 12px !important;
-  justify-content: center !important;
-  margin-top: 2px !important;
-  margin-bottom: 0 !important;
-  flex-shrink: 0 !important; /* ボタンエリアを固定 */
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 24px;
+  margin-bottom: 0;
+  flex-shrink: 0; /* ボタンエリアを固定 */
 }
 
 /* ===== 階層フィルターモーダル専用スタイル ===== */
 
 .hierarchical-modal {
   width: 95vw;
-  max-width: 1200px;
-  max-height: 85vh;
+  max-width: 1100px; /* 幅も少し控えめに */
+  max-height: 78vh; /* PCでの見切れ対策 */
   display: flex;
   flex-direction: column;
+}
+
+/* ===== ボトムシート変種（SP向け） ===== */
+.modal-overlay.bottom-sheet {
+  align-items: flex-end;
+  padding: 0;
+}
+
+.bottom-sheet .modal-content,
+.modal-content.bottom-sheet-panel {
+  width: 100vw !important;
+  max-width: none !important;
+  height: 95dvh !important; /* さらに上へ引き上げる */
+  height: 95vh !important;  /* フォールバック */
+  max-height: 95dvh !important; /* 既存の80vh/70dvh上限を無効化 */
+  overflow: hidden !important; /* コンテナ側はスクロールさせない */
+  display: flex !important;
+  flex-direction: column !important; /* ヘッダー/本文/フッター */
+  box-sizing: border-box !important; /* パディング分で高さが溢れないようにする */
+  padding: 12px 16px env(safe-area-inset-bottom, 0px) 16px !important; /* 下側はsafe-areaのみ */
+  border-top-left-radius: 16px !important;
+  border-top-right-radius: 16px !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  margin-top: 0 !important;
+  padding: 12px 16px !important;
+  padding-bottom: 0 !important; /* 下部の余白を打ち消す（フッター側でsafe-area対応） */
+  display: flex !important;
+  flex-direction: column !important;
+  transform: translateY(0) !important; /* 上方向のシフトを無効化 */
+  transition: transform 0.18s ease;
+  position: relative !important; /* オーバーレイ内で下寄せ */
+}
+
+/* 階層モーダルの既存max-heightを無効化してフッターが隠れないようにする */
+.bottom-sheet .hierarchical-modal {
+  height: 95dvh !important;
+  max-height: 95dvh !important;
+}
+
+.bottom-sheet .sheet-header {
+  position: sticky;
+  top: 0;
+  background: transparent; /* タイトル帯のグレー背景を撤去 */
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding-top: 6px;
+}
+
+.bottom-sheet .sheet-handle {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: #e5e7eb; /* neutral-200 */
+  margin-bottom: 6px;
+}
+
+/* タイトルをやや小さめ＆余白調整 */
+.bottom-sheet .modal-header {
+  font-size: 0.95em;
+  margin-bottom: 6px;
+}
+
+.bottom-sheet .sheet-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 6px 0;
+}
+
+/* 階層コンテナはシート内スクロールに委譲 */
+.bottom-sheet .hierarchical-filter-container {
+  max-height: none;
+  overflow: visible;
+  margin-bottom: 0;
+  padding: 0;
+  border: none;
+}
+
+/* 一般フィルターリストもシート内スクロールへ委譲 */
+.bottom-sheet .filter-options-grid {
+  max-height: none;
+  overflow: visible;
+  padding: 0;
+  border: none;
+  margin-bottom: 0;
+}
+
+.bottom-sheet .sheet-footer {
+  position: relative; /* 固定バーは別要素で描画するため、ここはスペーサー用途 */
+  background: #f3f4f6; /* 視認性のための薄グレー */
+  padding: 0;
+  border-top: 1px solid #e5e7eb;
+  z-index: 2;
+  min-height: 72px; /* 固定ボタン分のスペースを確保 */
+}
+
+/* 画面下固定のアクションバー（どの端末でも常時可視） */
+.bottom-sheet .fixed-action-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px));
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
+  z-index: 1002; /* オーバーレイ・パネルより前面 */
+  box-shadow: 0 -6px 16px rgba(0,0,0,0.08);
+}
+
+.bottom-sheet .fixed-action-bar .modal-button-group {
+  padding: 0;
+  margin: 0;
+}
+
+.bottom-sheet .modal-button-group {
+  margin: 0 !important;
+  padding: 0 8px !important;
+  gap: 8px !important;
+  flex-direction: column;
+}
+
+.bottom-sheet .modal-button-group button {
+  width: 100%;
 }
 
 .hierarchical-filter-container {
@@ -1751,7 +2137,7 @@ body {
   flex: 1;
   color: #333333;
   font-weight: 600;
-  font-size: 0.95em;
+  font-size: 1.05em;
 }
 
 .series-name {
@@ -2701,7 +3087,7 @@ body {
     .filter-buttons-inline {
     justify-content: center;
     width: 100%;
-    margin-top: 8px !important; /* 検索窓との間にマージンを追加 */
+    margin-top: 2px !important; /* 上余白を詰める */
   }
 
   .filter-buttons-inline button {
@@ -3245,6 +3631,81 @@ body {
   
   .product-card .effective-price-new {
     align-items: center !important;
+  }
+}
+
+/* PR文言のPC/SP表示制御 */
+.pr-text-pc {
+  display: inline;
+}
+
+.pr-text-sp {
+  display: none;
+}
+
+/* SP表示専用PR文言 */
+.pr-notice-sp {
+  display: none;
+}
+
+/* タイトル直下のPR文言はデフォルトで非表示（PCなど） */
+.pr-under-title-sp {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .pr-text-pc {
+    display: none;
+  }
+  
+  .pr-text-sp {
+    display: none; /* SPではPR文言を非表示 */
+  }
+  
+  .pr-notice-sp {
+    display: none; /* SPではPR文言を非表示 */
+    margin: 0;
+    padding: 0;
+    margin-bottom: -12px;
+    text-align: right;
+  }
+
+  /* タイトル直下のSP専用PR表記（薄いグレー・小さめ） */
+  .pr-under-title-sp {
+    display: block; /* SP時のみ表示 */
+    color: #9ca3af; /* 薄いグレー */
+    font-size: 0.625rem; /* さらに小さく（10px相当） */
+    line-height: 1.2;
+    margin: -8px 0 8px 0; /* タイトルとの間隔を詰めつつ下に余白 */
+    padding: 0;
+  }
+}
+
+/* イヤバズ+に戻るボタン */
+.back-to-earbuds {
+  padding: 8px 16px;
+  position: relative;
+  z-index: 1000;
+}
+
+.back-link-white {
+  color: white;
+  text-decoration: underline;
+  font-size: 0.9em;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.back-link-white:hover {
+  color: #ffd700;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .back-link-white {
+    font-size: 0.75em;
   }
 }
 
