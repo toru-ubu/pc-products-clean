@@ -43,8 +43,22 @@
     Object.keys(src).forEach(function(series){
       html += '<div class="dbw-series-group" data-key="'+key+'" data-series="'+series+'">';
       html +=   '<label class="dbw-chip-check"><input type="checkbox" class="dbw-series" data-key="'+key+'" data-series="'+series+'"><strong>'+series+'</strong></label>';
-      (src[series]||[]).forEach(function(m){
-        html +=   '<label class="dbw-chip-check"><input type="checkbox" class="dbw-leaf" data-key="'+key+'" data-series="'+series+'" value="'+m+'">'+m+'</label>';
+      var models = (src[series]||[]);
+      var baseMap = {};
+      if (key === 'gpu') {
+        models.forEach(function(m){
+          var base = m.replace(/\s*\((\d+\s*GB)\)\s*$/i, '');
+          (baseMap[base] || (baseMap[base] = [])).push(m);
+        });
+      }
+      models.forEach(function(m){
+        var label = m;
+        if (key === 'gpu') {
+          var base = m.replace(/\s*\((\d+\s*GB)\)\s*$/i, '');
+          // 同一ベース名で分岐が無い場合はRAM表記を省略
+          label = (baseMap[base] && baseMap[base].length > 1) ? m : base;
+        }
+        html +=   '<label class="dbw-chip-check"><input type="checkbox" class="dbw-leaf" data-key="'+key+'" data-series="'+series+'" value="'+m+'">'+label+'</label>';
       });
       html += '</div>';
     });
@@ -60,13 +74,13 @@
     var shadow = container.attachShadow({ mode: 'open' });
 
     // Load CSS into shadow
-    loadCSSIntoShadow(shadow, BASE + '/widgets/search-widget.css');
+    loadCSSIntoShadow(shadow, BASE + '/widgets/search-widget.css?_t=20250910sp10');
 
     // Build widget DOM inside shadow
     var wrapper = document.createElement('div');
     wrapper.innerHTML = [
       '<div class="dbw-container">',
-      '  <h2 class="dbw-title">メーカー横断で探せる日本最大級のゲーミングPC検索ツール</h2>',
+      '  <h2 class="dbw-title">ゲーミングPCをメーカー横断で検索</h2>',
       
       '  <div class="dbw-filter-buttons-row">',
       '    <button type="button" class="dbw-filter-button" data-open="manufacturer">メーカー</button>',
@@ -79,31 +93,37 @@
       '  <div class="dbw-filterbar secondary">',
       '    <div class="dbw-fieldbox">',
       '      <span class="dbw-label">価格</span>',
-      '      <div class="dbw-inline">',
-      '        <select id="dbw-price-min-top" class="dbw-select-styled"></select>',
-      '        <span>〜</span>',
-      '        <select id="dbw-price-max-top" class="dbw-select-styled"></select>',
+      '      <div class="dbw-inline dbw-price-inline">',
+      '        <select id="dbw-price-min-top" class="dbw-select-styled small"></select>',
+      '        <span class="dbw-inline-sep">〜</span>',
+      '        <select id="dbw-price-max-top" class="dbw-select-styled small"></select>',
       '      </div>',
       '    </div>',
       '    <div class="dbw-fieldbox grow">',
       '      <span class="dbw-label">キーワード</span>',
-      '      <input id="dbw-keyword-top" type="text" placeholder="商品名、スペックなど" class="dbw-input" />',
-      '    </div>',
-      '    <div class="dbw-fieldbox shape">',
-      '      <label class="dbw-check"><input id="dbw-shape-desktop" type="checkbox" checked />デスクトップ</label>',
-      '      <label class="dbw-check"><input id="dbw-shape-notebook" type="checkbox" />ノートブック</label>',
+      '      <input id="dbw-keyword-top" type="text" placeholder="商品名、スペックなど" class="dbw-input small" />',
       '    </div>',
       '  </div>',
       '  <div class="dbw-filterbar tertiary">',
-      '    <div class="dbw-actions-right" style="justify-content:center;width:100%">',
-      '      <button id="dbw-search-top" class="dbw-btn primary">検索</button>',
+      '    <div class="dbw-shape-left">',
+      '      <div class="dbw-fieldbox shape">',
+      '        <label class="dbw-check" style="display:none"><input id="dbw-shape-desktop" type="checkbox" checked />デスクトップ</label>',
+      '        <label class="dbw-check" style="display:none"><input id="dbw-shape-notebook" type="checkbox" />ノートブック</label>',
+      '      </div>',
+      '      <div class="dbw-shape-toggle">',
+      '        <span class="dbw-shape-item active" data-shape="desktop">デスクトップ</span>',
+      '        <span class="dbw-shape-sep">/</span>',
+      '        <span class="dbw-shape-item" data-shape="notebook">ノートブック</span>',
+      '      </div>',
+      '    </div>',
+      '    <div class="dbw-actions-right">',
+      '      <button id="dbw-search-top" class="dbw-btn primary">検索する</button>',
       '    </div>',
       '  </div>',
       '</div>',
       '<div id="dbw-modal" class="dbw-modal-overlay" style="display:none">',
       '  <div class="dbw-modal">',
       '    <button type="button" class="dbw-modal-close" aria-label="閉じる">×</button>',
-      '    <h3 class="dbw-modal-title">条件で絞り込む</h3>',
       '    <div id="dbw-common-row" class="dbw-row">',
       '      <div class="dbw-field">',
       '        <label class="dbw-label">キーワード</label>',
@@ -126,7 +146,7 @@
       '    <div class="dbw-section dbw-section-gpu"><h4>GPU</h4><div id="dbw-modal-gpu" class="dbw-grid"></div></div>',
       '    <div class="dbw-section dbw-section-memory"><h4>メモリ</h4><div id="dbw-modal-memory" class="dbw-grid"></div></div>',
       '    <div class="dbw-section dbw-section-storage"><h4>ストレージ</h4><div id="dbw-modal-storage" class="dbw-grid"></div></div>',
-      '    <div class="dbw-actions"><button id="dbw-submit" class="dbw-btn primary">検索</button></div>',
+      '    <div class="dbw-actions"><button id="dbw-submit" class="dbw-btn primary">検索する</button></div>',
       '  </div>',
       '</div>'
     ].join('');
@@ -162,7 +182,7 @@
     }
     function openModal(type){ setModalVisibility(type); modal.style.display='flex'; document.body.style.overflow='hidden'; }
     function closeModal(){ modal.style.display='none'; document.body.style.overflow=''; }
-    shadow.addEventListener('click', function(e){ var t=e.target; if(!(t instanceof Element)) return; var op=t.closest('.dbw-open-modal, .dbw-filter-button'); if(!op) return; e.preventDefault(); var pf=op.getAttribute('data-prefocus') || op.getAttribute('data-open'); var type = pf==='manufacturer' ? 'maker' : pf; openModal(type); if(pf==='gpu'){ qs('#dbw-modal-gpu', root).scrollIntoView({behavior:'smooth'});} if(pf==='manufacturer'){ qs('#dbw-modal-makers', root).scrollIntoView({behavior:'smooth'});} if(pf==='cpu'){ qs('#dbw-modal-cpu', root).scrollIntoView({behavior:'smooth'});} if(pf==='memory'){ qs('#dbw-modal-memory', root).scrollIntoView({behavior:'smooth'});} if(pf==='storage'){ qs('#dbw-modal-storage', root).scrollIntoView({behavior:'smooth'});} });
+    shadow.addEventListener('click', function(e){ var t=e.target; if(!(t instanceof Element)) return; var op=t.closest('.dbw-open-modal, .dbw-filter-button'); if(!op) return; e.preventDefault(); var pf=op.getAttribute('data-prefocus') || op.getAttribute('data-open'); var type = pf==='manufacturer' ? 'maker' : pf; openModal(type); });
     if(closeBtn) closeBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', function(e){ if(e.target===modal) closeModal(); });
 
@@ -175,6 +195,26 @@
     buildPriceOptions(pmin); buildPriceOptions(pmax);
     var pminTop = qs('#dbw-price-min-top', root), pmaxTop = qs('#dbw-price-max-top', root);
     buildPriceOptions(pminTop); buildPriceOptions(pmaxTop);
+
+    // SP shape toggle sync with hidden checkboxes
+    (function(){
+      var cbDesk = qs('#dbw-shape-desktop', root);
+      var cbNote = qs('#dbw-shape-notebook', root);
+      var itDesk = qs('.dbw-shape-item[data-shape="desktop"]', root);
+      var itNote = qs('.dbw-shape-item[data-shape="notebook"]', root);
+      function setExclusive(target){
+        if(!cbDesk || !cbNote) return;
+        if(target === 'desktop'){ cbDesk.checked = true; cbNote.checked = false; }
+        else if(target === 'notebook'){ cbDesk.checked = false; cbNote.checked = true; }
+        syncVisual();
+      }
+      function syncVisual(){ if(itDesk&&cbDesk) itDesk.classList.toggle('active', !!cbDesk.checked); if(itNote&&cbNote) itNote.classList.toggle('active', !!cbNote.checked); }
+      if(itDesk) itDesk.addEventListener('click', function(e){ e.preventDefault(); setExclusive('desktop'); });
+      if(itNote) itNote.addEventListener('click', function(e){ e.preventDefault(); setExclusive('notebook'); });
+      // default to desktop active if both off
+      if(cbDesk && cbNote && !cbDesk.checked && !cbNote.checked){ cbDesk.checked = true; }
+      syncVisual();
+    })();
 
     // Load data
     fetch(BASE + '/api/db-widget', { cache: 'no-cache' })
@@ -203,17 +243,17 @@
       if(pmaxTop&&pmaxTop.value) params.priceMax=pmaxTop.value;
       var plus=[]; if(qs('#dbw-shape-desktop', root).checked) plus.push('desktop'); if(qs('#dbw-shape-notebook', root).checked) plus.push('notebook'); if(!(plus.length===1 && plus[0]==='desktop')){ if(plus.length) params.plus=plus; }
       // selections from modal (chips/checkboxes)
-      params.maker = qsa('#dbw-modal-makers .dbw-chip.selected', root).map(function(a){return a.getAttribute('data-value');});
+      params.maker = collectChecked(root,'maker');
       params.cpu = collectChecked(root,'cpu');
       params.gpu = collectChecked(root,'gpu');
-      params.memory = qsa('#dbw-modal-memory .dbw-chip.selected', root).map(function(a){return a.getAttribute('data-value');});
-      params.storage = qsa('#dbw-modal-storage .dbw-chip.selected', root).map(function(a){return a.getAttribute('data-value');});
+      params.memory = collectChecked(root,'memory');
+      params.storage = collectChecked(root,'storage');
       return params;
     }
     if(searchBtn) searchBtn.addEventListener('click', function(e){ e.preventDefault(); go(buildParamsFromTop()); });
     // removed clear-top button
 
-    if(submitBtn) submitBtn.addEventListener('click', function(e){ e.preventDefault(); var params={}; var s=(kw&&kw.value||'').trim(); if(s) params.keyword=s; if(pmin&&pmin.value) params.priceMin=pmin.value; if(pmax&&pmax.value) params.priceMax=pmax.value; var plus=[]; if(desktop&&desktop.checked) plus.push('desktop'); if(notebook&&notebook.checked) plus.push('notebook'); if(!(plus.length===1 && plus[0]==='desktop')){ if(plus.length) params.plus=plus; } params.maker = qsa('#dbw-modal-makers .dbw-chip.selected', root).map(function(a){return a.getAttribute('data-value');}); params.cpu = collectChecked(root,'cpu'); params.gpu = collectChecked(root,'gpu'); params.memory = qsa('#dbw-modal-memory .dbw-chip.selected', root).map(function(a){return a.getAttribute('data-value');}); params.storage = qsa('#dbw-modal-storage .dbw-chip.selected', root).map(function(a){return a.getAttribute('data-value');}); go(params); });
+    if(submitBtn) submitBtn.addEventListener('click', function(e){ e.preventDefault(); var params={}; var s=(kw&&kw.value||'').trim(); if(s) params.keyword=s; if(pmin&&pmin.value) params.priceMin=pmin.value; if(pmax&&pmax.value) params.priceMax=pmax.value; var plus=[]; if(desktop&&desktop.checked) plus.push('desktop'); if(notebook&&notebook.checked) plus.push('notebook'); if(!(plus.length===1 && plus[0]==='desktop')){ if(plus.length) params.plus=plus; } params.maker = collectChecked(root,'maker'); params.cpu = collectChecked(root,'cpu'); params.gpu = collectChecked(root,'gpu'); params.memory = collectChecked(root,'memory'); params.storage = collectChecked(root,'storage'); go(params); });
   }
 
   // Entry

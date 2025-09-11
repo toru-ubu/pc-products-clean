@@ -495,6 +495,11 @@ body {
   box-sizing: border-box;
 }
 
+/* ページ下部にフッターが張り付かないように最小高さを確保 */
+.page-min-height {
+  min-height: 70vh;
+}
+
 
 
 /* ===== 絞り込み機能のスタイル ===== */
@@ -1309,6 +1314,84 @@ body {
   font-weight: 700;
   line-height: 1.35;
 }
+
+/* ===== 商品詳細ページ ===== */
+.product-detail {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.detail-title {
+  margin: 8px 0 12px 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.detail-divider {
+  height: 1px;
+  background: #e9ecef;
+  margin: 8px 0 16px 0;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 1024px) {
+  .detail-grid {
+    grid-template-columns: 1fr 1fr; /* 左:画像 / 右:価格+スペック */
+    gap: 24px;
+  }
+}
+
+.detail-image {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.detail-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.detail-right { display: flex; flex-direction: column; gap: 16px; }
+
+.detail-price {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.detail-specs {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+@media (max-width: 768px) {
+  .detail-specs { grid-template-columns: 1fr; }
+}
+
+.detail-specs .spec-item { display: flex; justify-content: space-between; gap: 8px; border-bottom: 1px solid #f0f0f0; padding: 6px 0; }
+.detail-specs .spec-label { color: #666; font-size: .9em; }
+.detail-specs .spec-value { color: #222; font-weight: 600; }
+
+.related-section { padding: 8px 0; }
+.related-title { font-size: 1.1rem; font-weight: 700; margin: 8px 0; }
+.related-placeholder { color: #666; font-size: .9em; }
 
 @media (max-width: 768px) {
   .results-title {
@@ -2464,7 +2547,7 @@ body {
     align-self: flex-end;
   }
   
-  /* PC表示：price-blockの上部マージンを強制的に削除 */
+  /* PC表示：価格ブロックの元のマージン設定に戻す（上書きを解除） */
   .product-list .card-info .price-block {
     margin-top: 0 !important;
     padding-top: 0 !important;
@@ -3278,7 +3361,7 @@ body {
     line-height: 1.15;
     margin: 0 0 6px 0;  /* 商品名とメーカー名の間隔を少し開ける（2px → 6px） */
     display: block;
-    width: 100%;
+    width: calc(100% - 28px); /* 右上のアイコン分だけ幅を短くして早めに折りたたむ */
     white-space: nowrap;        /* 1行に制限 */
     overflow: hidden;           /* はみ出し部分を隠す */
     text-overflow: ellipsis;    /* 省略記号を表示 */
@@ -3708,5 +3791,226 @@ body {
     font-size: 0.75em;
   }
 }
+
+/* ===== Bookmark button (minimal styles) ===== */
+.product-card { position: relative; }
+
+.bookmark-btn {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  border: none;             /* 背景なし・枠なし */
+  border-radius: 0;
+  background: transparent;
+  cursor: pointer;
+  box-shadow: none;
+  color: #444;              /* アイコン色 */
+}
+
+.bookmark-btn.is-saved { color: #111; }
+
+@media (min-width: 769px) {
+  /* PC：商品画像だけを少し右へ（他のレイアウトには影響しない相対移動） */
+  .product-list .card-image {
+    position: relative;
+    left: 6px; /* 微調整値：必要なら変更可 */
+  }
+  /* PC: absolute at card top-right */
+  .bookmark-btn--pc {
+    position: absolute;
+    top: 12px; /* もう少し上へ寄せる */
+    left: 6px;  /* さらに左へ */
+    z-index: 2;
+    /* ボタンらしさを出す（PCのみ） */
+    width: 32px;
+    height: 32px;
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .bookmark-btn--pc .bookmark-svg {
+    width: 20px;
+    height: 20px;
+  }
+  .bookmark-btn--sp { display: none; }
+}
+
+@media (max-width: 768px) {
+  /* SP: place inside title header (right-top), without shifting layout */
+  .card-header { position: relative; }
+  .bookmark-btn--sp {
+    position: absolute;
+    top: 14px; /* さらに下げる */
+    right: 12px;
+    width: 24px;
+    height: 24px;
+    z-index: 2;
+  }
+  .bookmark-btn--pc { display: none; }
+}
+
+/* ===== Left menu (PC fixed) & SP hamburger ===== */
+@media (min-width: 1280px) {
+  .left-menu--pc {
+    position: absolute; /* ヘッダー内に絶対配置（スクロール追従しない） */
+    top: 80px;
+    left: 16px;
+    width: 220px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    z-index: 100;
+  }
+  .left-menu--pc ul { list-style: none; margin: 0; padding: 0; }
+  .left-menu--pc li { margin: 0; padding: 0; }
+  .left-menu__link {
+    display: block;
+    padding: 10px 12px;
+    color: #333;
+    text-decoration: none;
+    border-radius: 6px;
+  }
+  .left-menu__link:hover { background: #f8f9fa; }
+}
+
+/* Hide PC panel on narrower widths */
+@media (max-width: 1279px) {
+  .left-menu--pc { display: none; }
+}
+
+/* SP hamburger */
+@media (max-width: 768px) {
+  .hamburger-btn {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+  .hamburger-icon { background: #333; box-shadow: 0 -6px 0 #333, 0 6px 0 #333; }
+  .drawer-nav { margin-top: 8px; }
+  .drawer-nav .left-menu__link { margin-top: 4px; }
+  .drawer-backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 2000;
+  }
+  .drawer-panel {
+    position: fixed; top: 0; left: 0; height: 100vh; width: 72vw; max-width: 300px;
+    background: #fff; z-index: 2001; box-shadow: 2px 0 16px rgba(0,0,0,0.2);
+    padding: 16px 12px;
+  }
+  .drawer-close {
+    position: absolute; top: 8px; right: 8px; background: transparent; border: none; font-size: 20px;
+  }
+  .drawer-nav ul { list-style: none; padding: 48px 0 0 0; margin: 0; }
+  .drawer-nav li { margin: 0; }
+  .drawer-nav .left-menu__link { display: block; padding: 12px; color: #333; text-decoration: none; border-radius: 6px; }
+  .drawer-nav .left-menu__link:hover { background: #f8f9fa; }
+}
+
+/* Hide hamburger on large screens */
+@media (min-width: 769px) {
+  .hamburger-btn { display: none; }
+}
+
+/* ===== Left menu title and SP drawer header ===== */
+.left-menu__title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #444;
+  padding: 8px 8px 6px 8px;
+  border-bottom: 2px solid #e5e5e5;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 768px) {
+  .drawer-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 8px 12px 8px;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  .drawer-title {
+    font-weight: 700;
+    color: #666;
+    font-size: 0.95rem;
+  }
+  .drawer-hamburger {
+    position: static;
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+  }
+}
+
+/* SP hamburger label next to icon when open */
+@media (max-width: 768px) {
+  .hamburger-label {
+    position: absolute;
+    left: 60px;
+    height: 44px;
+    line-height: 44px;
+    display: inline-block;
+  }
+}
+
+/* Menu link as a button-like item */
+.left-menu__link {
+  display: block;
+  padding: 10px 12px;
+  color: #333;
+  text-decoration: none;
+  border: none;
+  border-radius: 6px;
+  background: #fff;
+  font-weight: 600;
+  margin: 6px 6px 0 6px;
+}
+.left-menu__link:hover { background: #f8f9fa; }
+
+@media (max-width: 768px) {
+  .hamburger-label { left: 8px; }
+  .drawer-nav .left-menu__link { margin: 8px 0 0 0; }
+}
+
+@media (max-width: 768px) {
+  /* Ensure hamburger stays visible and centered within the 44x44 touch target */
+  .hamburger-btn { position: absolute; top: 8px; left: 8px; width: 44px; height: 44px; z-index: 3000; }
+  .hamburger-icon {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 22px;
+    height: 2px;
+    background: #333;
+    box-shadow: 0 -6px 0 #333, 0 6px 0 #333;
+    display: block;
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+@media (max-width: 768px) {
+  .drawer-backdrop { animation: drawerBackDropIn .22s ease-out forwards; }
+  .drawer-panel { transform: translateX(-105%); animation: drawerSlideIn .24s cubic-bezier(.22,.61,.36,1) forwards; }
+}
+
+@media (max-width: 768px) {
+  @keyframes drawerSlideIn { from { transform: translateX(-105%); } to { transform: translateX(0); } }
+  @keyframes drawerBackDropIn { from { opacity: 0; } to { opacity: 1; } }
+}
+
+@media (prefers-reduced-motion: reduce) and (max-width: 768px) {
+  .drawer-panel { animation: none; transform: translateX(0); }
+  .drawer-backdrop { animation: none; }
+}
+
+.bookmark-svg { fill: none; stroke: currentColor; stroke-width: 1.6; }
+.bookmark-btn.is-saved .bookmark-svg { fill: currentColor; stroke: currentColor; }
 
 

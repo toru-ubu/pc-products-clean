@@ -1,29 +1,78 @@
-.dbw-container{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:16px}
-.dbw-title{font-size:20px;margin:0 0 16px 0}
+.dbw-container{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:16px;max-width:1200px;margin:0 auto}
+.dbw-title{font-size:22px;margin:0 0 16px 0;text-align:center;white-space:nowrap}
 .dbw-main-buttons{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .dbw-btn{padding:10px 16px;border:none;border-radius:8px;font-weight:700;cursor:pointer}
 .dbw-red{background:#e74c3c;color:#fff}
 .dbw-blue{background:#3498db;color:#fff}
 .dbw-searchbar{display:flex;gap:8px;max-width:520px;margin:0 0 16px 0}
-.dbw-filterbar{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-items:end;margin:0 0 12px 0;background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:16px}
-.dbw-filterbar.secondary{grid-template-columns:1.4fr 2fr 1.2fr auto;gap:16px}
+.dbw-filterbar{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;align-items:end;margin:0 0 12px 0;background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:16px;max-width:1100px;margin-left:auto;margin-right:auto}
+.dbw-filterbar,.dbw-filterbar.secondary,.dbw-filterbar.tertiary,.dbw-filter-buttons-row{box-sizing:border-box}
+.dbw-filterbar.secondary{grid-template-columns:repeat(5,1fr);gap:16px;align-items:center;padding:0 16px;max-width:1100px;margin-left:auto;margin-right:auto}
+/* 5分割基準に合わせて配置（価格2カラム、キーワード3カラム） */
+.dbw-filterbar.secondary > .dbw-fieldbox:first-child{grid-column:1 / span 2}
+.dbw-filterbar.secondary > .dbw-fieldbox.grow{grid-column:3 / span 3}
+/* PC: 価格上限セレクトとキーワードの間隔を詰める */
+.dbw-filterbar.secondary .dbw-fieldbox.grow .dbw-input.small{margin-left:8px}
 .dbw-filterbar.secondary{background:transparent;border:none;border-radius:0;padding:0}
-.dbw-filterbar.tertiary{background:transparent;border:none;border-radius:0;padding:8px 0}
-.dbw-filter-buttons-row{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px 0;padding:0 16px}
+.dbw-filterbar.tertiary{background:transparent;border:none;border-radius:0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);align-items:center;max-width:1100px;margin-left:auto;margin-right:auto}
+/* 5分割基準に合わせて配置（形状3カラム、ボタン2カラム） */
+.dbw-filterbar.tertiary .dbw-shape-left{grid-column:1 / span 3}
+.dbw-filterbar.tertiary .dbw-actions-right{grid-column:4 / span 2;justify-content:flex-end;padding-right:8px}
+.dbw-shape-left{display:flex;gap:12px;align-items:center}
+.dbw-actions-right{display:flex;gap:8px;justify-content:flex-end}
+.dbw-filterbar.tertiary .dbw-actions-right{justify-content:flex-end;padding-right:16px}
+.dbw-fieldbox.shape{flex-direction:row;gap:12px;align-items:center}
+.dbw-filter-buttons-row{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px 0;padding:0;max-width:1100px;margin-left:auto;margin-right:auto}
 .dbw-filter-button{display:flex;align-items:center;justify-content:space-between;min-width:140px;height:48px;padding:12px 16px;background:#fff;border:1px solid #d0d7de;border-radius:8px;color:#007bff;font-weight:500;cursor:pointer;transition:all .2s}
 .dbw-filter-button:hover{border-color:#007bff;background:#f8f9fa}
 .dbw-fieldbox{display:flex;flex-direction:column;gap:6px}
 .dbw-fieldbox.grow{grid-column:auto / span 1}
 .dbw-label{color:#007bff;font-weight:600;font-size:14px}
 .dbw-select-styled{width:100%;padding:10px 12px;border:1px solid #d0d7de;border-radius:8px;background:#fff}
+.dbw-select-styled.small{max-width:140px}
+.dbw-input.small{max-width:360px;min-width:220px}
+.dbw-price-inline .dbw-inline-sep{margin:0 6px;color:#666}
 .dbw-actions-right{display:flex;gap:8px;justify-content:flex-end}
 @media (max-width:768px){
  .dbw-filterbar{grid-template-columns:1fr 1fr;}
  .dbw-filterbar.secondary{grid-template-columns:1fr}
+ .dbw-filterbar.tertiary{grid-template-columns:1fr;row-gap:8px}
  .dbw-actions-right{justify-content:stretch}
  .dbw-filter-buttons-row{padding:0}
 }
 .dbw-input{flex:1;padding:10px 12px;border:1px solid #ddd;border-radius:8px}
+/* PC: キーワードを下線スタイルに */
+@media (min-width:769px){
+  /* 各カラムの幅いっぱいにボトムラインを引くために100%化 */
+  .dbw-filterbar.secondary > .dbw-fieldbox{width:100%}
+  .dbw-filterbar.secondary .dbw-fieldbox.grow .dbw-input{
+    border:none;border-bottom:2px solid #d0d7de;border-radius:0;
+    /* 幅を明示・flexを無効化して中央線を崩さない */
+    flex:0 0 420px;max-width:420px;width:420px
+  }
+  .dbw-filterbar.secondary .dbw-fieldbox.grow .dbw-input:focus{outline:none;border-bottom-color:#007bff}
+}
+
+/* === PC専用: 価格・キーワードを“ラベル+コントロール全体で1本の下線”に === */
+@media (min-width:769px){
+  /* フレックス横並びのまま、ボックス全体にボトムライン */
+  .dbw-filterbar.secondary > .dbw-fieldbox:first-child,
+  .dbw-filterbar.secondary > .dbw-fieldbox.grow{
+    border-bottom:2px solid #d0d7de;
+    padding-bottom:6px;
+  }
+  /* コントロールの枠線・背景を外し、下線に溶け込ませる */
+  .dbw-filterbar.secondary .dbw-select-styled,
+  .dbw-filterbar.secondary .dbw-input{
+    border:none;background:transparent;border-radius:0;box-shadow:none;
+    padding-left:0;padding-right:0;
+  }
+  .dbw-filterbar.secondary .dbw-select-styled:focus,
+  .dbw-filterbar.secondary .dbw-input:focus{outline:none}
+  /* セパレーターの間隔を少し広げて視認性を確保 */
+  .dbw-price-inline .dbw-inline-sep{margin:0 12px}
+  /* ラベルは他ボタン同様の青（既定 .dbw-label を踏襲） */
+}
 .dbw-go{padding:10px 16px;background:#2ecc71;color:#fff;border:none;border-radius:8px;font-weight:700}
 .dbw-price-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin:0 0 16px 0}
 .dbw-price-card{display:block;background:#fff;border:1px solid #eee;border-radius:8px;padding:12px;font-weight:700;text-decoration:none;color:#333}
@@ -32,26 +81,222 @@
 .dbw-chip{background:#f0f2f5;border:1px solid #e1e4e8;border-radius:16px;padding:6px 10px;font-size:12px;text-decoration:none;color:#333}
 
 /* Modal */
-.dbw-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:9999}
-.dbw-modal{background:#fff;max-width:960px;width:92vw;max-height:80vh;overflow:auto;border-radius:10px;padding:16px;position:relative;margin-top:4vh}
-.dbw-modal-title{margin:0 0 12px 0;font-size:18px}
+.dbw-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-start;justify-content:center;z-index:9999;padding-top:18vh}
+.dbw-modal{background:#fff;width:85vw;max-width:900px;max-height:65vh;overflow:auto;border-radius:10px;padding:16px;position:relative;margin-top:0}
+.dbw-modal-title{margin:0 0 12px 0;font-size:18px;text-align:center}
 .dbw-modal-close{position:absolute;right:12px;top:10px;border:none;background:transparent;font-size:22px;cursor:pointer}
 .dbw-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:0 0 12px 0}
 .dbw-field{display:flex;flex-direction:column;gap:6px}
 .dbw-label{font-size:12px;color:#666}
+.dbw-filterbar.secondary .dbw-fieldbox{flex-direction:row;align-items:center}
+.dbw-filterbar.secondary .dbw-label{margin-right:8px}
 .dbw-inline{display:flex;align-items:center;gap:6px}
 .dbw-select{padding:8px;border:1px solid #ddd;border-radius:8px}
 .dbw-check{display:inline-flex;align-items:center;gap:6px}
 .dbw-section{margin:10px 0}
 .dbw-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:6px}
-.dbw-series-group{display:block;border:1px solid #f0f0f0;border-radius:8px;padding:8px;margin-bottom:8px}
+/* 階層（CPU/GPU）は縦セクション＋横並びの子要素に変更 */
+.dbw-section-cpu .dbw-grid,.dbw-section-gpu .dbw-grid{display:block !important}
+.dbw-series-group{display:flex !important;flex-wrap:wrap;align-items:flex-start;gap:8px 10px;padding:10px 0;margin-bottom:10px;border:none}
+.dbw-series-group>.dbw-chip-check:first-child{flex-basis:100%;font-weight:700;padding:0 0 6px;margin:0 0 8px;border:0;border-bottom:1px solid #eee}
+.dbw-series-group>.dbw-chip-check:not(:first-child){margin-right:10px;margin-bottom:8px}
+
+/* 競合対策：既存の縦グリッド指定を強制上書き */
+.dbw-section-cpu .dbw-grid .dbw-series-group,.dbw-section-gpu .dbw-grid .dbw-series-group{display:flex !important}
+.dbw-series-group{display:block;border:none;border-radius:0;padding:0;margin-bottom:8px}
 .dbw-chip-check{display:inline-flex;align-items:center;gap:6px;border:1px solid #e1e4e8;border-radius:8px;padding:8px}
-.dbw-actions{display:flex;justify-content:center;gap:8px;margin:14px 0 4px 0}
+.dbw-actions{position:sticky;bottom:0;left:0;right:0;display:flex;justify-content:center;gap:8px;margin:14px 0 0 0;padding:12px;background:linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,0.9) 30%, #fff 60%);}
 .dbw-btn.primary{background:#007bff;color:#fff}
 .dbw-btn.ghost{background:#f4f5f7;color:#333}
 
 @media (max-width:768px){
  .dbw-row{grid-template-columns:1fr}
+ .dbw-modal-overlay{padding-top:20vh}
+ .dbw-modal{width:82vw;max-width:none;max-height:66vh;margin-top:0}
+ .dbw-modal-title{font-size:16px}
 }
 
 
+/* ==== SP専用 並び替え（CSSのみで順序変更） ==== */
+@media (max-width:768px){
+ .dbw-container{display:grid;grid-template-columns:1fr 1fr;row-gap:12px;column-gap:12px;justify-items:center;max-width:1100px;margin:0 auto}
+ .dbw-container{grid-template-areas:
+   "title title"
+   "keyword keyword"
+   "price price"
+   "maker cpu"
+   "gpu memory"
+   "storage storage"
+   "shape shape"
+   "search search";}
+
+ .dbw-title{grid-area:title;text-align:center;width:100%;font-size:16px;white-space:nowrap;margin-bottom:4px}
+
+ /* ボタン行の要素を直配置 */
+ .dbw-filter-buttons-row{display:contents}
+ .dbw-filter-button{width:100%}
+ .dbw-filter-button[data-open="manufacturer"]{grid-area:maker}
+ .dbw-filter-button[data-open="cpu"]{grid-area:cpu}
+ .dbw-filter-button[data-open="gpu"]{grid-area:gpu}
+ .dbw-filter-button[data-open="memory"]{grid-area:memory}
+ .dbw-filter-button[data-open="storage"]{grid-area:storage;width:auto;justify-self:start}
+
+ /* 価格・キーワードを直配置 */
+ .dbw-filterbar.secondary{display:contents}
+ .dbw-filterbar.secondary > .dbw-fieldbox:first-child{grid-area:price;width:100%}
+ .dbw-filterbar.secondary .dbw-fieldbox.grow{grid-area:keyword;width:100%}
+ .dbw-input.small{min-width:0;max-width:none;width:100%;border:none;border-bottom:2px solid #d0d7de;border-radius:0}
+ .dbw-input.small:focus{outline:none;border-bottom-color:#007bff}
+ .dbw-select-styled.small{max-width:none;width:100%}
+
+ /* 形状・検索ボタン */
+ .dbw-filterbar.tertiary{display:contents}
+ .dbw-filterbar.tertiary .dbw-shape-left{grid-area:shape;justify-content:flex-start;width:100%;border-bottom:1px solid #d0d7de;padding-bottom:6px}
+ .dbw-filterbar.tertiary .dbw-actions-right{grid-area:search;justify-content:center;width:100%}
+ .dbw-filterbar.tertiary .dbw-shape-left .dbw-fieldbox.shape{display:flex;flex-direction:row;gap:16px}
+ .dbw-filterbar.tertiary .dbw-shape-left label.dbw-check{border:none;padding:6px 0}
+}
+
+/* === PC: 1行目を5等分グリッドにしてフル幅ボタン化 === */
+@media (min-width:769px){
+  .dbw-filter-buttons-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;padding:0}
+  .dbw-filter-button{width:100%;justify-content:center}
+}
+
+/* === PC: 2行目/3行目の過剰指定をリセット（シンプル化） + キーワード行に1本下線 === */
+@media (min-width:769px){
+  /* キーワード行: ラベル+入力をまとめて1本下線でカバー */
+  .dbw-filterbar.secondary > .dbw-fieldbox{width:auto}
+  .dbw-filterbar.secondary .dbw-fieldbox.grow{
+    display:flex; align-items:center; gap:12px;
+    border-bottom:2px solid #d0d7de; padding-bottom:6px;
+  }
+  .dbw-filterbar.secondary .dbw-fieldbox.grow .dbw-input{flex:initial;width:auto;max-width:100%;border-bottom:0}
+  /* 検索ボタン周りの右側パディングをクリア */
+  .dbw-filterbar.tertiary .dbw-actions-right{padding-right:0}
+}
+
+/* === SP: キーワード/価格に1本下線、入力/セレクト個別枠は除去、モーダルボタン高を低く === */
+@media (max-width:768px){
+  /* キーワード: ラベル+入力をまとめて1本の下線 */
+  .dbw-filterbar.secondary .dbw-fieldbox.grow{
+    display:flex;align-items:center;gap:10px;border-bottom:2px solid #d0d7de;padding-bottom:6px
+  }
+  .dbw-filterbar.secondary .dbw-fieldbox.grow .dbw-input{border:none;border-bottom:0;background:#fff}
+
+  /* 価格: ラベル〜下限・上限セレクトを1本の下線でカバー */
+  .dbw-filterbar.secondary > .dbw-fieldbox:first-child{
+    display:flex;align-items:center;gap:10px;border-bottom:2px solid #d0d7de;padding-bottom:6px
+  }
+  .dbw-filterbar.secondary > .dbw-fieldbox:first-child .dbw-select-styled{border:none;border-bottom:0;background:#fff;border-radius:0;box-shadow:none;padding-left:0;padding-right:0}
+
+  /* モーダル内の選択チップ（高さを低く） */
+  .dbw-modal .dbw-chip-check{padding:6px 8px}
+
+  /* モーダル内ボタンの高さを低く */
+  .dbw-modal .dbw-filter-option{min-height:36px;height:36px;line-height:34px;padding:6px 10px}
+}
+
+@media (max-width:768px){
+  /* SP: キーワード/価格ラベルを青に */
+  .dbw-filterbar.secondary .dbw-label{color:#007bff}
+  
+  /* SP: キーワード行 高さを圧縮しつつ1本下線、均一化 */
+  .dbw-filterbar.secondary .dbw-fieldbox.grow{padding-top:2px;padding-bottom:4px;min-height:40px}
+  .dbw-filterbar.secondary .dbw-fieldbox.grow .dbw-input{padding:6px 0}
+  
+  /* SP: 価格行 高さを圧縮しつつ1本下線、均一化 */
+  .dbw-filterbar.secondary > .dbw-fieldbox:first-child{padding-top:2px;padding-bottom:4px;min-height:40px}
+  .dbw-filterbar.secondary > .dbw-fieldbox:first-child .dbw-select-styled{padding:6px 0}
+
+  /* SP: メインのモーダル起動ボタン（メーカー等）の高さを統一して低く */
+  .dbw-filter-button{height:40px;min-height:40px;padding:8px 12px}
+}
+
+@media (max-width:768px){
+  /* SP: キーワード/価格行 さらに高さ圧縮＆行間も縮小 */
+  .dbw-container{row-gap:8px}
+
+  /* キーワード行（ラベル+入力のコンテナ） */
+  .dbw-filterbar.secondary .dbw-fieldbox.grow{
+    min-height:34px; padding-top:1px; padding-bottom:3px; border-bottom-width:2px
+  }
+  .dbw-filterbar.secondary .dbw-fieldbox.grow .dbw-input{padding:4px 0}
+
+  /* 価格行（ラベル〜下限/上限のコンテナ） */
+  .dbw-filterbar.secondary > .dbw-fieldbox:first-child{
+    min-height:34px; padding-top:1px; padding-bottom:3px; border-bottom-width:2px
+  }
+  .dbw-filterbar.secondary > .dbw-fieldbox:first-child .dbw-select-styled{padding:4px 0}
+}
+
+@media (max-width:768px){
+  /* 形状トグル: スラッシュ区切り・下線、アクティブは青い下線 */
+  .dbw-shape-toggle{display:flex;align-items:center;gap:6px;border-bottom:2px solid #d0d7de;padding-bottom:4px;font-size:13px}
+  .dbw-shape-item{padding:4px 2px;border-bottom:2px solid transparent;color:#333;cursor:pointer}
+  .dbw-shape-item.active{border-bottom-color:#007bff;color:#007bff}
+  .dbw-shape-sep{color:#999}
+
+  /* SP: チェックボックスは非表示（JSで状態同期） */
+  .dbw-filterbar.tertiary .dbw-fieldbox.shape{display:none}
+
+  /* 配置変更: ストレージの右隣（メモリの下段右側）に形状を配置 */
+  .dbw-container{grid-template-areas:
+    "title title"
+    "keyword keyword"
+    "price price"
+    "maker cpu"
+    "gpu memory"
+    "storage shape"
+    "search search"}
+  }
+
+  .dbw-filterbar.tertiary .dbw-shape-left{grid-area:shape;justify-content:flex-start;width:100%;border-bottom:none;padding-bottom:0}
+  .dbw-filterbar.tertiary .dbw-actions-right{grid-area:search}
+}
+
+@media (max-width:768px){
+  .dbw-shape-toggle{font-size:12px;gap:4px;padding-bottom:3px}
+  .dbw-shape-item{padding:3px 2px}
+}
+
+@media (max-width:768px){
+  /* SP override: smaller shape toggle text, no wrap, tighter spacing */
+  .dbw-shape-toggle{font-size:8px;white-space:nowrap;gap:2px;padding-bottom:2px}
+  .dbw-shape-item{padding:2px 1px}
+  .dbw-shape-sep{margin:0 2px}
+}
+
+/* PC: slash toggle styling (underline + active state) */
+@media (min-width:769px){
+  .dbw-shape-toggle{display:flex;align-items:center;gap:8px;border-bottom:2px solid #d0d7de;padding-bottom:6px;font-size:14px}
+  .dbw-shape-item{padding:6px 4px;border-bottom:2px solid transparent;color:#333;cursor:pointer}
+  .dbw-shape-item.active{border-bottom-color:#007bff;color:#007bff}
+  .dbw-shape-sep{color:#999}
+}
+
+@media (min-width:769px){
+  /* PC: ensure shape area sticks to left and occupies its grid space */
+  .dbw-filterbar.tertiary .dbw-shape-left{justify-self:start;width:100%;display:flex;justify-content:flex-start}
+  .dbw-filterbar.tertiary .dbw-actions-right{justify-self:end}
+}
+
+@media (max-width:768px){
+  /* SP: slightly larger slash toggle text */
+  .dbw-shape-toggle{font-size:11px}
+}
+
+@media (min-width:769px){
+  /* PC: anchor shape area and toggle to the far left */
+  .dbw-filterbar.tertiary{justify-items:start}
+  .dbw-filterbar.tertiary .dbw-shape-left{justify-self:start; align-self:center; display:flex; justify-content:flex-start}
+  .dbw-shape-toggle{display:inline-block !important; width:auto !important; max-width:100%; margin-left:0; margin-right:auto; text-align:left}
+}
+
+@media (min-width:769px){
+  /* PC tertiary row: switch from grid to flex to anchor left/right */
+  .dbw-filterbar.tertiary{display:flex !important;grid-template-columns:none !important;justify-content:space-between;align-items:center;gap:12px}
+  .dbw-filterbar.tertiary .dbw-shape-left{display:flex;justify-content:flex-start;flex:1 1 auto;min-width:0;width:auto !important}
+  .dbw-filterbar.tertiary .dbw-actions-right{display:flex;justify-content:flex-end;flex:0 0 auto}
+  .dbw-shape-toggle{display:inline-flex;margin-left:0;margin-right:auto}
+}

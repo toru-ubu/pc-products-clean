@@ -4,6 +4,7 @@ import "./globals.css";
 import "./style.css";
 import UnifiedHeader from "./components/UnifiedHeader";
 import UnifiedFooter from "./components/UnifiedFooter";
+import { SavedItemsProvider } from "../context/SavedItemsContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -96,14 +97,16 @@ export default function RootLayout({
         }}></script>
       </head>
       <body className={inter.className}>
-        {/* イヤバズ+統一ヘッダー */}
-        <UnifiedHeader />
-        {/* メインコンテンツのみ（プロキシ統合用） */}
-        <main>
-          {children}
-        </main>
-        {/* イヤバズ+統一フッター */}
-        <UnifiedFooter />
+        <SavedItemsProvider>
+          {/* イヤバズ+統一ヘッダー */}
+          <UnifiedHeader />
+          {/* メインコンテンツのみ（プロキシ統合用） */}
+          <main>
+            {children}
+          </main>
+          {/* イヤバズ+統一フッター */}
+          <UnifiedFooter />
+        </SavedItemsProvider>
       </body>
     </html>
   );

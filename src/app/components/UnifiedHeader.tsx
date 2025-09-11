@@ -3,19 +3,20 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import LeftMenu from './LeftMenu';
 
 export default function UnifiedHeader() {
   const pathname = usePathname();
   const isDbRootPage = pathname === '/' && !pathname.startsWith('/search');
 
   return (
-    <header className="unified-header">
+    <header className="unified-header" style={{ position: 'relative' }}>
       <div className="l-header__inner l-container">
         {/* 中央のロゴエリア */}
         <div className="l-header__logo">
           <div className="c-headLogo -img">
             <Link 
-              href="https://earbuds-plus.jp/db" 
+              href="/" 
               title="イヤバズ+" 
               className="c-headLogo__link" 
               rel="home"
@@ -31,6 +32,8 @@ export default function UnifiedHeader() {
             </Link>
           </div>
         </div>
+        {/* SPハンバーガーとPC左メニューのアンカー */}
+        <LeftMenu />
       </div>
     </header>
   );

@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Product, logCustomEvent } from '../../lib/firebase';
+import { useSavedItems } from '../../context/SavedItemsContext';
 import { getMockProducts } from '../../utils/mockData';
 import { FilterModal } from '../../components/FilterModal';
 import { HierarchicalFilterModal } from '../../components/HierarchicalFilterModal';
@@ -658,7 +659,17 @@ function ProductsPageContent() {
   };
 
   // 商品カードコンポーネント
-  const ProductCard = ({ product }: { product: Product }) => (
+  const ProductCard = ({ product }: { product: Product }) => {
+    const { isSaved, toggleSaved } = useSavedItems();
+    const saved = isSaved(product.id);
+
+    const handleToggle = (e: React.MouseEvent | React.KeyboardEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleSaved(product.id);
+    };
+
+    return (
     <a href={product.productUrl} target="_blank" rel="nofollow sponsored" className="product-card" onClick={() => logCustomEvent('click', {
       item_id: product.id, 
       item_name: product.name,
@@ -675,6 +686,21 @@ function ProductsPageContent() {
       current_sort: filterState.applied.sortBy
     })}>
       <div className="card-content">
+        {/* PC: カード右上に絶対配置の保存ボタン */}
+        <span
+          role="button"
+          aria-label={saved ? '保存済み' : '保存'}
+          aria-pressed={saved}
+          tabIndex={0}
+          className={`bookmark-btn bookmark-btn--pc ${saved ? 'is-saved' : ''}`}
+          onClick={handleToggle}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleToggle(e); }}
+        >
+          {/* Twitter風のブックマーク（outline → filled） */}
+          <svg className="bookmark-svg" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 3.75C6 3.06 6.56 2.5 7.25 2.5h9.5c.69 0 1.25.56 1.25 1.25v16.2c0 .46-.5.75-.92.53L12 17.6l-5.08 3.88c-.42.32-.92-.07-.92-.53V3.75Z"/>
+          </svg>
+        </span>
         {/* SP表示用：商品名・メーカーヘッダー */}
         <div className="card-header">
           <strong>{product.name}</strong>
@@ -911,8 +937,22 @@ function ProductsPageContent() {
               </div>
         </div>
       </div>
+      {/* SP: 商品名行に重ねる保存ボタン（カードヘッダー内右上） */}
+      <span
+        role="button"
+        aria-label={saved ? '保存済み' : '保存'}
+        aria-pressed={saved}
+        tabIndex={0}
+        className={`bookmark-btn bookmark-btn--sp ${saved ? 'is-saved' : ''}`}
+        onClick={handleToggle}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleToggle(e); }}
+      >
+        <svg className="bookmark-svg" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 3.75C6 3.06 6.56 2.5 7.25 2.5h9.5c.69 0 1.25.56 1.25 1.25v16.2c0 .46-.5.75-.92.53L12 17.6l-5.08 3.88c-.42.32-.92-.07-.92-.53V3.75Z"/>
+        </svg>
+      </span>
     </a>
-  );
+  ); } 
 
   if (loading || filterOptionsLoading) {
     return (
