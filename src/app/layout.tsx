@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import "./style.css";
 import UnifiedHeader from "./components/UnifiedHeader";
-import UnifiedFooter from "./components/UnifiedFooter";
 import { SavedItemsProvider } from "../context/SavedItemsContext";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -104,8 +103,7 @@ export default function RootLayout({
           <main>
             {children}
           </main>
-          {/* イヤバズ+統一フッター */}
-          <UnifiedFooter />
+          {/* フッターはMENUに統合したため削除 */}
         </SavedItemsProvider>
       </body>
     </html>

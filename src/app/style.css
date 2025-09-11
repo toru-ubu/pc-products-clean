@@ -3866,6 +3866,9 @@ body {
     padding: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     z-index: 100;
+    display: flex;
+    flex-direction: column;
+    min-height: 700px; /* リクエストに合わせて調整 */
   }
   .left-menu--pc ul { list-style: none; margin: 0; padding: 0; }
   .left-menu--pc li { margin: 0; padding: 0; }
@@ -3904,6 +3907,11 @@ body {
   }
   .drawer-close {
     position: absolute; top: 8px; right: 8px; background: transparent; border: none; font-size: 20px;
+  }
+  .drawer-nav {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
   }
   .drawer-nav ul { list-style: none; padding: 48px 0 0 0; margin: 0; }
   .drawer-nav li { margin: 0; }
@@ -3975,6 +3983,43 @@ body {
 @media (max-width: 768px) {
   .hamburger-label { left: 8px; }
   .drawer-nav .left-menu__link { margin: 8px 0 0 0; }
+}
+
+/* ===== Legal links in menu (small, light gray) ===== */
+.left-menu__legal {
+  color: #9CA3AF;
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 12px 8px 6px 8px;
+  display: flex;
+  flex-direction: column; /* 縦並び */
+  gap: 6px;
+}
+.left-menu__legalLink {
+  color: #9CA3AF;
+  text-decoration: none;
+}
+.left-menu__legalLink:hover {
+  color: #6B7280;
+  text-decoration: underline;
+}
+.left-menu__legalSep {
+  display: none; /* 縦並びのため区切りは非表示 */
+}
+
+@media (max-width: 768px) {
+  .left-menu__legal {
+    font-size: 11px;
+    margin: 16px 4px calc(env(safe-area-inset-bottom, 0px) + 8px) 4px;
+  }
+}
+
+/* 最下部寄せ（親がflexのとき有効） */
+@media (min-width: 1280px) {
+  .left-menu--pc .left-menu__legal { margin-top: auto; }
+}
+@media (max-width: 768px) {
+  .drawer-nav .left-menu__legal { margin-top: auto; }
 }
 
 @media (max-width: 768px) {

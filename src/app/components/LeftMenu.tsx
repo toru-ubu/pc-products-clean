@@ -126,6 +126,13 @@ export default function LeftMenu() {
             <Link href="/saved" className="left-menu__link">保存した商品</Link>
           </li>
         </ul>
+        <div className="left-menu__legal" aria-label="サイト情報">
+          <Link href="https://earbuds-plus.jp/company/about" className="left-menu__legalLink">運営会社</Link>
+          <span className="left-menu__legalSep">・</span>
+          <Link href="https://earbuds-plus.jp/privacy-policy/" className="left-menu__legalLink">プライバシーポリシー</Link>
+          <span className="left-menu__legalSep">・</span>
+          <Link href="https://earbuds-plus.jp/law/" className="left-menu__legalLink">特定商取引法に基づく表記</Link>
+        </div>
       </nav>
 
       {/* SPハンバーガー（左上固定） */}
@@ -157,6 +164,13 @@ export default function LeftMenu() {
                   <Link href="/saved" className="left-menu__link" onClick={() => setOpen(false)}>保存した商品</Link>
                 </li>
               </ul>
+              <div className="left-menu__legal" aria-label="サイト情報">
+                <Link href="https://earbuds-plus.jp/company/about" className="left-menu__legalLink" onClick={() => setOpen(false)}>運営会社</Link>
+                <span className="left-menu__legalSep">・</span>
+                <Link href="https://earbuds-plus.jp/privacy-policy/" className="left-menu__legalLink" onClick={() => setOpen(false)}>プライバシーポリシー</Link>
+                <span className="left-menu__legalSep">・</span>
+                <Link href="https://earbuds-plus.jp/law/" className="left-menu__legalLink" onClick={() => setOpen(false)}>特定商取引法に基づく表記</Link>
+              </div>
             </nav>
           </aside>
         </>
