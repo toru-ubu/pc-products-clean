@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, Suspense } from 'react';
 import { useSavedItems } from '../../context/SavedItemsContext';
 import { Product } from '../../lib/firebase';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
+import { shouldShowNew } from '../../utils/productUtils';
 
 function SavedListContent() {
   const { savedItems } = useSavedItems();
@@ -98,7 +99,7 @@ function SavedListContent() {
         <SavedToggle productId={product.id} />
         {/* SP表示用：商品名・メーカーヘッダー */}
         <div className="card-header">
-          <strong>{product.name}</strong>
+          <strong>{shouldShowNew(product) && (<span className="new-prefix" title="掲載から7日以内">NEW!</span>)}{product.name}</strong>
           <span className="maker-name">{product.maker}</span>
         </div>
 
@@ -113,7 +114,7 @@ function SavedListContent() {
           <div className="card-info">
             {/* PC表示用：商品名・メーカー（SP表示では非表示にする） */}
             <div className="pc-only-header">
-              <strong>{product.name}</strong>
+              <strong>{shouldShowNew(product) && (<span className="new-prefix" title="掲載から7日以内">NEW!</span>)}{product.name}</strong>
               <span className="maker-name">{product.maker}</span>
             </div>
 

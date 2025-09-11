@@ -63,11 +63,41 @@ export const applySorting = (products: Product[], sortType: string): Product[] =
       return sorted.sort((a, b) => b.effectiveprice - a.effectiveprice);
     case 'newest':
       return sorted.sort((a, b) => {
-        const dateA = a.createdAt instanceof Date ? a.createdAt : new Date(a.createdAt);
-        const dateB = b.createdAt instanceof Date ? b.createdAt : new Date(b.createdAt);
-        return dateB.getTime() - dateA.getTime();
+        // NEW優先 → createdAt降順
+        const aIsNew = shouldShowNew(a) ? 1 : 0;
+        const bIsNew = shouldShowNew(b) ? 1 : 0;
+        if (aIsNew !== bIsNew) return bIsNew - aIsNew;
+        const dateA = a.createdAt instanceof Date ? a.createdAt : new Date(a.createdAt as any);
+        const dateB = b.createdAt instanceof Date ? b.createdAt : new Date(b.createdAt as any);
+        return (dateB.getTime() || 0) - (dateA.getTime() || 0);
       });
     default:
       return sorted.sort((a, b) => a.effectiveprice - b.effectiveprice); // デフォルトは価格順（安い順）
   }
+};
+
+// Firestore Timestamp JSON ({seconds,nanoseconds}) なども含め安全にDateへ正規化
+const normalizeToDate = (value: any): Date | null => {
+  if (!value) return null;
+  if (value instanceof Date) return value;
+  if (typeof value?.toDate === 'function') {
+    const d = value.toDate();
+    return isNaN(d.getTime()) ? null : d;
+  }
+  if (typeof value === 'object' && typeof value.seconds === 'number') {
+    const d = new Date(value.seconds * 1000);
+    return isNaN(d.getTime()) ? null : d;
+  }
+  const d = new Date(value as any);
+  return isNaN(d.getTime()) ? null : d;
+};
+
+// NEW表示の判定（7日以内 & 抑止フラグ）
+export const shouldShowNew = (product: Product): boolean => {
+  if (product.suppressNew === true) return false;
+  const created = normalizeToDate((product as any).createdAt);
+  if (!created) return false;
+  const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+  const diff = Date.now() - created.getTime();
+  return diff >= 0 && diff <= SEVEN_DAYS_MS;
 };

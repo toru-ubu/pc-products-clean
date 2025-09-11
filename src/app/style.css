@@ -4058,4 +4058,24 @@ body {
 .bookmark-svg { fill: none; stroke: currentColor; stroke-width: 1.6; }
 .bookmark-btn.is-saved .bookmark-svg { fill: currentColor; stroke: currentColor; }
 
+/* 商品名先頭 NEW! テキスト用 */
+.new-prefix {
+  color: #D32F2F;
+  font-weight: 800;
+  margin-right: 6px;
+}
+@media (max-width: 640px) {
+  .new-prefix {
+    font-size: 0.9em;
+    margin-right: 4px;
+  }
+}
+/* 強制的にインライン配置（.card-info span { display:block } の影響を打ち消す）*/
+.card-header strong .new-prefix,
+.card-info strong .new-prefix {
+  display: inline !important;
+  vertical-align: baseline;
+  color: #D32F2F !important;
+}
+
 

@@ -23,6 +23,7 @@ export interface Product {
   category: string;
   createdAt: Date | null;
   updatedAt: Date | null;
+  suppressNew?: boolean;
 }
 
 export interface FilterState {

@@ -6,15 +6,6 @@ import { usePathname } from 'next/navigation';
 
 export default function LeftMenu() {
   const pathname = usePathname();
-  const isTargetPage = !!pathname && (
-    pathname.startsWith('/db') ||
-    pathname === '/' ||
-    pathname.startsWith('/search') ||
-    pathname.startsWith('/saved')
-  );
-  if (!isTargetPage) {
-    return null;
-  }
   const [open, setOpen] = useState(false);
   const [hamburgerTop, setHamburgerTop] = useState<number>(8);
   const [pcTop, setPcTop] = useState<number | null>(null);

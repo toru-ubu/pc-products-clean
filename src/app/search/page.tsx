@@ -14,6 +14,8 @@ import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { useFilterOptions } from '../../hooks/useFilterOptions';
 import { isMatchingAny } from '../../utils/filterNormalization';
 import { generateDynamicTitle } from '../../utils/titleGenerator';
+import { shouldShowNew } from '../../utils/productUtils';
+import ProductCardUnified from '../../components/ProductCardUnified';
 
 
 function ProductsPageContent() {
@@ -190,10 +192,54 @@ function ProductsPageContent() {
         const data = await res.json();
         const apiProducts: Product[] = data?.products || [];
 
-        if (apiProducts.length > 0) {
-          console.log('APIから商品データを取得:', apiProducts.length, '件');
-          setProducts(apiProducts);
-          setFilteredProducts(apiProducts);
+        // 正規化: createdAt を Date へ、suppressNew を boolean へ
+        const normalizeToDate = (value: any): Date | null => {
+          if (!value) return null;
+          // Firestore Timestamp
+          if (typeof value?.toDate === 'function') {
+            const d = value.toDate();
+            return isNaN(d.getTime()) ? null : d;
+          }
+          // REST/JSON {seconds,nanoseconds} or {_seconds,_nanoseconds}
+          if (typeof value === 'object') {
+            const secs = (value as any).seconds ?? (value as any)._seconds;
+            if (typeof secs === 'number') {
+              const d = new Date(secs * 1000);
+              return isNaN(d.getTime()) ? null : d;
+            }
+          }
+          const d = new Date(value as any);
+          return isNaN(d.getTime()) ? null : d;
+        };
+
+        const normalized = apiProducts.map(p => ({
+          ...p,
+          // 型上は Date | null だが、実体は文字列/オブジェクトの可能性があるため正規化
+          createdAt: normalizeToDate((p as any).createdAt) as any,
+          updatedAt: normalizeToDate((p as any).updatedAt) as any,
+          suppressNew: (p as any).suppressNew === true
+        }));
+
+        if (normalized.length > 0) {
+          console.log('APIから商品データを取得:', normalized.length, '件');
+          // DEBUG: NEW表示条件の確認（正規化後）
+          try {
+            const sample = normalized.slice(0, 10).map(p => {
+              const created = p.createdAt as any as Date | null;
+              const diffMs = created ? (Date.now() - created.getTime()) : null;
+              const diffDays = diffMs !== null ? Math.floor(diffMs / (1000*60*60*24)) : null;
+              return {
+                id: p.id,
+                suppressNew: (p as any).suppressNew,
+                createdAt_iso: created ? created.toISOString() : null,
+                diffDays,
+                shouldShow: shouldShowNew(p as any)
+              };
+            });
+            console.log('NEW debug sample:', sample);
+          } catch (e) { console.log('NEW debug error', e); }
+          setProducts(normalized as any);
+          setFilteredProducts(normalized as any);
         } else {
           console.log('APIからデータが0件。モックデータを使用します。');
           const mockData = getMockProducts();
@@ -347,6 +393,16 @@ function ProductsPageContent() {
         break;
       case 'price-desc':
         filtered.sort((a, b) => b.effectiveprice - a.effectiveprice);
+        break;
+      case 'newest':
+        filtered.sort((a, b) => {
+          const aIsNew = shouldShowNew(a) ? 1 : 0;
+          const bIsNew = shouldShowNew(b) ? 1 : 0;
+          if (aIsNew !== bIsNew) return bIsNew - aIsNew;
+          const da = a.createdAt instanceof Date ? a.createdAt : new Date(a.createdAt as any);
+          const db = b.createdAt instanceof Date ? b.createdAt : new Date(b.createdAt as any);
+          return (db.getTime() || 0) - (da.getTime() || 0);
+        });
         break;
       case 'name-asc':
         filtered.sort((a, b) => a.name.localeCompare(b.name));
@@ -658,301 +714,10 @@ function ProductsPageContent() {
     window.location.href = newUrl;
   };
 
-  // 商品カードコンポーネント
-  const ProductCard = ({ product }: { product: Product }) => {
-    const { isSaved, toggleSaved } = useSavedItems();
-    const saved = isSaved(product.id);
-
-    const handleToggle = (e: React.MouseEvent | React.KeyboardEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      toggleSaved(product.id);
-    };
-
-    return (
-    <a href={product.productUrl} target="_blank" rel="nofollow sponsored" className="product-card" onClick={() => logCustomEvent('click', {
-      item_id: product.id, 
-      item_name: product.name,
-      item_maker: product.maker,
-      item_price: product.price,
-      item_effective_price: product.effectiveprice,
-      item_discount_rate: product.discountrate,
-      item_cpu: product.cpu,
-      item_gpu: product.gpu,
-      item_memory: product.memory,
-      item_storage: product.storage,
-      item_type: product.type,
-      current_page: currentPage,
-      current_sort: filterState.applied.sortBy
-    })}>
-      <div className="card-content">
-        {/* PC: カード右上に絶対配置の保存ボタン */}
-        <span
-          role="button"
-          aria-label={saved ? '保存済み' : '保存'}
-          aria-pressed={saved}
-          tabIndex={0}
-          className={`bookmark-btn bookmark-btn--pc ${saved ? 'is-saved' : ''}`}
-          onClick={handleToggle}
-          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleToggle(e); }}
-        >
-          {/* Twitter風のブックマーク（outline → filled） */}
-          <svg className="bookmark-svg" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M6 3.75C6 3.06 6.56 2.5 7.25 2.5h9.5c.69 0 1.25.56 1.25 1.25v16.2c0 .46-.5.75-.92.53L12 17.6l-5.08 3.88c-.42.32-.92-.07-.92-.53V3.75Z"/>
-          </svg>
-        </span>
-        {/* SP表示用：商品名・メーカーヘッダー */}
-        <div className="card-header">
-          <strong>{product.name}</strong>
-          <span className="maker-name">{product.maker}</span>
-        </div>
-
-        {/* 画像+情報ブロック */}
-        <div className="card-body">
-          {/* 商品画像 */}
-          <div className="card-image">
-            <img 
-              src={product.imageUrl || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2YzZjRmNiIvPjx0ZXh0IHg9IjE1MCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5Y2EzYWYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7lm77niYfliqDovb3lpLHotKU8L3RleHQ+PC9zdmc+'} 
-              alt={product.name}
-            />
-          </div>
-          
-          {/* 商品情報 */}
-          <div className="card-info">
-            {/* PC表示用：商品名・メーカー（SP表示では非表示にする） */}
-            <div className="pc-only-header">
-              <strong>{product.name}</strong>
-              <span className="maker-name">{product.maker}</span>
-            </div>
-            
-            {/* スペック情報 */}
-            <div className="spec-info">
-              <div className="spec-item">
-                <div className="spec-label">CPU</div>
-                <div className="spec-value">{product.cpu || '情報なし'}</div>
-              </div>
-              <div className="spec-item">
-                <div className="spec-label">GPU</div>
-                <div className="spec-value">{product.gpu || '情報なし'}</div>
-              </div>
-              <div className="spec-item">
-                <div className="spec-label">メモリ</div>
-                <div className="spec-value">{product.memory || '情報なし'}</div>
-              </div>
-              <div className="spec-item">
-                <div className="spec-label">ストレージ</div>
-                <div className="spec-value">{product.storage || '情報なし'}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        {/* 価格ブロック */}
-        <div className="price-block">
-              {/* セールの場合：PC表示は2行、SP表示は1行 */}
-              {product.discountrate > 0 ? (
-                <>
-                  {/* PC/SP表示の条件分岐 */}
-                  {isMobile ? (
-                    /* SP表示用: 割引率を上に、定価とセール価格を下に横並び */
-                    <div className="sale-price-container">
-                      {product.price > product.effectiveprice && (
-                        <>
-                          {/* SP表示用: 1行目 - 割引率バッジ */}
-                          <div className="discount-rate-row">
-                            <span className={`discount-rate-badge-sp ${(() => {
-                              const rate = product.discountrate;
-                              if (rate >= 30) return 'discount-high';
-                              else if (rate >= 10) return 'discount-mid';
-                              else return 'discount-low';
-                            })()}`}>
-                              {product.discountrate}%OFF
-                            </span>
-                          </div>
-                          
-                          {/* SP表示用: 2行目 - 定価 + セール価格を横並び */}
-                          <div className="price-row">
-                            <span className="original-price-inline">
-                              <span className="list-price-strikethrough">¥{product.price.toLocaleString()}</span>
-                            </span>
-                            
-                            <span className="actual-price-inline">
-                              <span className="tax-included-small">税込</span>¥{product.effectiveprice.toLocaleString()}
-                            </span>
-                          </div>
-                        </>
-                      )}
-                      
-                      {/* SP表示用: 定価が表示されない場合のフォールバック */}
-                      {product.price <= product.effectiveprice && (
-                        <div className="discount-actual-row">
-                          <span className={`discount-rate-badge-sp ${(() => {
-                            const rate = product.discountrate;
-                            if (rate >= 30) return 'discount-high';
-                            else if (rate >= 10) return 'discount-mid';
-                            else return 'discount-low';
-                          })()}`}>
-                            {product.discountrate}%OFF
-                          </span>
-                          
-                          <span className="actual-price-inline">
-                            <span className="tax-included-small">税込</span>¥{product.effectiveprice.toLocaleString()}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    /* PC表示用: 2行レイアウト */
-                    <div className="sale-price-container">
-                      {product.price > product.effectiveprice && (
-                        <>
-                          {/* PC表示用: 1行目 - 定価のみ */}
-                          <div className="original-price-row">
-                            <span className="original-price-inline">
-                              <span className="tax-included-small">税込</span><span className="list-price-strikethrough">¥{product.price.toLocaleString()}</span>
-                            </span>
-                          </div>
-                          
-                          {/* PC表示用: 2行目 - 割引率 + セール価格 */}
-                          <div className="discount-actual-row">
-                            <span className={`discount-rate-inline ${(() => {
-                              const rate = product.discountrate;
-                              if (rate >= 30) return 'discount-high';
-                              else if (rate >= 10) return 'discount-mid';
-                              else return 'discount-low';
-                            })()}`}>
-                              {product.discountrate}%OFF
-                            </span>
-                            
-                            <span className="actual-price-inline">
-                              <span className="tax-included-small">税込</span>¥{product.effectiveprice.toLocaleString()}
-                            </span>
-                          </div>
-                        </>
-                      )}
-                      
-                      {/* PC表示用: 定価が表示されない場合のフォールバック */}
-                      {product.price <= product.effectiveprice && (
-                        <div className="discount-actual-row">
-                          <span className={`discount-rate-inline ${(() => {
-                            const rate = product.discountrate;
-                            if (rate >= 30) return 'discount-high';
-                            else if (rate >= 10) return 'discount-mid';
-                            else return 'discount-low';
-                          })()}`}>
-                            {product.discountrate}%OFF
-                          </span>
-                          
-                          <span className="actual-price-inline">
-                            <span className="tax-included-small">税込</span>¥{product.effectiveprice.toLocaleString()}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </>
-              ) : (
-                /* 通常価格の場合：現在価格のみ */
-                <div className="normal-price-row">
-                  <span className="actual-price">
-                    <span className="tax-included-small">税込</span>¥{product.effectiveprice.toLocaleString()}
-                  </span>
-                </div>
-              )}
-              
-              {/* 3行目: バッジ（PC表示のみ） */}
-              {!isMobile && (
-                <div className="badge-row">
-                  {(() => {
-                    // キャンペーンタイプをグループ化（対応済みタイプのみ）
-                    const campaignTypes = [...new Set(product.campaigns.map(c => c.type))];
-                    const hasPointCampaign = campaignTypes.includes('ポイント');
-
-                    // ポイント以外で対応するタイプのみフィルタ
-                    const allowedTypes = ['クーポン', 'セール'];
-
-                    // 価格ベースの割引を検出（discountrate または price vs effectiveprice）
-                    const hasSaleByPrice = (
-                      typeof product.discountrate === 'number' && product.discountrate > 0
-                    ) || (
-                      product.effectiveprice > 0 && product.price > product.effectiveprice
-                    );
-
-                    // キャンペーンと価格割引を統合し、重複を避ける
-                    const displayTypesSet = new Set<string>(campaignTypes);
-                    const hasSaleType = campaignTypes.includes('セール');
-                    const hasCouponType = campaignTypes.includes('クーポン');
-                    const shouldAddSale = hasSaleByPrice && !hasSaleType && !hasCouponType;
-                    if (shouldAddSale) displayTypesSet.add('セール');
-                    const otherCampaigns = [...displayTypesSet].filter(type =>
-                      type !== 'ポイント' && allowedTypes.includes(type)
-                    );
-
-                    return (
-                      <>
-                        {hasPointCampaign && (
-                          <span className="badge point-badge">
-                            ポイントUP
-                          </span>
-                        )}
-                        {otherCampaigns.map((type, index) => {
-                          let badgeClass = "badge";
-                          if (type === "セール") {
-                            badgeClass += " sale-badge";
-                          } else if (type === "クーポン") {
-                            badgeClass += " coupon-badge";
-                          }
-                          return (
-                            <span key={index} className={badgeClass}>
-                              {type}
-                            </span>
-                          );
-                        })}
-                      </>
-                    );
-                  })()}
-                </div>
-              )}
-              
-              {/* 4-5行目: 送料とポイント還元情報 */}
-              <div className="shipping-points-container">
-                <div className={`shipping-fee-text ${product.shippingFee === 0 ? 'free' : ''}`}>
-                  {product.shippingFee === 0 
-                    ? '送料 無料' 
-                    : `送料 ¥${product.shippingFee.toLocaleString()}`
-                  }
-                </div>
-                <div className="point-reward-text">
-                  {(() => {
-                    const pointCampaigns = product.campaigns.filter(campaign => 
-                      campaign.type === 'ポイント'
-                    );
-                    const campaignPoints = pointCampaigns.reduce((sum, campaign) => 
-                      sum + campaign.amount, 0
-                    );
-                    const totalPoints = product.regularPoint + campaignPoints;
-                    return `${totalPoints.toLocaleString()}ポイント還元`;
-                  })()}
-                </div>
-              </div>
-        </div>
-      </div>
-      {/* SP: 商品名行に重ねる保存ボタン（カードヘッダー内右上） */}
-      <span
-        role="button"
-        aria-label={saved ? '保存済み' : '保存'}
-        aria-pressed={saved}
-        tabIndex={0}
-        className={`bookmark-btn bookmark-btn--sp ${saved ? 'is-saved' : ''}`}
-        onClick={handleToggle}
-        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleToggle(e); }}
-      >
-        <svg className="bookmark-svg" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M6 3.75C6 3.06 6.56 2.5 7.25 2.5h9.5c.69 0 1.25.56 1.25 1.25v16.2c0 .46-.5.75-.92.53L12 17.6l-5.08 3.88c-.42.32-.92-.07-.92-.53V3.75Z"/>
-        </svg>
-      </span>
-    </a>
-  ); } 
+  // 商品カードコンポーネント（共通化）
+  const ProductCard = ({ product }: { product: Product }) => (
+    <ProductCardUnified product={product} currentPage={currentPage} currentSort={filterState.applied.sortBy} />
+  );
 
   if (loading || filterOptionsLoading) {
     return (
@@ -1437,6 +1202,7 @@ function ProductsPageContent() {
                 <option value="discount-desc">値下げ率順</option>
                 <option value="name-asc">商品名順</option>
                 <option value="maker-asc">メーカー順</option>
+                <option value="newest">新着順</option>
               </select>
             </div>
           </div>

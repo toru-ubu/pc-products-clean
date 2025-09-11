@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Product } from '../types/product';
 import { logCustomEvent } from '../lib/firebase'; // ← Analytics機能を追加
+import { shouldShowNew } from '../utils/productUtils';
 
 interface ProductCardProps {
   product: Product;
@@ -46,6 +47,9 @@ export const ProductCard = ({ product }: ProductCardProps) => {
           {/* 商品情報 */}
           <div className="card-info">
             <strong>
+              {shouldShowNew(product) && (
+                <span className="new-prefix" title="掲載から7日以内">NEW!</span>
+              )}
               {product.name}
             </strong>
             <div className="maker-name">

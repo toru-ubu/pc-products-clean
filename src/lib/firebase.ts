@@ -101,6 +101,7 @@ export interface Product {
   category: string;
   createdAt: Date | null;
   updatedAt: Date | null;
+  suppressNew?: boolean;
 }
 
 
@@ -123,6 +124,18 @@ export async function getProducts(): Promise<Product[]> {
     
     querySnapshot.docs.forEach((doc) => {
       const data = doc.data();
+      
+      const toJsDate = (value: any): Date | null => {
+        if (!value) return null;
+        // Firestore Timestamp
+        if (typeof value?.toDate === 'function') {
+          const d = value.toDate();
+          return isNaN(d.getTime()) ? null : d;
+        }
+        // ISO string or millis
+        const d = new Date(value as any);
+        return isNaN(d.getTime()) ? null : d;
+      };
       
       const product: Product = {
         id: doc.id,
@@ -148,8 +161,9 @@ export async function getProducts(): Promise<Product[]> {
         shippingFee: data.shippingFee || 0,
         regularPoint: data.regularPoint || 0,
         category: data.category || '',
-        createdAt: data.createdAt,
-        updatedAt: data.updatedAt
+        createdAt: toJsDate(data.createdAt),
+        updatedAt: toJsDate(data.updatedAt),
+        suppressNew: data.suppressNew === true
       };
       
       products.push(product);

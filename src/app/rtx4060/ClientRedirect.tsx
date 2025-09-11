@@ -460,7 +460,14 @@ function Rtx4060PageContent() {
     );
   };
 
-  
+  const shouldShowNew = (product: Product) => {
+    if ((product as any).suppressNew === true) return false;
+    if (!product.createdAt) return false;
+    const created = product.createdAt instanceof Date ? product.createdAt : new Date(product.createdAt as any);
+    if (isNaN(created.getTime())) return false;
+    const FOURTEEN_DAYS_MS = 14 * 24 * 60 * 60 * 1000;
+    return (Date.now() - created.getTime()) <= FOURTEEN_DAYS_MS;
+  };
 
   const ProductCardCmp = ({ product }: { product: Product }) => (
     <a href={product.productUrl} target="_blank" rel="nofollow sponsored" className="product-card" onClick={() => logCustomEvent('click', {
@@ -480,7 +487,7 @@ function Rtx4060PageContent() {
     })}>
       <div className="card-content">
         <div className="card-header">
-          <strong>{product.name}</strong>
+          <strong>{shouldShowNew(product) && (<span className="new-prefix" title="掲載から7日以内">NEW!</span>)}{product.name}</strong>
           <span className="maker-name">{product.maker}</span>
         </div>
         <div className="card-body">
@@ -500,7 +507,7 @@ function Rtx4060PageContent() {
           </div>
           <div className="card-info">
             <div className="pc-only-header">
-              <strong>{product.name}</strong>
+              <strong>{shouldShowNew(product) && (<span className="new-prefix" title="掲載から7日以内">NEW!</span>)}{product.name}</strong>
               <span className="maker-name">{product.maker}</span>
             </div>
             <div className="spec-info">
