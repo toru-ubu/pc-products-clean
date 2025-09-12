@@ -153,47 +153,49 @@ export const HierarchicalFilterModal = ({
     >
       <div className="modal-content hierarchical-modal" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose}>×</button>
-        <h2 className="modal-header">{title}を選択</h2>
-        <div className="hierarchical-filter-container">
-          {Object.entries(hierarchyOptions).map(([series, models]) => (
-            <div key={series} className="filter-series-group">
-              {/* シリーズヘッダー */}
-              <div className="filter-series-header">
-                <label className="filter-series-label">
-                  <input
-                    type="checkbox"
-                    className="filter-option-checkbox"
-                    checked={isSeriesFullySelected(series)}
-                    ref={(input) => {
-                      if (input) {
-                        input.indeterminate = isSeriesPartiallySelected(series);
-                      }
-                    }}
-                    onChange={(e) => handleSeriesToggle(series, e.target.checked)}
-                  />
-                  <span className="series-name">{series}</span>
-                  <span className="selected-count">
-                    ({models.filter(model => selectedValues.includes(model)).length}/{models.length})
-                  </span>
-                </label>
-              </div>
-              
-              {/* モデル一覧 - 常に表示 */}
-              <div className="filter-models-container">
-                {models.map((model) => (
-                  <label key={model} className="filter-model-label">
+        <div className="modal-body">
+          <h2 className="modal-header">{title}を選択</h2>
+          <div className="hierarchical-filter-container">
+            {Object.entries(hierarchyOptions).map(([series, models]) => (
+              <div key={series} className="filter-series-group">
+                {/* シリーズヘッダー */}
+                <div className="filter-series-header">
+                  <label className="filter-series-label">
                     <input
                       type="checkbox"
                       className="filter-option-checkbox"
-                      checked={selectedValues.includes(model)}
-                      onChange={(e) => handleModelToggle(model, e.target.checked)}
+                      checked={isSeriesFullySelected(series)}
+                      ref={(input) => {
+                        if (input) {
+                          input.indeterminate = isSeriesPartiallySelected(series);
+                        }
+                      }}
+                      onChange={(e) => handleSeriesToggle(series, e.target.checked)}
                     />
-                    <span className="model-name">{title === 'GPU' && gpuDisplayLabels ? (gpuDisplayLabels[series]?.[model] || model) : model}</span>
+                    <span className="series-name">{series}</span>
+                    <span className="selected-count">
+                      ({models.filter(model => selectedValues.includes(model)).length}/{models.length})
+                    </span>
                   </label>
-                ))}
+                </div>
+                
+                {/* モデル一覧 - 常に表示 */}
+                <div className="filter-models-container">
+                  {models.map((model) => (
+                    <label key={model} className="filter-model-label">
+                      <input
+                        type="checkbox"
+                        className="filter-option-checkbox"
+                        checked={selectedValues.includes(model)}
+                        onChange={(e) => handleModelToggle(model, e.target.checked)}
+                      />
+                      <span className="model-name">{title === 'GPU' && gpuDisplayLabels ? (gpuDisplayLabels[series]?.[model] || model) : model}</span>
+                    </label>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
         
         <div className="modal-button-group">

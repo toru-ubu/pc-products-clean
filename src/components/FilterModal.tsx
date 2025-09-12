@@ -95,21 +95,23 @@ export const FilterModal = ({
     >
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close" onClick={onClose}>×</button>
-        
-        <h2 className="modal-header">{title}を選択</h2>
-        
-        <div className="filter-options-grid">
-          {options.map((option) => (
-            <label key={option} className="filter-option-label">
-              <input
-                type="checkbox"
-                className="filter-option-checkbox"
-                checked={selectedValues.includes(option)}
-                onChange={(e) => handleCheckboxChange(option, e.target.checked)}
-              />
-              {option}
-            </label>
-          ))}
+
+        <div className="modal-body">
+          <h2 className="modal-header">{title}を選択</h2>
+          
+          <div className="filter-options-grid">
+            {options.map((option) => (
+              <label key={option} className="filter-option-label">
+                <input
+                  type="checkbox"
+                  className="filter-option-checkbox"
+                  checked={selectedValues.includes(option)}
+                  onChange={(e) => handleCheckboxChange(option, e.target.checked)}
+                />
+                {option}
+              </label>
+            ))}
+          </div>
         </div>
         
         <div className="modal-button-group">
