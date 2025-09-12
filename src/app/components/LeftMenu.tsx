@@ -117,6 +117,12 @@ export default function LeftMenu() {
             <Link href="/saved" className="left-menu__link">保存した商品</Link>
           </li>
         </ul>
+        <div className="left-menu__coming" aria-label="近日公開">
+          <div>comming soon</div>
+          <div>会員登録</div>
+          <div>セール通知</div>
+          <div>価格推移グラフ</div>
+        </div>
         <div className="left-menu__legal" aria-label="サイト情報">
           <Link href="https://earbuds-plus.jp/company/about" className="left-menu__legalLink">運営会社</Link>
           <span className="left-menu__legalSep">・</span>
@@ -155,6 +161,12 @@ export default function LeftMenu() {
                   <Link href="/saved" className="left-menu__link" onClick={() => setOpen(false)}>保存した商品</Link>
                 </li>
               </ul>
+              <div className="left-menu__coming" aria-label="近日公開">
+                <div>comming soon</div>
+                <div>会員登録</div>
+                <div>セール通知</div>
+                <div>価格推移グラフ</div>
+              </div>
               <div className="left-menu__legal" aria-label="サイト情報">
                 <Link href="https://earbuds-plus.jp/company/about" className="left-menu__legalLink" onClick={() => setOpen(false)}>運営会社</Link>
                 <span className="left-menu__legalSep">・</span>

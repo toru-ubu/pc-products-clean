@@ -3796,6 +3796,30 @@ body {
   .left-menu__link:hover { background: #f8f9fa; }
 }
 
+/* Coming soon block under 保存した商品 */
+.left-menu__coming {
+  margin: 14px 8px 0 8px; /* 少し広めに */
+  color: #9CA3AF;         /* 項目は薄いグレーのまま */
+  font-size: 1rem;        /* MENUと同じサイズ */
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;               /* 縦並びの間隔を少し広げる */
+}
+/* タイトル（最初の行）はMENU風の下線とパディングに */
+.left-menu__coming > div:first-child {
+  padding: 10px 8px 8px 8px;        /* 上下に少し余裕 */
+  border-bottom: 2px solid #e5e5e5; /* 下線 */
+  margin-bottom: 12px;              /* タイトル下を広めに */
+  font-weight: 800;                 /* 太字 */
+  color: #9CA3AF;                   /* タイトルも薄いグレーに */
+}
+/* 後続項目の左右位置もMENU系と揃える（左8px） */
+.left-menu__coming > div + div {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
 /* Hide PC panel on narrower widths */
 @media (max-width: 1279px) {
   .left-menu--pc { display: none; }
